@@ -35,7 +35,7 @@ jobs:
     - name: Run Unit Tests with pytest framework and generate coverage report
       working-directory: ./amherst_coursework_backend
       run: |
-        pytest --cov --cov-config=.coveragerc --cov-fail-under=80
+        pytest --cov --cov-config=.coveragerc --cov-fail-under=90
     - name: Coveralls Workflow
       working-directory: ./mammoth_coursework_backend
       run: |

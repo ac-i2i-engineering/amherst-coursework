@@ -6,7 +6,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Course Rating Model &mdash; Mammoth Course Compass 0.0.0 documentation</title>
+        <title>Course Rating Model &mdash; Amherst Coursework 0.0.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
       <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
@@ -14,7 +14,7 @@
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=02fa4ee0" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="Mammoth Course Compass 0.0.0 documentation" href="#" />
+            <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
             <link rel="prev" title="Course Model" href="course_model.html" />
     </head>
 <body>
@@ -84,7 +84,7 @@
                             <span class="dark-only"><i class="fas fa-sun"></i> Light mode</span>
                             <span class="light-only"><i class="fas fa-moon"></i> Dark mode</span>
                         </button>
-    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/mammoth-course-compass/" rel="nofollow">
+    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/amherst-coursework/" rel="nofollow">
         <span class="btn-icon"><span class="fab fa-github"></span></span>
         <span class="btn-text">GitHub</span>
     </a>
@@ -99,92 +99,8 @@
                 <div class="row">
                     <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
                         <main role="main" id="main">
-    <section id="module-mammoth_course_compass_algo.models">
-<span id="course-rating-model"></span><h1>Course Rating Model<a class="headerlink" href="#module-mammoth_course_compass_algo.models" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mammoth_course_compass_algo.models.</span></span><span class="sig-name descname"><span class="pre">CourseRating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating" title="Link to this definition">¶</a></dt>
-<dd><p>CourseRating model representing a student's rating and review of a specific course. This class
-stores individual rating data across multiple categories and provides methods for calculating
-overall ratings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>user</strong> (<em>ForeignKey</em>) -- Reference to the User who submitted the rating</p></li>
-<li><p><strong>course</strong> (<em>ForeignKey</em>) -- Reference to the Course being rated</p></li>
-<li><p><strong>timestamp</strong> (<em>datetime</em>) -- When the rating was submitted</p></li>
-<li><p><strong>review</strong> (<em>str</em><em>, </em><em>optional</em>) -- Text review of the course</p></li>
-<li><p><strong>overall</strong> (<em>float</em><em>, </em><em>optional</em>) -- Calculated overall rating based on category ratings</p></li>
-<li><p><strong>materials</strong> (<em>int</em>) -- Rating for relevancy/usefulness of materials on a 1-5 scale</p></li>
-<li><p><strong>course_content</strong> (<em>int</em>) -- Rating for course content quality on a 1-5 scale</p></li>
-<li><p><strong>workload</strong> (<em>int</em>) -- Rating for course workload (1=easy, 5=difficult)</p></li>
-<li><p><strong>difficulty</strong> (<em>int</em>) -- Rating for course difficulty (1=easy, 5=difficult)</p></li>
-<li><p><strong>professor</strong> (<em>int</em>) -- Rating of the professor on a 1-5 scale</p></li>
-<li><p><strong>would_take_again</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Whether the student would take the course again</p></li>
-<li><p><strong>attendance_mandatory</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Whether course attendance was mandatory</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.calculate_overall_rating">
-<span class="sig-name descname"><span class="pre">calculate_overall_rating</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.calculate_overall_rating" title="Link to this definition">¶</a></dt>
-<dd><p>Calculates weighted average rating across all categories</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.get_category_averages">
-<span class="sig-name descname"><span class="pre">get_category_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.get_category_averages" title="Link to this definition">¶</a></dt>
-<dd><p>Returns dictionary of ratings for each category</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.__str__" title="Link to this definition">¶</a></dt>
-<dd><p>Returns string representation of the rating</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.Meta">
-<span class="sig-name descname"><span class="pre">Meta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.Meta" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">----</span></span></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">unique_together</span> <span class="pre">:</span> <span class="pre">[user,</span> <span class="pre">course]</span></span></dt>
-<dd><p>Ensures one rating per user per course</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.DoesNotExist">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.DoesNotExist" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.CourseRating.MultipleObjectsReturned">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#mammoth_course_compass_algo.models.CourseRating.MultipleObjectsReturned" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">calculate_overall_rating</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate overall rating using weighted average of categories.
-For workload and difficulty, we invert the scores since their scales are reversed
-(1 = heavy/difficult which is generally considered less favorable)</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">get_category_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of average ratings for each category</p>
-</dd></dl>
-
-</dd></dl>
-
+    <section id="course-rating-model">
+<h1>Course Rating Model<a class="headerlink" href="#course-rating-model" title="Link to this heading">¶</a></h1>
 </section>
 
 </main>
@@ -194,29 +110,6 @@ For workload and difficulty, we invert the scores since their scales are reverse
     </a>
 </nav>
                     </div>
-                    
-                    <nav class="col-12 col-lg-3 pb-4">
-                        <div class="sticky-top toc page-toc" aria-labelledby="page-toc-heading">
-                            <p class="font-weight-bold" id="page-toc-heading">Page contents</p>
-                            <ul>
-<li><a class="reference internal" href="#">Course Rating Model</a><ul>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating"><code class="docutils literal notranslate"><span class="pre">CourseRating</span></code></a><ul>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.calculate_overall_rating"><code class="docutils literal notranslate"><span class="pre">CourseRating.calculate_overall_rating()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.get_category_averages"><code class="docutils literal notranslate"><span class="pre">CourseRating.get_category_averages()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.__str__"><code class="docutils literal notranslate"><span class="pre">CourseRating.__str__()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.Meta"><code class="docutils literal notranslate"><span class="pre">CourseRating.Meta()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">CourseRating.DoesNotExist</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.CourseRating.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">CourseRating.MultipleObjectsReturned</span></code></a></li>
-<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">CourseRating.calculate_overall_rating()</span></code></a></li>
-<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">CourseRating.get_category_averages()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-                        </div>
-                    </nav>
                     
                 </div>
             </div>
@@ -258,7 +151,7 @@ For workload and difficulty, we invert the scores since their scales are reverse
                 </nav>
             
             <div class="text-center">
-                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li, Brendan Shen, Michael Ubarri-Sosa
+                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li
             </div>
             <div class="text-center text-white-50 font-italic mt-3">
                 <small>

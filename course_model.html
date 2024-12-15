@@ -6,7 +6,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Course Model &mdash; Mammoth Course Compass 0.0.0 documentation</title>
+        <title>Course Model &mdash; Amherst Coursework 0.0.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
       <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
@@ -14,7 +14,7 @@
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=02fa4ee0" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="Mammoth Course Compass 0.0.0 documentation" href="#" />
+            <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
             <link rel="next" title="Course Rating Model" href="course_rating_model.html" />
             <link rel="prev" title="Welcome to Mammoth Course Compass&#39;s Documentation!" href="index.html" />
     </head>
@@ -85,7 +85,7 @@
                             <span class="dark-only"><i class="fas fa-sun"></i> Light mode</span>
                             <span class="light-only"><i class="fas fa-moon"></i> Dark mode</span>
                         </button>
-    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/mammoth-course-compass/" rel="nofollow">
+    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/amherst-coursework/" rel="nofollow">
         <span class="btn-icon"><span class="fab fa-github"></span></span>
         <span class="btn-text">GitHub</span>
     </a>
@@ -100,57 +100,8 @@
                 <div class="row">
                     <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
                         <main role="main" id="main">
-    <section id="module-mammoth_course_compass_algo.models">
-<span id="course-model"></span><h1>Course Model<a class="headerlink" href="#module-mammoth_course_compass_algo.models" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.Course">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mammoth_course_compass_algo.models.</span></span><span class="sig-name descname"><span class="pre">Course</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.Course" title="Link to this definition">¶</a></dt>
-<dd><p>Course model representing an academic course at Amherst College with details about the course.
-This class stores course information and provides methods for retrieving rating data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>code</strong> (<em>str</em>) -- The course code identifier (e.g., &quot;COSC111&quot;)</p></li>
-<li><p><strong>title</strong> (<em>str</em>) -- The full title of the course</p></li>
-<li><p><strong>description</strong> (<em>str</em>) -- A detailed description of the course content</p></li>
-<li><p><strong>department</strong> (<em>str</em>) -- The 4-letter department code (e.g., &quot;COSC&quot;, &quot;BCBP&quot;)</p></li>
-<li><p><strong>professor</strong> (<em>str</em>) -- Professor of the course</p></li>
-<li><p><strong>keywords</strong> (<em>str</em><em>, </em><em>optional</em>) -- Course keywords used for content-based filtering</p></li>
-<li><p><strong>prerequisites</strong> (<em>ManyToManyField</em>) -- Related Course objects that are prerequisites for this course</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.Course.get_rating_statistics">
-<span class="sig-name descname"><span class="pre">get_rating_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.Course.get_rating_statistics" title="Link to this definition">¶</a></dt>
-<dd><p>Returns a dictionary containing current rating statistics</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.Course.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mammoth_course_compass_algo.models.Course.__str__" title="Link to this definition">¶</a></dt>
-<dd><p>Returns a string representation of the course (code and title)</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.Course.DoesNotExist">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#mammoth_course_compass_algo.models.Course.DoesNotExist" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="mammoth_course_compass_algo.models.Course.MultipleObjectsReturned">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#mammoth_course_compass_algo.models.Course.MultipleObjectsReturned" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">get_rating_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of all rating statistics
-Calculates the values directly from courseRating</p>
-</dd></dl>
-
-</dd></dl>
-
+    <section id="course-model">
+<h1>Course Model<a class="headerlink" href="#course-model" title="Link to this heading">¶</a></h1>
 </section>
 
 </main>
@@ -163,26 +114,6 @@ Calculates the values directly from courseRating</p>
     </a>
 </nav>
                     </div>
-                    
-                    <nav class="col-12 col-lg-3 pb-4">
-                        <div class="sticky-top toc page-toc" aria-labelledby="page-toc-heading">
-                            <p class="font-weight-bold" id="page-toc-heading">Page contents</p>
-                            <ul>
-<li><a class="reference internal" href="#">Course Model</a><ul>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.Course"><code class="docutils literal notranslate"><span class="pre">Course</span></code></a><ul>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.Course.get_rating_statistics"><code class="docutils literal notranslate"><span class="pre">Course.get_rating_statistics()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.Course.__str__"><code class="docutils literal notranslate"><span class="pre">Course.__str__()</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.Course.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Course.DoesNotExist</span></code></a></li>
-<li><a class="reference internal" href="#mammoth_course_compass_algo.models.Course.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Course.MultipleObjectsReturned</span></code></a></li>
-<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Course.get_rating_statistics()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-                        </div>
-                    </nav>
                     
                 </div>
             </div>
@@ -224,7 +155,7 @@ Calculates the values directly from courseRating</p>
                 </nav>
             
             <div class="text-center">
-                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li, Brendan Shen, Michael Ubarri-Sosa
+                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li
             </div>
             <div class="text-center text-white-50 font-italic mt-3">
                 <small>

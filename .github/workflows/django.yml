@@ -33,18 +33,18 @@ jobs:
         pip install -r requirements.txt
         pip install coveralls  # Ensure coveralls is installed
     - name: Run Unit Tests with pytest framework and generate coverage report
-      working-directory: ./mammoth_course_compass_backend
+      working-directory: ./amherst_coursework_backend
       run: |
-        pytest --cov --cov-config=.coveragerc --cov-fail-under=80
+        pytest --cov --cov-config=.coveragerc --cov-fail-under=90
     - name: Coveralls Workflow
-      working-directory: ./mammoth_course_compass_backend
+      working-directory: ./mammoth_coursework_backend
       run: |
         coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run Django Compilation CI/CD Tests
       run: |
-        python ./mammoth_course_compass_backend/manage.py test
+        python ./amherst_coursework_backend/manage.py test
     - name: Black Code Formatter Command Run
       run: |
         python -m black ./

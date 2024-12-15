@@ -11,7 +11,7 @@ class Course(models.Model):
     Parameters
     ----------
     code : str
-        The 8-character course code identifier (e.g., "COSC111")
+        The 8-character course code identifier (e.g., "COSC-111")
     title : str  
         The full title of the course
     description : str
@@ -25,7 +25,13 @@ class Course(models.Model):
     prerequisites : ManyToManyField
         Related Course objects that are prerequisites for this course
     corequisites : ManyToManyField
-        Related Course objects that is a corequisite for this course
+        Related Course objects that are corequisites for this course
+    how_to_handle_overenrollment : str, optional
+        Instructions on how to handle overenrollment
+    enrollment_limit : int
+        The maximum number of students allowed to enroll in the course
+    credit_hours : int
+        The number of credit hours the course is worth
 
     Methods
     -------
@@ -41,6 +47,9 @@ class Course(models.Model):
     keywords = models.TextField(blank=True)  # store course keywords
     prerequisites = models.ManyToManyField('self', blank=True)
     corequisites = models.ManyToManyField('self', blank=True)
+    how_to_handle_overenrollment = models.TextField(null=True)
+    enrollment_limit = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+    credit_hours = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(4)], default=4)
 
     def __str__(self):
         return f"{self.code}: {self.title}"

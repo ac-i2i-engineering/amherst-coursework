@@ -18,6 +18,9 @@ def course(db):
         department="COSC",
         professor="Prof. John Doe",
         keywords="computer science, programming, algorithms",
+        how_to_handle_overenrollment=None,
+        enrollment_limit=20,
+        credit_hours=4
     )
     course.prerequisites.set([])
     return course

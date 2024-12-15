@@ -37,7 +37,7 @@ jobs:
       run: |
         pytest --cov --cov-config=.coveragerc --cov-fail-under=80
     - name: Coveralls Workflow
-      working-directory: ./mammoth_course_compass_backend
+      working-directory: ./mammoth_coursework_backend
       run: |
         coveralls --service=github
       env:

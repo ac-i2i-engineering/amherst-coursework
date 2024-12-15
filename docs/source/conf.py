@@ -8,9 +8,7 @@
 
 project = "Amherst Coursework"
 copyright = "2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li"
-author = (
-    "Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li"
-)
+author = "Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li"
 release = "0.0.0"
 
 # -- General configuration ---------------------------------------------------

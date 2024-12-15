@@ -1,5 +1,5 @@
 """
-WSGI config for mammoth_course_compass_backend project.
+WSGI config for amherst_coursework_backend project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -12,7 +12,7 @@ import os
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "mammoth_course_compass_backend.settings"
+    "DJANGO_SETTINGS_MODULE", "amherst_coursework_backend.settings"
 )
 
 application = get_wsgi_application()

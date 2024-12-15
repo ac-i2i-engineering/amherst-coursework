@@ -1,5 +1,5 @@
 """
-ASGI config for mammoth_course_compass_backend project.
+ASGI config for amherst_coursework_backend project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -12,7 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "mammoth_course_compass_backend.settings"
+    "DJANGO_SETTINGS_MODULE", "amherst_coursework_backend.settings"
 )
 
 application = get_asgi_application()

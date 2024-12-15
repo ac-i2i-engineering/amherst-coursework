@@ -11,12 +11,14 @@ def pytest_configure():
 @pytest.fixture
 def course(db):
     from amherst_coursework_algo.models import Course
-    return Course.objects.create(
+    course = Course.objects.create(
         code="COSC111",
         title="Introduction to Computer Science",
         description="An introductory course to computer science.",
         department="COSC",
         professor="Prof. John Doe",
-        keywords="computer science, programming, algorithms"
+        keywords="computer science, programming, algorithms",
     )
+    course.prerequisites.set([])
+    return course
 

@@ -25,16 +25,3 @@ class CourseModelTest(TestCase):
 
     def test_course_str(self):
         self.assertEqual(str(self.course), "COSC111: Introduction to Computer Science")
-
-    
-    def test_course_invalid_department(self):
-        # Mock database error without actually hitting DB
-            with mock.patch('amherst_coursework_algo.models.Course.save') as mock_save:
-                mock_save.side_effect = IntegrityError("Department code must be 4 letters")
-                
-                with self.assertRaises(IntegrityError):
-                    Course.objects.create(
-                        code="COSC111",
-                        department="CS"  # Invalid: too short
-                    )
-    

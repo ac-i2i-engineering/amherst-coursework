@@ -33,7 +33,7 @@ pip install -r requirements.txt
 Navigate to the backend directory and apply migrations to set up the database schema.
 
 ```bash
-cd access_amherst_backend
+cd amherst_coursework_backend
 python manage.py makemigrations
 python manage.py migrate
 ```

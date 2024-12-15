@@ -1,16 +1,30 @@
+[tool.pre-commit]
+config = ".pre-commit-config.yaml"
+
 [tool.black]
-line-length = 79
-include = '\.pyi?$'
+line-length = 88
+target-version = ["py312"]
 exclude = '''
 /(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
+    \.direnv
+    | \.eggs
+    | \.git
+    | \.hg
+    | \.ipynb_checkpoints
+    | \.mypy_cache
+    | \.nox
+    | \.pytest_cache
+    | \.ruff_cache
+    | \.tox
+    | \.env
+    | \.svn
+    | __pypackages__
+    | _build
+    | buck-out
+    | build
+    | dist
+    | venv
+    | sudoku_smt_solvers/solvers/sudoku_error\.py
+    | tests/conftest\.py
 )/
 '''

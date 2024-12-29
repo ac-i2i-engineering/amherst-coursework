@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator, MaxLengthValidator
 from django.db.models import Avg
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 
 class Course(models.Model):
@@ -13,13 +14,18 @@ class Course(models.Model):
     Parameters
     ----------
     id : int
-        Unique 8-digit course identifier
-    courseLink : str
+        Unique 7-digit course identifier; primary key
+        The first digit represents the college and semester (e.g., 4 for Amherst College Fall and 5 for Amherst College Spring)
+        The second and third digits represent the department code (e.g., 00 for American Studies)
+        The fourth digit is a boolean flag for whether the course is half-credit (1) or full-credit (0)
+        The last three digits are the course number
+        Example: 4140112 represents 4-credit COSC-112 at Amherst College in the Fall semester
+    courseLink : URLField
         URL link to the course page
     courseName : str
         The full name/title of the course
     courseCodes : ManyToManyField
-        Related CourseCode objects (e.g., "COSC-111")
+        Related CourseCode objects (e.g., "COSC111")
     department : ManyToManyField
         Related Department objects for this course
     overGuidelines : ManyToManyField
@@ -43,9 +49,10 @@ class Course(models.Model):
     """
 
     id = models.IntegerField(
-        primary_key=True, validators=[MinValueValidator(8), MaxValueValidator(8)]
+        primary_key=True,
+        validators=[MinValueValidator(0), MaxValueValidator(9999999)]
     )
-    courseLink = models.CharField(max_length=200)
+    courseLink = models.URLField(max_length=200)
     courseName = models.CharField(max_length=200)
     courseCodes = models.ManyToManyField("CourseCode", related_name="courses")
     # categories = models.ManyToManyField('Category', related_name='courses')
@@ -66,7 +73,7 @@ class Course(models.Model):
     )
     professors = models.ManyToManyField("Professor", related_name="courses")
     sections = models.ManyToManyField("Section", related_name="courses")
-    fallOfferrings = models.ManyToManyField("Year", related_name="courses", blank=True)
+    fallOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
     springOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
     janOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
 
@@ -107,7 +114,7 @@ class Department(models.Model):
         The full name of the department (e.g., "Computer Science", "Biology")
     code : str
         The 4-letter department code (e.g., "COSC", "BCBP")
-    link : str
+    link : URLField
         The link to the department page on amherst.edu
     """
 
@@ -115,7 +122,7 @@ class Department(models.Model):
     code = models.CharField(
         max_length=4, validators=[MinLengthValidator(4), MaxLengthValidator(4)]
     )
-    link = models.CharField(max_length=200)
+    link = models.URLField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -148,11 +155,11 @@ class OverGuidelines(models.Model):
 
     text = models.TextField()
     prefForMajor = models.BooleanField(default=False)
-    overallCap = models.IntegerField(default=0)
-    freshmanCap = models.IntegerField(default=overallCap)
-    sophCap = models.IntegerField(default=overallCap)
-    juniorCap = models.IntegerField(default=overallCap)
-    seniorCap = models.IntegerField(default=overallCap)
+    overallCap = models.PositiveIntegerField(default=0)
+    freshmanCap = models.PositiveIntegerField(default=0)
+    sophCap = models.PositiveIntegerField(default=0)
+    juniorCap = models.PositiveIntegerField(default=0)
+    seniorCap = models.PositiveIntegerField(default=0)
 
     def clean(self):
         """Validate that year caps don't exceed overall cap"""
@@ -190,20 +197,20 @@ class Prerequisites(models.Model):
     description : str
         Text description of prerequisites
     required_courses : ManyToManyField
-        Courses that must be completed before taking this course
+        Sets of courses where completing any single set satisfies prerequisites
     recommended_courses : ManyToManyField
         Courses that are recommended but not required
     professor_override : bool
         Whether professor can override prerequisites
     placement_course : OneToOneField
-        Which course you need to place out of to satisfy prerequisites
+        Course that students need to place out of to satisfy prerequisites
     """
 
     description = models.TextField(
         blank=True, help_text="Text description of prerequisites"
     )
     required_courses = models.ManyToManyField(
-        "Course", blank=True, related_name="required_for"
+        "PrerequisiteSet", blank=True, related_name="required_for"
     )
     recommended_courses = models.ManyToManyField(
         "Course", blank=True, related_name="recommended_for"
@@ -212,16 +219,34 @@ class Prerequisites(models.Model):
         default=False, help_text="Can professor override prerequisites?"
     )
     placement_course = models.OneToOneField(
-        "Course", on_delete=models.SET_NULL, null=True
+        "Course", on_delete=models.SET_NULL, null=True, blank=True
     )
 
     def __str__(self):
-        return f"Prerequisites for {self.course.courseName}"
+        return self.description
 
     class Meta:
         verbose_name = "Prerequisites"
         verbose_name_plural = "Prerequisites"
 
+class PrerequisiteSet(models.Model):
+    """
+    PrerequisiteSet model representing a set of prerequisites for a course.
+
+    Parameters
+    ----------
+    courses : ManyToManyField
+        One set of courses that can be completed to satisfy prerequisites
+    """
+
+    courses = models.ManyToManyField("Course", related_name="prerequisite_sets")
+
+    def __str__(self):
+        return ", ".join([str(course) for course in self.courses])
+
+    class Meta:
+        verbose_name = "Prerequisite Set"
+        verbose_name_plural = "Prerequisite Sets"
 
 class Professor(models.Model):
     """
@@ -231,7 +256,7 @@ class Professor(models.Model):
     ----------
     name : str
         Full name of the professor
-    link : str
+    link : URLField
         URL to professor's page on amherst.edu
     """
 
@@ -265,18 +290,16 @@ class Section(models.Model):
     professor : ForeignKey
         Professor teaching this section
     """
-    DAYS_CHOICES = [
-        ('M', 'Monday'),
-        ('T', 'Tuesday'),
-        ('W', 'Wednesday'),
-        ('R', 'Thursday'),
-        ('F', 'Friday'),
-    ]
-    
+
     days = models.CharField(
         max_length=5,
-        choices=DAYS_CHOICES,
-        help_text="Days of week (M/T/W/R/F)"
+        help_text="Days of week (e.g., MWF, TR)",
+        validators=[
+            RegexValidator(
+                regex='^[MTWRF]+$',
+                message='Days must be combination of M/T/W/R/F'
+            )
+        ]
     )
     start_time = models.TimeField(
         help_text="Section start time"
@@ -314,14 +337,14 @@ class Year(models.Model):
     ----------
     year : int
         Academic year (e.g., 2021)
-    link : str
-        Link to course catalog
+    link : URLField
+        URL link to course catalog
     """
     year = models.IntegerField(
         primary_key=True,
         validators=[MinValueValidator(1900)]
     )
-    link = models.CharField(
+    link = models.URLField(
         max_length=200,
         help_text="Link to course catalog"
     )

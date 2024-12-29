@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator, MaxLengthValidator
+from django.core.validators import (
+    MinValueValidator,
+    MaxValueValidator,
+    MinLengthValidator,
+    MaxLengthValidator,
+)
 from django.db.models import Avg
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -42,15 +47,14 @@ class Course(models.Model):
         Related Section objects for meeting times/locations
     fallOfferings : ManyToManyField
         Years the course is offered in Fall semester
-    springOfferings : ManyToManyField 
+    springOfferings : ManyToManyField
         Years the course is offered in Spring semester
     janOfferings : ManyToManyField
         Years the course is offered in the January term
     """
 
     id = models.IntegerField(
-        primary_key=True,
-        validators=[MinValueValidator(0), MaxValueValidator(9999999)]
+        primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(9999999)]
     )
     courseLink = models.URLField(max_length=200)
     courseName = models.CharField(max_length=200)
@@ -76,7 +80,6 @@ class Course(models.Model):
     fallOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
     springOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
     janOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
-
 
     def __str__(self):
         return self.courseName
@@ -131,6 +134,7 @@ class Department(models.Model):
         verbose_name = "Department"
         verbose_name_plural = "Departments"
 
+
 class OverGuidelines(models.Model):
     """
     OverGuidelines model representing overenrollment instructions for a course.
@@ -146,7 +150,7 @@ class OverGuidelines(models.Model):
     freshmanCap : int
         Enrollment cap for freshmen
     sophCap : int
-        Enrollment cap for sophomores 
+        Enrollment cap for sophomores
     juniorCap : int
         Enrollment cap for juniors
     seniorCap : int
@@ -164,21 +168,22 @@ class OverGuidelines(models.Model):
     def clean(self):
         """Validate that year caps don't exceed overall cap"""
         super().clean()
-        
+
         if self.overallCap > 0:  # Only validate if overall cap is set
             caps = {
-                'Freshman': self.freshmanCap,
-                'Sophomore': self.sophCap,
-                'Junior': self.juniorCap,
-                'Senior': self.seniorCap
+                "Freshman": self.freshmanCap,
+                "Sophomore": self.sophCap,
+                "Junior": self.juniorCap,
+                "Senior": self.seniorCap,
             }
-            
+
             for year, cap in caps.items():
                 if cap > self.overallCap:
-                    raise ValidationError({
-                        f'{year.lower()}Cap': f'{year} cap ({cap}) cannot exceed overall cap ({self.overallCap})'
-                    })
-
+                    raise ValidationError(
+                        {
+                            f"{year.lower()}Cap": f"{year} cap ({cap}) cannot exceed overall cap ({self.overallCap})"
+                        }
+                    )
 
     def __str__(self):
         return self.text
@@ -229,6 +234,7 @@ class Prerequisites(models.Model):
         verbose_name = "Prerequisites"
         verbose_name_plural = "Prerequisites"
 
+
 class PrerequisiteSet(models.Model):
     """
     PrerequisiteSet model representing a set of prerequisites for a course.
@@ -247,6 +253,7 @@ class PrerequisiteSet(models.Model):
     class Meta:
         verbose_name = "Prerequisite Set"
         verbose_name_plural = "Prerequisite Sets"
+
 
 class Professor(models.Model):
     """
@@ -273,10 +280,11 @@ class Professor(models.Model):
         verbose_name_plural = "Professors"
         ordering = ["name"]
 
+
 class Section(models.Model):
     """
     Section model representing a specific course meeting time.
-    
+
     Parameters
     ----------
     days : str
@@ -296,43 +304,34 @@ class Section(models.Model):
         help_text="Days of week (e.g., MWF, TR)",
         validators=[
             RegexValidator(
-                regex='^[MTWRF]+$',
-                message='Days must be combination of M/T/W/R/F'
+                regex="^[MTWRF]+$", message="Days must be combination of M/T/W/R/F"
             )
-        ]
+        ],
     )
-    start_time = models.TimeField(
-        help_text="Section start time"
-    )
-    end_time = models.TimeField(
-        help_text="Section end time"
-    )
-    location = models.CharField(
-        max_length=100,
-        help_text="Building and room number"
-    )
+    start_time = models.TimeField(help_text="Section start time")
+    end_time = models.TimeField(help_text="Section end time")
+    location = models.CharField(max_length=100, help_text="Building and room number")
     professor = models.ForeignKey(
-        'Professor',
-        on_delete=models.CASCADE,
-        related_name='sections'
+        "Professor", on_delete=models.CASCADE, related_name="sections"
     )
 
     def clean(self):
         if self.start_time >= self.end_time:
-            raise ValidationError(_('End time must be after start time'))
-        
+            raise ValidationError(_("End time must be after start time"))
+
     def __str__(self):
         return f"{self.days} {self.start_time}-{self.end_time} in {self.location}"
-    
+
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
         ordering = ["days", "start_time"]
 
+
 class Year(models.Model):
     """
     Year model representing the academic year.
-    
+
     Parameters
     ----------
     year : int
@@ -340,18 +339,13 @@ class Year(models.Model):
     link : URLField
         URL link to course catalog
     """
-    year = models.IntegerField(
-        primary_key=True,
-        validators=[MinValueValidator(1900)]
-    )
-    link = models.URLField(
-        max_length=200,
-        help_text="Link to course catalog"
-    )
-    
+
+    year = models.IntegerField(primary_key=True, validators=[MinValueValidator(1900)])
+    link = models.URLField(max_length=200, help_text="Link to course catalog")
+
     def __str__(self):
         return str(self.year)
-    
+
     class Meta:
         verbose_name = "Year"
         verbose_name_plural = "Years"

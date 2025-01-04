@@ -56,12 +56,12 @@ class Course(models.Model):
     id = models.IntegerField(
         primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(9999999)]
     )
-    courseLink = models.URLField(max_length=200)
+    courseLink = models.URLField(max_length=200, blank=True)
     courseName = models.CharField(max_length=200)
-    courseCodes = models.ManyToManyField("CourseCode", related_name="courses")
+    courseCodes = models.ManyToManyField("CourseCode")
     # categories = models.ManyToManyField('Category', related_name='courses')
-    department = models.ManyToManyField("Department", related_name="courses")
-    overGuidelines = models.ManyToManyField("OverGuidelines", related_name="courses")
+    department = models.ManyToManyField("Department", related_name="dept_courses")
+    overGuidelines = models.ManyToManyField("OverGuidelines")
     credits = models.IntegerField(
         default=4, choices=[(2, "2 credits"), (4, "4 credits")]
     )
@@ -70,16 +70,16 @@ class Course(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="course",
+        related_name="prerequisites_for",
     )
     corequisites = models.ManyToManyField(
-        "Course", blank=True, related_name="corequisites"
+        "self", blank=True, symmetrical=True
     )
     professors = models.ManyToManyField("Professor", related_name="courses")
-    sections = models.ManyToManyField("Section", related_name="courses")
-    fallOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
-    springOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
-    janOfferings = models.ManyToManyField("Year", related_name="courses", blank=True)
+    sections = models.ManyToManyField("Section")
+    fallOfferings = models.ManyToManyField("Year", related_name="fOfferings", blank=True)
+    springOfferings = models.ManyToManyField("Year", related_name="sOfferings", blank=True)
+    janOfferings = models.ManyToManyField("Year", related_name="jOfferings", blank=True)
 
     def __str__(self):
         return self.courseName
@@ -224,7 +224,7 @@ class Prerequisites(models.Model):
         default=False, help_text="Can professor override prerequisites?"
     )
     placement_course = models.OneToOneField(
-        "Course", on_delete=models.SET_NULL, null=True, blank=True
+        "Course", on_delete=models.SET_NULL, null=True, blank=True, related_name="placement_for"
     )
 
     def __str__(self):
@@ -245,7 +245,7 @@ class PrerequisiteSet(models.Model):
         One set of courses that can be completed to satisfy prerequisites
     """
 
-    courses = models.ManyToManyField("Course", related_name="prerequisite_sets")
+    courses = models.ManyToManyField("Course")
 
     def __str__(self):
         return ", ".join([str(course) for course in self.courses])

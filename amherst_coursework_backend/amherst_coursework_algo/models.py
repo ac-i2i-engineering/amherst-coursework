@@ -64,7 +64,9 @@ class Course(models.Model):
     courseDescription = models.TextField(blank=True)
     # categories = models.ManyToManyField('Category', related_name='courses')
     department = models.ManyToManyField("Department", related_name="dept_courses")
-    overGuidelines = models.OneToOneField("OverGuidelines", on_delete=models.SET_NULL, null=True, blank=True)
+    overGuidelines = models.OneToOneField(
+        "OverGuidelines", on_delete=models.SET_NULL, null=True, blank=True
+    )
     credits = models.IntegerField(
         default=4, choices=[(2, "2 credits"), (4, "4 credits")]
     )
@@ -75,13 +77,15 @@ class Course(models.Model):
         blank=True,
         related_name="prerequisites_for",
     )
-    corequisites = models.ManyToManyField(
-        "self", blank=True, symmetrical=True
-    )
+    corequisites = models.ManyToManyField("self", blank=True, symmetrical=True)
     professors = models.ManyToManyField("Professor", related_name="courses")
     sections = models.ManyToManyField("Section")
-    fallOfferings = models.ManyToManyField("Year", related_name="fOfferings", blank=True)
-    springOfferings = models.ManyToManyField("Year", related_name="sOfferings", blank=True)
+    fallOfferings = models.ManyToManyField(
+        "Year", related_name="fOfferings", blank=True
+    )
+    springOfferings = models.ManyToManyField(
+        "Year", related_name="sOfferings", blank=True
+    )
     janOfferings = models.ManyToManyField("Year", related_name="jOfferings", blank=True)
 
     def __str__(self):
@@ -230,7 +234,11 @@ class Prerequisites(models.Model):
         default=False, help_text="Can professor override prerequisites?"
     )
     placement_course = models.OneToOneField(
-        "Course", on_delete=models.SET_NULL, null=True, blank=True, related_name="placement_for"
+        "Course",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="placement_for",
     )
 
     def __str__(self):
@@ -275,7 +283,7 @@ class Professor(models.Model):
 
     name = models.CharField(max_length=100, help_text="Full name of the professor")
     link = models.URLField(
-        max_length=200, blank=True, null=True,help_text="Link to professor's page"
+        max_length=200, blank=True, null=True, help_text="Link to professor's page"
     )
 
     def __str__(self):
@@ -337,7 +345,7 @@ class Section(models.Model):
             raise ValidationError(_("End time must be after start time"))
 
     def __str__(self):
-        
+
         return f"{self.days} {self.start_time}-{self.end_time} in {self.location}"
 
     class Meta:

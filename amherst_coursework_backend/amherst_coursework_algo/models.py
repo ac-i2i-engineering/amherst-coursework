@@ -31,9 +31,11 @@ class Course(models.Model):
         The full name/title of the course
     courseCodes : ManyToManyField
         Related CourseCode objects (e.g., "COSC111")
+    courseDescription : TextField
+        Description of the course
     department : ManyToManyField
         Related Department objects for this course
-    overGuidelines : ManyToManyField
+    overGuidelines : OneToOneField
         Related OverGuidelines object for handling overenrollment
     credits : int
         Number of course credits (2 or 4)
@@ -59,9 +61,10 @@ class Course(models.Model):
     courseLink = models.URLField(max_length=200, blank=True)
     courseName = models.CharField(max_length=200)
     courseCodes = models.ManyToManyField("CourseCode")
+    courseDescription = models.TextField(blank=True)
     # categories = models.ManyToManyField('Category', related_name='courses')
     department = models.ManyToManyField("Department", related_name="dept_courses")
-    overGuidelines = models.ManyToManyField("OverGuidelines")
+    overGuidelines = models.OneToOneField("OverGuidelines", on_delete=models.SET_NULL, null=True, blank=True)
     credits = models.IntegerField(
         default=4, choices=[(2, "2 credits"), (4, "4 credits")]
     )
@@ -141,6 +144,8 @@ class OverGuidelines(models.Model):
 
     Parameters
     ----------
+    course : ForeignKey
+        Course this overenrollment guideline is for
     text : str
         Instructions for handling overenrollment
     prefForMajor : bool
@@ -149,7 +154,7 @@ class OverGuidelines(models.Model):
         Maximum total enrollment limit
     freshmanCap : int
         Enrollment cap for freshmen
-    sophCap : int
+    sophomoreCap : int
         Enrollment cap for sophomores
     juniorCap : int
         Enrollment cap for juniors
@@ -157,11 +162,12 @@ class OverGuidelines(models.Model):
         Enrollment cap for seniors
     """
 
+    course = models.ForeignKey("Course", on_delete=models.CASCADE)
     text = models.TextField()
     prefForMajor = models.BooleanField(default=False)
     overallCap = models.PositiveIntegerField(default=0)
     freshmanCap = models.PositiveIntegerField(default=0)
-    sophCap = models.PositiveIntegerField(default=0)
+    sophomoreCap = models.PositiveIntegerField(default=0)
     juniorCap = models.PositiveIntegerField(default=0)
     seniorCap = models.PositiveIntegerField(default=0)
 
@@ -172,7 +178,7 @@ class OverGuidelines(models.Model):
         if self.overallCap > 0:  # Only validate if overall cap is set
             caps = {
                 "Freshman": self.freshmanCap,
-                "Sophomore": self.sophCap,
+                "Sophomore": self.sophomoreCap,
                 "Junior": self.juniorCap,
                 "Senior": self.seniorCap,
             }
@@ -269,7 +275,7 @@ class Professor(models.Model):
 
     name = models.CharField(max_length=100, help_text="Full name of the professor")
     link = models.URLField(
-        max_length=200, blank=True, help_text="Link to professor's page"
+        max_length=200, blank=True, null=True,help_text="Link to professor's page"
     )
 
     def __str__(self):
@@ -287,6 +293,10 @@ class Section(models.Model):
 
     Parameters
     ----------
+    section_number: int
+        The section number
+    course : ForeignKey
+        Course this section is for
     days : str
         Days of the week the section meets
     start_time : TimeField
@@ -299,6 +309,13 @@ class Section(models.Model):
         Professor teaching this section
     """
 
+    section_number = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(99)],
+        help_text="Section number",
+    )
+    course = models.ForeignKey(
+        "Course", on_delete=models.CASCADE, related_name="sections"
+    )
     days = models.CharField(
         max_length=5,
         help_text="Days of week (e.g., MWF, TR)",
@@ -320,17 +337,19 @@ class Section(models.Model):
             raise ValidationError(_("End time must be after start time"))
 
     def __str__(self):
+        
         return f"{self.days} {self.start_time}-{self.end_time} in {self.location}"
 
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
         ordering = ["days", "start_time"]
+        unique_together = ("course", "section_number")
 
 
 class Year(models.Model):
     """
-    Year model representing the academic year.
+    Year model representing the academic year (specfic to each course).
 
     Parameters
     ----------

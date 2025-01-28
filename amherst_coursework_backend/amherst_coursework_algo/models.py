@@ -365,13 +365,16 @@ class Year(models.Model):
 
     Parameters
     ----------
+    id : int
+        Unique identifier for the academic year/link combo
     year : int
         Academic year (e.g., 2021)
     link : URLField
         URL link to course catalog
     """
 
-    year = models.IntegerField(primary_key=True, validators=[MinValueValidator(1900)])
+    id = models.AutoField(primary_key=True)
+    year = models.IntegerField(validators=[MinValueValidator(1900)])
     link = models.URLField(max_length=200, help_text="Link to course catalog")
 
     def __str__(self):

@@ -136,7 +136,7 @@ class Command(BaseCommand):
                 course, _ = Course.objects.update_or_create(
                     id=course_data["id"],
                     defaults={
-                        "courseLink": course_data.get("link", ""),
+                        "courseLink": course_data.get("courseLink", ""),
                         "courseName": course_data["courseName"],
                         "credits": course_data.get("credits", 4),
                         "courseDescription": course_data["descriptionText"],
@@ -153,7 +153,7 @@ class Command(BaseCommand):
                 course.janOfferings.set(janOfferings)
 
                 overGuide, _ = OverGuidelines.objects.update_or_create(
-                    course=course,
+                    myCourse=course,
                     defaults={
                         "text": course_data.get("overGuidelines", {}).get("text", ""),
                         "prefForMajor": course_data.get("overGuidelines", {}).get(
@@ -189,7 +189,7 @@ class Command(BaseCommand):
                     )
                     section, _ = Section.objects.update_or_create(
                         section_number=section_number,
-                        course=course,
+                        myCourse=course,
                         defaults={
                             "days": section_data["daysOfWeek"],
                             "start_time": parse_time(section_data["startTime"]),

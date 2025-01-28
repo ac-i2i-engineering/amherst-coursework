@@ -148,7 +148,7 @@ class OverGuidelines(models.Model):
 
     Parameters
     ----------
-    course : ForeignKey
+    myCourse : ForeignKey
         Course this overenrollment guideline is for
     text : str
         Instructions for handling overenrollment
@@ -166,7 +166,7 @@ class OverGuidelines(models.Model):
         Enrollment cap for seniors
     """
 
-    course = models.ForeignKey("Course", on_delete=models.CASCADE)
+    myCourse = models.ForeignKey("Course", on_delete=models.CASCADE, default=None)
     text = models.TextField()
     prefForMajor = models.BooleanField(default=False)
     overallCap = models.PositiveIntegerField(default=0)
@@ -303,7 +303,7 @@ class Section(models.Model):
     ----------
     section_number: int
         The section number
-    course : ForeignKey
+    myCourse : ForeignKey
         Course this section is for
     days : str
         Days of the week the section meets
@@ -320,9 +320,13 @@ class Section(models.Model):
     section_number = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(99)],
         help_text="Section number",
+        default=1,
     )
-    course = models.ForeignKey(
-        "Course", on_delete=models.CASCADE, related_name="sections"
+    myCourse = models.ForeignKey(
+        "Course",
+        on_delete=models.CASCADE,
+        related_name="course_sections",
+        default=None,
     )
     days = models.CharField(
         max_length=5,
@@ -352,7 +356,7 @@ class Section(models.Model):
         verbose_name = "Section"
         verbose_name_plural = "Sections"
         ordering = ["days", "start_time"]
-        unique_together = ("course", "section_number")
+        unique_together = ("myCourse", "section_number")
 
 
 class Year(models.Model):

@@ -164,7 +164,8 @@ def parse_course_first_deg(html_content, course_url) -> Optional[str]:
                 if "https" not in link:
                     link = "https://www.amherst.edu" + link
                 departments[a.text.strip()] = link
-            acronyms = re.findall(r'[A-Z]+-\d+', dept_p.text)
+        
+            acronyms = re.findall(r'[A-Z]+-\d+[A-Z]?', dept_p.text)
             
             if not departments:
                 logger.warning("No departments found in department section")
@@ -340,6 +341,7 @@ def save_incremental_results(output_path: str, all_courses: Dict):
     logger.info(f"Saved incremental results to {output_path}")
 
 def parse_all_courses(testing_mode: bool = False):
+
     """Parse all course pages using parse_course_first_deg."""
     output_path = 'course_catelogue_scraper/parsing_results/parsed_courses_detailed.json'
     failed_urls = []
@@ -404,6 +406,80 @@ def parse_all_courses(testing_mode: bool = False):
     except Exception as e:
         logger.error(f"Error parsing courses: {e}")
         return {}
+
+def parse_course_second_deg(course_data: dict) -> dict:
+    """Extract additional information from course materials pages."""
+    session = create_session()
+    sections_info = {}
+    
+    # Process each materials link as a separate section
+    for idx, link in enumerate(course_data.get("course_materials_links", []), 1):
+        section_num = str(idx)
+        sections_info[section_num] = {"instructor": None}
+        
+        try:
+            success, content = fetch_url_with_retry(link, session)
+            if not success:
+                logger.warning(f"Failed to fetch materials link: {link}")
+                continue
+                
+            soup = BeautifulSoup(content, 'html.parser')
+            instructor = soup.find('span')
+            print(instructor)
+            
+            # Find instructor info in the course-container-label div
+            instructor_span = soup.find('span', class_='course-instructor')
+            if instructor_span:
+                instructor_name = instructor_span.text.strip()
+                instructor_name = instructor_name.replace('Instructor', '').strip()
+                sections_info[section_num]["instructor"] = instructor_name
+            else:
+                logger.warning(f"No instructor found for section {section_num}")
+                
+        except Exception as e:
+            logger.error(f"Error processing materials link {link}: {e}")
+            continue
+            
+    # Add sections info to course data
+    course_data["sections"] = sections_info
+    return course_data
+
+def process_all_courses_second_deg(testing_mode: bool = False):
+    """Process all courses with second degree parsing."""
+    output_path = 'course_catelogue_scraper/parsing_results/2nd_deg_parsed_courses.json'
+    
+    try:
+        # Read first degree parsed data
+        with open('course_catelogue_scraper/parsing_results/parsed_courses_detailed.json', 'r') as f:
+            departments = json.load(f)
+            
+        total_depts = len(departments)
+        processed_depts = 0
+            
+        # Process each department's courses
+        for dept_name, courses in departments.items():
+            processed_depts += 1
+            logger.info(f"Processing department {processed_depts}/{total_depts}: {dept_name}")
+            
+            total_courses = len(courses)
+            for i, course in enumerate(courses):
+                logger.info(f"Processing course {i+1}/{total_courses} in {dept_name}")
+                courses[i] = parse_course_second_deg(course)
+                
+                # Save incrementally in testing mode
+                if testing_mode:
+                    with open(output_path, 'w') as f:
+                        json.dump(departments, f, indent=4)
+                    logger.info(f"Saved incremental results to {output_path}")
+                
+        # Save final results
+        with open(output_path, 'w') as f:
+            json.dump(departments, f, indent=4)
+        logger.info(f"Saved final second degree results to {output_path}")
+        
+    except Exception as e:
+        logger.error(f"Error in second degree processing: {e}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse Amherst College course catalog')

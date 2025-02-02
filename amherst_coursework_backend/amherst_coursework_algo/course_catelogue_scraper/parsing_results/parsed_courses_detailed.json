@@ -1077,7 +1077,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/SOCI/SOCI-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "SOCI-499"
+                "SOCI-499D"
             ],
             "divisions": [
                 "Humanities",
@@ -1545,7 +1545,7 @@
             "course_name": "Senior Departmental Honors.",
             "course_acronyms": [
                 "ARCH-499",
-                "ARCH-499"
+                "ARCH-499D"
             ],
             "divisions": [
                 "Arts",
@@ -1586,7 +1586,7 @@
             "course_name": "Senior Departmental Honors.",
             "course_acronyms": [
                 "ARCH-499",
-                "ARCH-499"
+                "ARCH-499D"
             ],
             "divisions": [
                 "Arts",
@@ -3917,7 +3917,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-209H-2425S",
             "course_name": "Conquering Kanji I",
             "course_acronyms": [
-                "JAPA-209"
+                "JAPA-209H"
             ],
             "divisions": [
                 "Arts",
@@ -3964,7 +3964,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-210H-2425S",
             "course_name": "Conquering Kanji II",
             "course_acronyms": [
-                "JAPA-210"
+                "JAPA-210H"
             ],
             "divisions": [
                 "Arts",
@@ -4011,11 +4011,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4051,11 +4051,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4189,11 +4189,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4229,11 +4229,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4461,11 +4461,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4501,11 +4501,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/JAPA/JAPA-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390",
+                "JAPA-390H",
                 "JAPA-290",
                 "JAPA-490",
-                "JAPA-290",
-                "JAPA-490",
+                "JAPA-290H",
+                "JAPA-490H",
                 "JAPA-390"
             ],
             "divisions": [
@@ -4657,7 +4657,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BCBP-499",
-                "BCBP-499"
+                "BCBP-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -4682,7 +4682,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BCBP-499",
-                "BCBP-499"
+                "BCBP-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -4772,7 +4772,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-181L-2425S",
             "course_name": "Adaptation &amp; Organism Lab",
             "course_acronyms": [
-                "BIOL-181"
+                "BIOL-181L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -4839,7 +4839,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-191L-2425S",
             "course_name": "Molecules, Genes, &amp; Cells Lab",
             "course_acronyms": [
-                "BIOL-191"
+                "BIOL-191L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -4993,7 +4993,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-275H-2425S",
             "course_name": "Evolutionary Ecology Laboratory",
             "course_acronyms": [
-                "BIOL-275"
+                "BIOL-275H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -5021,11 +5021,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5078,11 +5078,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5303,11 +5303,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5360,11 +5360,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5580,11 +5580,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5637,11 +5637,11 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/BIOL/BIOL-290H-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "BIOL-390H",
                 "BIOL-290",
                 "BIOL-490",
-                "BIOL-290",
-                "BIOL-490",
-                "BIOL-390",
+                "BIOL-290H",
+                "BIOL-490H",
                 "BIOL-390"
             ],
             "divisions": [
@@ -5695,7 +5695,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BIOL-499",
-                "BIOL-499"
+                "BIOL-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -5726,7 +5726,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BIOL-499",
-                "BIOL-499"
+                "BIOL-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -6438,7 +6438,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BLST-499",
-                "BLST-499"
+                "BLST-499D"
             ],
             "divisions": [
                 "Arts",
@@ -6480,7 +6480,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "BLST-499",
-                "BLST-499"
+                "BLST-499D"
             ],
             "divisions": [
                 "Arts",
@@ -6624,7 +6624,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-151L-2425S",
             "course_name": "Intro Chemistry Lab",
             "course_acronyms": [
-                "CHEM-151"
+                "CHEM-151L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -6701,7 +6701,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-161L-2425S",
             "course_name": "Chemical Principles Lab",
             "course_acronyms": [
-                "CHEM-161"
+                "CHEM-161L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -6757,7 +6757,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-165L-2425S",
             "course_name": "Thermodynmics/Kinetics Lab",
             "course_acronyms": [
-                "CHEM-165"
+                "CHEM-165L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -6823,7 +6823,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-221L-2425S",
             "course_name": "Organic Chemistry I Lab",
             "course_acronyms": [
-                "CHEM-221"
+                "CHEM-221L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -6891,7 +6891,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-231L-2425S",
             "course_name": "Organic Chemistry II Lab",
             "course_acronyms": [
-                "CHEM-231"
+                "CHEM-231L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -7105,7 +7105,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "CHEM-499",
+                "CHEM-499D",
                 "CHEM-499"
             ],
             "divisions": [
@@ -7136,7 +7136,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/CHEM/CHEM-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "CHEM-499",
+                "CHEM-499D",
                 "CHEM-499"
             ],
             "divisions": [
@@ -7878,7 +7878,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/COSC/COSC-111L-2425S",
             "course_name": "Introduction to Computer Science Lab",
             "course_acronyms": [
-                "COSC-111"
+                "COSC-111L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -7957,7 +7957,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/COSC/COSC-112L-2425S",
             "course_name": "Introduction to Computer Science II Lab",
             "course_acronyms": [
-                "COSC-112"
+                "COSC-112L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8263,7 +8263,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ECON/ECON-111F-2425S",
             "course_name": "Intro to Economics Discussion",
             "course_acronyms": [
-                "ECON-111"
+                "ECON-111F"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -8458,10 +8458,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ECON/ECON-390-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ECON-490",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490"
+                "ECON-490",
+                "ECON-490H"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -8696,10 +8696,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ECON/ECON-390-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ECON-490",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490"
+                "ECON-490",
+                "ECON-490H"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -8943,10 +8943,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ECON/ECON-390-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ECON-490",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490"
+                "ECON-490",
+                "ECON-490H"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -8991,10 +8991,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ECON/ECON-390-2425S",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ECON-490",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490"
+                "ECON-490",
+                "ECON-490H"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -9529,7 +9529,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "EDST-499",
-                "EDST-499"
+                "EDST-499D"
             ],
             "divisions": [
                 "Arts",
@@ -9558,7 +9558,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "EDST-499",
-                "EDST-499"
+                "EDST-499D"
             ],
             "divisions": [
                 "Arts",
@@ -11051,7 +11051,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ENST/ENST-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "ENST-499",
+                "ENST-499D",
                 "ENST-499"
             ],
             "divisions": [
@@ -11091,7 +11091,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ENST/ENST-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "ENST-499",
+                "ENST-499D",
                 "ENST-499"
             ],
             "divisions": [
@@ -11479,7 +11479,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "EUST-499",
-                "EUST-499"
+                "EUST-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -11517,7 +11517,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "EUST-499",
-                "EUST-499"
+                "EUST-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -12305,7 +12305,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/FREN/FREN-410H-2425S",
             "course_name": "French in Practice for Senior Majors",
             "course_acronyms": [
-                "FREN-410"
+                "FREN-410H"
             ],
             "divisions": [
                 "Humanities",
@@ -12452,7 +12452,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/GEOL/GEOL-200H-2425S",
             "course_name": "Geology Field Trip",
             "course_acronyms": [
-                "GEOL-200"
+                "GEOL-200H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -12604,7 +12604,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "GEOL-499",
-                "GEOL-499"
+                "GEOL-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -12637,7 +12637,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "GEOL-499",
-                "GEOL-499"
+                "GEOL-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -13863,7 +13863,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "HIST-499",
-                "HIST-499"
+                "HIST-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -13901,7 +13901,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "HIST-499",
-                "HIST-499"
+                "HIST-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -15758,7 +15758,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "STAT-499",
-                "STAT-499"
+                "STAT-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -15783,7 +15783,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "STAT-499",
-                "STAT-499"
+                "STAT-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -15933,7 +15933,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-129H-2425S",
             "course_name": "Glee Club",
             "course_acronyms": [
-                "MUSI-129"
+                "MUSI-129H"
             ],
             "divisions": [
                 "Arts",
@@ -15962,7 +15962,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-139H-2425S",
             "course_name": "Beginning Voice Class",
             "course_acronyms": [
-                "MUSI-139"
+                "MUSI-139H"
             ],
             "divisions": [
                 "Arts",
@@ -16045,7 +16045,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-230H-2425S",
             "course_name": "Jazz Ensemble",
             "course_acronyms": [
-                "MUSI-230"
+                "MUSI-230H"
             ],
             "divisions": [
                 "Arts",
@@ -16073,7 +16073,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-231H-2425S",
             "course_name": "Jazz Combo",
             "course_acronyms": [
-                "MUSI-231"
+                "MUSI-231H"
             ],
             "divisions": [
                 "Arts",
@@ -16132,7 +16132,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-232H-2425S",
             "course_name": "Symphony Orchestra",
             "course_acronyms": [
-                "MUSI-232"
+                "MUSI-232H"
             ],
             "divisions": [
                 "Arts",
@@ -16161,7 +16161,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-233H-2425S",
             "course_name": "Chamber Music Performance",
             "course_acronyms": [
-                "MUSI-233"
+                "MUSI-233H"
             ],
             "divisions": [
                 "Arts",
@@ -16190,7 +16190,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSI/MUSI-239H-2425S",
             "course_name": "Concert Choir",
             "course_acronyms": [
-                "MUSI-239"
+                "MUSI-239H"
             ],
             "divisions": [
                 "Arts",
@@ -16454,7 +16454,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "MUSI-499",
-                "MUSI-499"
+                "MUSI-499D"
             ],
             "divisions": [
                 "Arts",
@@ -16491,7 +16491,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "MUSI-499",
-                "MUSI-499"
+                "MUSI-499D"
             ],
             "divisions": [
                 "Arts",
@@ -16527,7 +16527,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-151H-2425S",
             "course_name": "Classical Piano Performance Instruction",
             "course_acronyms": [
-                "MUSL-151"
+                "MUSL-151H"
             ],
             "divisions": [
                 "Arts"
@@ -16569,7 +16569,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-152H-2425S",
             "course_name": "Classical Voice Performance Instruction",
             "course_acronyms": [
-                "MUSL-152"
+                "MUSL-152H"
             ],
             "divisions": [
                 "Arts"
@@ -16610,7 +16610,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-153H-2425S",
             "course_name": "Violin Performance Instruction",
             "course_acronyms": [
-                "MUSL-153"
+                "MUSL-153H"
             ],
             "divisions": [
                 "Arts"
@@ -16652,7 +16652,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-154H-2425S",
             "course_name": "Viola Instruction",
             "course_acronyms": [
-                "MUSL-154"
+                "MUSL-154H"
             ],
             "divisions": [
                 "Arts"
@@ -16692,7 +16692,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-155H-2425S",
             "course_name": "Trumpet Performance Instruction",
             "course_acronyms": [
-                "MUSL-155"
+                "MUSL-155H"
             ],
             "divisions": [
                 "Arts"
@@ -16732,7 +16732,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-156H-2425S",
             "course_name": "Drumset Performance Instruction",
             "course_acronyms": [
-                "MUSL-156"
+                "MUSL-156H"
             ],
             "divisions": [
                 "Arts"
@@ -16772,7 +16772,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-157H-2425S",
             "course_name": "Saxophone Performance Instruction",
             "course_acronyms": [
-                "MUSL-157"
+                "MUSL-157H"
             ],
             "divisions": [
                 "Arts"
@@ -16812,7 +16812,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-158H-2425S",
             "course_name": "French Horn Performance Instruction",
             "course_acronyms": [
-                "MUSL-158"
+                "MUSL-158H"
             ],
             "divisions": [
                 "Arts"
@@ -16852,7 +16852,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-159H-2425S",
             "course_name": "Clarinet Performance Instruction",
             "course_acronyms": [
-                "MUSL-159"
+                "MUSL-159H"
             ],
             "divisions": [
                 "Arts"
@@ -16892,7 +16892,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-160H-2425S",
             "course_name": "Cello Performance Instruction",
             "course_acronyms": [
-                "MUSL-160"
+                "MUSL-160H"
             ],
             "divisions": [
                 "Arts"
@@ -16932,7 +16932,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-161H-2425S",
             "course_name": "Classical Guitar Performance Instruction",
             "course_acronyms": [
-                "MUSL-161"
+                "MUSL-161H"
             ],
             "divisions": [
                 "Arts"
@@ -16972,7 +16972,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-162H-2425S",
             "course_name": "String Bass Performance Instruction",
             "course_acronyms": [
-                "MUSL-162"
+                "MUSL-162H"
             ],
             "divisions": [
                 "Arts"
@@ -17012,7 +17012,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-163H-2425S",
             "course_name": "Flute Performance Instruction",
             "course_acronyms": [
-                "MUSL-163"
+                "MUSL-163H"
             ],
             "divisions": [
                 "Arts"
@@ -17052,7 +17052,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-168H-2425S",
             "course_name": "Jazz Piano Performance Instruction",
             "course_acronyms": [
-                "MUSL-168"
+                "MUSL-168H"
             ],
             "divisions": [
                 "Arts"
@@ -17093,7 +17093,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-169H-2425S",
             "course_name": "Jazz Voice Performance Instruction",
             "course_acronyms": [
-                "MUSL-169"
+                "MUSL-169H"
             ],
             "divisions": [
                 "Arts"
@@ -17133,7 +17133,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-170H-2425S",
             "course_name": "Jazz Guitar Performance Instruction",
             "course_acronyms": [
-                "MUSL-170"
+                "MUSL-170H"
             ],
             "divisions": [
                 "Arts"
@@ -17173,7 +17173,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-171H-2425S",
             "course_name": "Jazz Bass Performance Instruction",
             "course_acronyms": [
-                "MUSL-171"
+                "MUSL-171H"
             ],
             "divisions": [
                 "Arts"
@@ -17213,7 +17213,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-172H-2425S",
             "course_name": "Bassoon Performance Instruction",
             "course_acronyms": [
-                "MUSL-172"
+                "MUSL-172H"
             ],
             "divisions": [
                 "Arts"
@@ -17253,7 +17253,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-175H-2425S",
             "course_name": "Trombone Performance Instruction",
             "course_acronyms": [
-                "MUSL-175"
+                "MUSL-175H"
             ],
             "divisions": [
                 "Arts"
@@ -17293,7 +17293,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-176H-2425S",
             "course_name": "Harp Performance Instruction",
             "course_acronyms": [
-                "MUSL-176"
+                "MUSL-176H"
             ],
             "divisions": [
                 "Arts"
@@ -17333,7 +17333,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-177H-2425S",
             "course_name": "Oboe Performance Instruction",
             "course_acronyms": [
-                "MUSL-177"
+                "MUSL-177H"
             ],
             "divisions": [
                 "Arts"
@@ -17373,7 +17373,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-178H-2425S",
             "course_name": "Orchestral Percussion Performance Instruction",
             "course_acronyms": [
-                "MUSL-178"
+                "MUSL-178H"
             ],
             "divisions": [
                 "Arts"
@@ -17413,7 +17413,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-181H-2425S",
             "course_name": "Improvisation Performance Instruction",
             "course_acronyms": [
-                "MUSL-181"
+                "MUSL-181H"
             ],
             "divisions": [
                 "Arts"
@@ -17453,8 +17453,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-182H-2425S",
             "course_name": "Digital Music Production and Recording",
             "course_acronyms": [
-                "MUSL-182",
-                "THDA-182"
+                "MUSL-182H",
+                "THDA-182H"
             ],
             "divisions": [
                 "Arts"
@@ -17706,7 +17706,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "NEUR-499",
-                "NEUR-499"
+                "NEUR-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -17738,7 +17738,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "NEUR-499",
-                "NEUR-499"
+                "NEUR-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -18062,7 +18062,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ASTR/ASTR-200L-2425S",
             "course_name": "Intro to Data Science Lab",
             "course_acronyms": [
-                "ASTR-200"
+                "ASTR-200L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -18197,7 +18197,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/PHYS/PHYS-116L-2425S",
             "course_name": "Mechanics Lab",
             "course_acronyms": [
-                "PHYS-116"
+                "PHYS-116L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -18268,7 +18268,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/PHYS/PHYS-117L-2425S",
             "course_name": "Eletromagnetism Lab",
             "course_acronyms": [
-                "PHYS-117"
+                "PHYS-117L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -18330,7 +18330,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/PHYS/PHYS-124L-2425S",
             "course_name": "Maxwellian Synthesis Lab",
             "course_acronyms": [
-                "PHYS-124"
+                "PHYS-124L"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -18530,7 +18530,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/PHYS/PHYS-499D-2425S",
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
-                "PHYS-499"
+                "PHYS-499D"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -19244,7 +19244,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "POSC-499",
-                "POSC-499"
+                "POSC-499D"
             ],
             "divisions": [
                 "Social Sciences"
@@ -19280,7 +19280,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "POSC-499",
-                "POSC-499"
+                "POSC-499D"
             ],
             "divisions": [
                 "Social Sciences"
@@ -19896,7 +19896,7 @@
             "course_name": "Senior honors",
             "course_acronyms": [
                 "PSYC-499",
-                "PSYC-499",
+                "PSYC-499D",
                 "PSYC-498"
             ],
             "divisions": [
@@ -19936,7 +19936,7 @@
             "course_name": "Senior honors",
             "course_acronyms": [
                 "PSYC-499",
-                "PSYC-499",
+                "PSYC-499D",
                 "PSYC-498"
             ],
             "divisions": [
@@ -19976,7 +19976,7 @@
             "course_name": "Senior honors",
             "course_acronyms": [
                 "PSYC-499",
-                "PSYC-499",
+                "PSYC-499D",
                 "PSYC-498"
             ],
             "divisions": [
@@ -20296,7 +20296,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "RELI-499",
-                "RELI-499"
+                "RELI-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -20332,7 +20332,7 @@
             "course_name": "Senior Honors",
             "course_acronyms": [
                 "RELI-499",
-                "RELI-499"
+                "RELI-499D"
             ],
             "divisions": [
                 "Humanities"
@@ -20524,7 +20524,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/RUSS/RUSS-304H-2425S",
             "course_name": "Advanced Intermediate Conversation and Composition",
             "course_acronyms": [
-                "RUSS-304"
+                "RUSS-304H"
             ],
             "divisions": [
                 "Humanities",
@@ -21315,7 +21315,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "SWAG-499",
-                "SWAG-499"
+                "SWAG-499D"
             ],
             "divisions": [
                 "Humanities",
@@ -21351,7 +21351,7 @@
             "course_name": "Senior Departmental Honors",
             "course_acronyms": [
                 "SWAG-499",
-                "SWAG-499"
+                "SWAG-499D"
             ],
             "divisions": [
                 "Humanities",
@@ -21818,7 +21818,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-119H-2425S",
             "course_name": "Dance Technique: Contact Improvisation",
             "course_acronyms": [
-                "THDA-119"
+                "THDA-119H"
             ],
             "divisions": [
                 "Arts",
@@ -21868,7 +21868,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-140H-2425S",
             "course_name": "Dance Technique: Introduction to Waacking/Punking: Dance, Elegance, and Cultural Rebellion",
             "course_acronyms": [
-                "THDA-140"
+                "THDA-140H"
             ],
             "divisions": [
                 "Arts",
@@ -21891,7 +21891,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-142H-2425S",
             "course_name": "Dance Technique: Introduction to Contemporary Dance",
             "course_acronyms": [
-                "THDA-142"
+                "THDA-142H"
             ],
             "divisions": [
                 "Arts",
@@ -21949,8 +21949,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/MUSL/MUSL-182H-2425S",
             "course_name": "Digital Music Production and Recording",
             "course_acronyms": [
-                "MUSL-182",
-                "THDA-182"
+                "MUSL-182H",
+                "THDA-182H"
             ],
             "divisions": [
                 "Arts"
@@ -21977,7 +21977,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-220H-2425S",
             "course_name": "Dance Technique: Intermediate/Advanced Ballet",
             "course_acronyms": [
-                "THDA-220"
+                "THDA-220H"
             ],
             "divisions": [
                 "Arts"
@@ -22001,7 +22001,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-225H-2425S",
             "course_name": "The Craft of Speaking II: Spoken Expression",
             "course_acronyms": [
-                "THDA-225"
+                "THDA-225H"
             ],
             "divisions": [
                 "Arts",
@@ -22233,7 +22233,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-400H-2425S",
             "course_name": "Production Studio",
             "course_acronyms": [
-                "THDA-400"
+                "THDA-400H"
             ],
             "divisions": [
                 "Arts",
@@ -22368,7 +22368,7 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/THDA/THDA-499D-2425S",
             "course_name": "Senior Honors",
             "course_acronyms": [
-                "THDA-499"
+                "THDA-499D"
             ],
             "divisions": [
                 "Arts",

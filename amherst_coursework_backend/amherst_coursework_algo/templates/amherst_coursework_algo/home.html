@@ -1,0 +1,34 @@
+{% extends "amherst_coursework_algo/base.html" %}
+{% block content %}
+<div class = "page-container">
+    <div class = "main-content">
+        <div class="container">
+            <h1>Amherst College Course Catalog</h1>
+            <div class="course-list">
+                {% for course in courses %}
+                    <div class="course-card">
+                        <h2>{{ course.courseName }}</h2>
+                        <p>Credits: {{ course.credits }}</p>
+                        <p>Department: 
+                            {% for dept in course.department.all %}
+                                {{ dept.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% if course.courseLink %}
+                            <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
+                        {% endif %}
+                        <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div id="side-panel" class="side-panel">
+        <button class="close-panel" onclick="togglePanel()">×</button>
+        <div id="panel-content">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+</div>
+{% endblock %}

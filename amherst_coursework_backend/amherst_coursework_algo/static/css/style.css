@@ -1,0 +1,86 @@
+/* amherst_coursework_algo/static/css/style.css */
+body .course-card {
+    border: 1px solid #868686;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.button {
+    background-color: #441f7e;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+/* style.css */
+.page-container {
+    display: flex;          /* Creates side-by-side layout */
+    width: 100%;
+    min-height: 100vh;
+    position: relative;     /* For child positioning */
+    overflow-x: hidden;     /* Prevent horizontal scroll */
+}
+
+.main-content {
+    flex: 1;               /* Takes available space */
+    transition: margin 0.3s ease;
+    margin-right: 0;       /* Initial state */
+}
+
+.side-panel {
+    position: fixed;       /* Fix panel to viewport */
+    top: 0;
+    right: 0;             /* Align to right */
+    height: 100vh;        /* Full height */
+    width: 0;             /* Hidden initially */
+    background: #fff;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;     /* Scroll if content is tall */
+    transition: width 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
+
+.side-panel.open {
+    width: 40%;           /* Panel width when open */
+}
+
+.close-panel {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.panel-button {
+    background: #b7a5d3;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.panel-content {
+    padding: 20px;        /* Inner spacing */
+    width: 100%;
+    box-sizing: border-box;
+}
+.standard-paragraph {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 20px 20px;
+}

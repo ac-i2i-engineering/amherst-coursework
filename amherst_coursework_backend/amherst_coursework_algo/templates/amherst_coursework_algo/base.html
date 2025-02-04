@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Amherst Course Catalog</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <script>
+    function togglePanel(courseId = null) {
+        const panel = document.getElementById('side-panel');
+    
+        if (courseId) {
+            if(!panel.classList.contains('open')) {
+                panel.classList.toggle('open');
+            }
+            // Load course details into panel
+            fetch(`/details/${courseId}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }) 
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('panel-content').innerHTML = html;
+                });
+        }
+        else {
+            panel.classList.toggle('open');
+        }
+    }
+    </script>
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

@@ -163,8 +163,9 @@ class Command(BaseCommand):
 
         for course_data in courses_data:
             try:
-                if not (1000000 <= course_data.get("id", 0) <= 9999999):
-                    raise ValueError(f"Invalid course ID: {course_data.get('id')}")
+                courseID = course_data.get("id", 0)
+                if (courseID > 9999999 or courseID < 0):
+                    raise ValueError(f"Invalid course ID: {courseID}")
 
                 departments = []
                 deptList = course_data.get("deptNames", [])
@@ -344,3 +345,4 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.ERROR(f"Failed to create course: {str(e)}")
                 )
+                raise

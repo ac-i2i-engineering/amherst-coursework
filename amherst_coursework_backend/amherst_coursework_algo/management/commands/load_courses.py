@@ -1,5 +1,111 @@
-# amherst_coursework_algo/management/commands/load_courses.py
 from django.core.management.base import BaseCommand
+
+"""A Django management command to load course data from a JSON file into the database.
+
+This command reads course data from a specified JSON file and creates/updates corresponding
+database records for courses and their related entities (departments, professors, sections, etc.).
+
+Usage:
+    python manage.py load_courses <path_to_json_file>
+
+Args:
+    json_file (str): Path to the JSON file containing course data. The JSON should contain an array
+                     of course objects with fields matching the Course model structure.
+
+Example:
+    python manage.py load_courses courses.json
+
+JSON Format Requirements:
+    - Each course object must have:
+        - id (int): Between 1000000 and 9999999 
+        - courseName (str): Name of the course
+        - descriptionText (str): Course description
+    - Optional fields include:
+        - deptNames (list): List of department names
+        - deptLinks (list): List of department links
+        - courseCodes (list): List of course codes
+        - prerequisites (dict): Course prerequisites information
+        - corequisites (list): List of corequisite course IDs
+        - profNames (list): List of professor names
+        - profLinks (list): List of professor links
+        - offerings (dict): Course offerings by term
+        - sections (dict): Section information
+        - overGuidelines (dict): Enrollment guidelines
+
+Example JSON:
+[
+    {
+    "id": 5140111,
+    "courseLink" : "amherst.edu",
+    "courseName": "Intro to Comp Sci I",
+    "courseCodes": ["COSC111"],
+    "categories": ["programming", "computer science", "java"],
+    "deptNames": ["Computer Science"],
+    "deptLinks": [
+        "https://www.amherst.edu/academiclife/departments/computer_science"
+    ],
+    "descriptionText": "This course introduces ideas and techniques that are fundamental to computer science. The course emphasizes procedural abstraction, algorithmic methods, and structured design techniques. Students will gain a working knowledge of a block-structured programming language and will use the language to solve a variety of problems illustrating ideas in computer science. A selection of other elementary topics will be presented. A laboratory section will meet once a week to give students practice with programming constructs.",
+    "overGuidelines": {
+        "text": "Preference to first-year and sophomore students.",
+        "preferenceForMajors": false,
+        "overallCap": 40,
+        "freshmanCap": 40,
+        "sophomoreCap": 20,
+        "juniorCap": 20,
+        "seniorCap": 20
+    },
+    "credits": 4,
+    "prerequisites": {
+        "text": "none",
+        "required": [],
+        "recommended": [],
+        "profPermOver": false
+    },
+    "corequisites": [5141111],
+    "profNames": ["Lillian Pentecost", "Matteo Riondato"],
+    "profLinks": [
+        "https://www.amherst.edu/people/facstaff/lpentecost",
+        "https://www.amherst.edu/people/facstaff/mriondato"
+    ],
+    "sections": {
+        "01": {
+        "daysOfWeek": "MWF",
+        "startTime": "09:00:00",
+        "endTime": "09:50:00",
+        "location": "SCCEA131",
+        "profName": "Lillian Pentecost"
+        },
+        "02": {
+        "daysOfWeek": "MWF",
+        "startTime": "13:00:00",
+        "endTime": "13:50:00",
+        "location": "SCCEA011",
+        "profName": "Matteo Riondato"
+        }
+    },
+    "offerings": {
+        "fall": [2019, 2022, 2023],
+        "fallLinks": [
+        "https://www.amherst.edu/academiclife/departments/courses/1920F/COSC/COSC-111-1920F",
+        "https://www.amherst.edu/academiclife/departments/courses/2223F/COSC/COSC-111-2223F",
+        "https://www.amherst.edu/academiclife/departments/courses/2324F/COSC/COSC-111-2324F"
+        ],
+        "spring": [2023, 2024],
+        "springLinks": [
+        "https://www.amherst.edu/academiclife/departments/courses/2223S/COSC/COSC-111-2223S",
+        "https://www.amherst.edu/academiclife/departments/courses/2324S/COSC/COSC-111-2324S"
+        ],
+        "january": [],
+        "januaryLinks": []
+    }
+    }
+]
+
+Notes:
+    - Uses Django's atomic transaction to ensure database consistency
+    - Will create new records or update existing ones based on primary keys
+    - Logs success/failure messages for each course processed
+"""
 from django.utils.dateparse import parse_time
 from django.db import transaction
 from amherst_coursework_algo.models import (

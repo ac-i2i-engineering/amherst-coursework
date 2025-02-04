@@ -1,4 +1,18 @@
 from django.core.management.base import BaseCommand
+from django.utils.dateparse import parse_time
+from django.db import transaction
+from amherst_coursework_algo.models import (
+    Course,
+    Department,
+    CourseCode,
+    OverGuidelines,
+    Prerequisites,
+    PrerequisiteSet,
+    Professor,
+    Section,
+    Year,
+)
+import json
 
 """A Django management command to load course data from a JSON file into the database.
 
@@ -106,20 +120,6 @@ Notes:
     - Will create new records or update existing ones based on primary keys
     - Logs success/failure messages for each course processed
 """
-from django.utils.dateparse import parse_time
-from django.db import transaction
-from amherst_coursework_algo.models import (
-    Course,
-    Department,
-    CourseCode,
-    OverGuidelines,
-    Prerequisites,
-    PrerequisiteSet,
-    Professor,
-    Section,
-    Year,
-)
-import json
 
 
 class Command(BaseCommand):
@@ -127,6 +127,33 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("json_file", type=str, help="Path to JSON file")
+
+    """
+        Process and load course data from a JSON file into the database.
+        This method handles the creation and updating of course-related records in the database,
+        including departments, course codes, prerequisites, professors, and course offerings.
+        Args:
+            *args: Variable length argument list.
+            **options: Arbitrary keyword arguments. Must contain 'json_file' key with path to JSON data.
+        Returns:
+            None
+        Raises:
+            ValueError: If course ID is invalid (not between 1000000 and 9999999).
+            Exception: If any error occurs during course creation/update process.
+        The method performs the following operations:
+        1. Reads course data from JSON file
+        2. For each course:
+            - Validates course ID
+            - Creates/updates department records
+            - Creates/updates course codes
+            - Processes prerequisites (recommended, required, and placement courses)
+            - Creates/updates professor records
+            - Processes course offerings (fall, spring, and January terms)
+            - Creates/updates the main course record
+            - Creates/updates over-enrollment guidelines
+            - Creates/updates course sections
+        Success/failure messages are written to stdout using Django's management command styling.
+        """
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -139,7 +166,6 @@ class Command(BaseCommand):
                 if not (1000000 <= course_data.get("id", 0) <= 9999999):
                     raise ValueError(f"Invalid course ID: {course_data.get('id')}")
 
-                # Create or get departments
                 departments = []
                 deptList = course_data.get("deptNames", [])
                 deptLinks = course_data.get("deptLinks", [])

@@ -164,7 +164,7 @@ class Command(BaseCommand):
         for course_data in courses_data:
             try:
                 courseID = course_data.get("id", 0)
-                if (courseID > 9999999 or courseID < 0):
+                if courseID > 9999999 or courseID < 0:
                     raise ValueError(f"Invalid course ID: {courseID}")
 
                 departments = []

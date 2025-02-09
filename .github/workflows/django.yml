@@ -36,6 +36,10 @@ jobs:
       working-directory: ./amherst_coursework_backend
       run: |
         pytest --cov --cov-fail-under=85
+    - name: Test Load Command
+      working-directory: ./amherst_coursework_backend
+      run: |
+        python manage.py load_courses ./test.json
     - name: Coveralls Workflow
       working-directory: ./amherst_coursework_backend
       run: |

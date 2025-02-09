@@ -57,7 +57,7 @@ class Course(models.Model):
         Enrollment cap for seniors
     credits : int
         Number of course credits (2 or 4)
-    description : TextField
+    prereqDescription : TextField
         Description of prerequisites
     required_courses : ManyToManyField
         Required prerequisite course sets
@@ -105,7 +105,7 @@ class Course(models.Model):
     credits = models.IntegerField(
         default=4, choices=[(2, "2 credits"), (4, "4 credits")]
     )
-    description = models.TextField(
+    prereqDescription = models.TextField(
         blank=True, help_text="Text description of prerequisites"
     )
     required_courses = models.ManyToManyField(

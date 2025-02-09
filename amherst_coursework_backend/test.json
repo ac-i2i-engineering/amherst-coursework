@@ -1,0 +1,122 @@
+[{
+  "id": 5140111,
+  "courseLink" : "amherst.edu",
+  "courseName": "Intro to Comp Sci I",
+  "courseCodes": ["COSC111"],
+  "categories": ["programming", "computer science", "java"],
+  "deptNames": ["Computer Science"],
+  "deptLinks": [
+    "https://www.amherst.edu/academiclife/departments/computer_science"
+  ],
+  "descriptionText": "This course introduces ideas and techniques that are fundamental to computer science. The course emphasizes procedural abstraction, algorithmic methods, and structured design techniques. Students will gain a working knowledge of a block-structured programming language and will use the language to solve a variety of problems illustrating ideas in computer science. A selection of other elementary topics will be presented. A laboratory section will meet once a week to give students practice with programming constructs.",
+  "overGuidelines": {
+    "text": "Preference to first-year and sophomore students.",
+    "preferenceForMajors": false,
+    "overallCap": 40,
+    "freshmanCap": 40,
+    "sophomoreCap": 20,
+    "juniorCap": 20,
+    "seniorCap": 20
+  },
+  "credits": 4,
+  "prerequisites": {
+    "text": "none",
+    "required": [],
+    "recommended": [],
+    "profPermOver": false
+  },
+  "corequisites": [5141111],
+  "profNames": ["Lillian Pentecost", "Matteo Riondato"],
+  "profLinks": [
+    "https://www.amherst.edu/people/facstaff/lpentecost",
+    "https://www.amherst.edu/people/facstaff/mriondato"
+  ],
+  "sections": {
+    "01": {
+      "daysOfWeek": "MWF",
+      "startTime": "09:00:00",
+      "endTime": "09:50:00",
+      "location": "SCCEA131",
+      "profName": "Lillian Pentecost"
+    },
+    "02": {
+      "daysOfWeek": "MWF",
+      "startTime": "13:00:00",
+      "endTime": "13:50:00",
+      "location": "SCCEA011",
+      "profName": "Matteo Riondato"
+    }
+  },
+  "offerings": {
+    "fall": [2019, 2022, 2023],
+    "fallLinks": [
+      "https://www.amherst.edu/academiclife/departments/courses/1920F/COSC/COSC-111-1920F",
+      "https://www.amherst.edu/academiclife/departments/courses/2223F/COSC/COSC-111-2223F",
+      "https://www.amherst.edu/academiclife/departments/courses/2324F/COSC/COSC-111-2324F"
+    ],
+    "spring": [2023, 2024],
+    "springLinks": [
+      "https://www.amherst.edu/academiclife/departments/courses/2223S/COSC/COSC-111-2223S",
+      "https://www.amherst.edu/academiclife/departments/courses/2324S/COSC/COSC-111-2324S"
+    ],
+    "january": [],
+    "januaryLinks": []
+  }
+},
+{
+  "id": 5101371,
+  "courseName": "Molecular Genetics w/Lab",
+  "courseLink": "https://www.amherst.edu/academiclife/departments/courses/2324S/BIOL/BIOL-371-2324S#:~:text=Molecular%20Genetics%20with%20Lab&text=(Offered%20as%20BIOL%20371%20and,and%20modification%20will%20be%20examined.",
+  "courseCodes": ["BCBP371", "BIOL371"],
+  "deptNames": ["Biochemistry & Biophysics", "Biology"],
+  "deptLinks": [
+    "https://www.amherst.edu/academiclife/departments/biochemistry-biophysics",
+    "https://www.amherst.edu/academiclife/departments/Biology"
+  ],
+  "categories": ["molecular genetics", "biology", "biotechnology", "lab"],
+  "descriptionText": "A study of the molecular mechanisms underlying the transmission and expression of genes. DNA replication and recombination, RNA synthesis and processing, and protein synthesis and modification will be examined. Both prokaryotic and eukaryotic systems will be analyzed, with an emphasis upon the regulation of gene expression. Application of modern molecular methods to biomedical and agricultural problems will also be considered. The laboratory component will focus upon recombinant DNA methodology. Four classroom hours and four hours of laboratory per week.",
+  "overGuidelines": {
+    "text": "Equal preference given to Biology, BCBP, and Neuroscience Majors; additionally, seniors have preference.",
+    "preferenceForMajors": true,
+    "overallCap": 30,
+    "freshmanCap": 0,
+    "sophomoreCap": 10,
+    "juniorCap": 10,
+    "seniorCap": 10
+  },
+  "credits": 4,
+  "prerequisites": {
+    "text": "BIOL 191 or equivalent.",
+    "required": [[5100191]],
+    "recommended": [],
+    "profPermOver": false
+  },
+  "corequisites": [],
+  "profNames": ["Dovey", "Tashjian"],
+  "profLinks": [
+    "https://www.amherst.edu/people/facstaff/dovey",
+    "https://www.amherst.edu/people/facstaff/tashjian"
+  ],
+  "sections": {
+    "01": {
+      "daysOfWeek": "TTh",
+      "startTime": "10:00:00",
+      "endTime": "11:20:00",
+      "location": "TBD",
+      "profName": "Dovey"
+    }
+  },
+  "offerings": {
+    "fall": [2023],
+    "fallLinks": [
+      "https://www.amherst.edu/academiclife/departments/courses/2324F/BCBP/BCBP-371-2324F"
+    ],
+    "spring": [2024],
+    "springLinks": [
+      "https://www.amherst.edu/academiclife/departments/courses/2324S/BCBP/BCBP-371-2324S"
+    ],
+    "january": [],
+    "januaryLinks": []
+  }
+}
+]

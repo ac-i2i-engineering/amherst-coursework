@@ -10,7 +10,7 @@ from amherst_coursework_algo.models import (
     Section,
     Year,
     Division,
-    Keyword
+    Keyword,
 )
 from amherst_coursework_algo.config.course_dictionaries import DEPARTMENT_NAME_TO_NUMBER
 import json
@@ -164,15 +164,14 @@ class Command(BaseCommand):
 
         for course_data in courses_data:
             try:
-                
-                
+
                 divisions = []
                 for division in course_data.get("divisions", []):
                     division, _ = Division.objects.get_or_create(
                         name=division,
                     )
                     divisions.append(division)
-                
+
                 keywords = []
                 for keyword in course_data.get("keywords", []):
                     keyword, _ = Keyword.objects.get_or_create(
@@ -194,13 +193,13 @@ class Command(BaseCommand):
                     dept, _ = Department.objects.get_or_create(
                         name=department,
                         defaults={
-                            "code": codes[i].value.split('-')[0],  # Get department code from course code (assumes departments and course codes are listed in same order)
+                            "code": codes[i].value.split("-")[
+                                0
+                            ],  # Get department code from course code (assumes departments and course codes are listed in same order)
                         },
                     )
                     departments.append(dept)
-                    i+=1
-
-                
+                    i += 1
 
                 recommended = [
                     Course.objects.get_or_create(id=rec)[0]
@@ -223,7 +222,6 @@ class Command(BaseCommand):
                 if placement_id:
                     placementCourse, _ = Course.objects.get_or_create(id=placement_id)
 
-                
                 corequisites = [
                     Course.objects.get_or_create(id=rec)[0]
                     for rec in course_data.get("corequisites", {})
@@ -249,7 +247,7 @@ class Command(BaseCommand):
                         link=link,
                     )
                     term = offering.split()[0]
-                    if term == "Fall":  
+                    if term == "Fall":
                         fallOfferings.append(year)
                     elif term == "Spring":
                         springOfferings.append(year)
@@ -257,24 +255,29 @@ class Command(BaseCommand):
                         janOfferings.append(year)
                     else:
                         self.stdout.write(
-                            self.style.ERROR(f"Failed to create course: {term} is not a valid term")
+                            self.style.ERROR(
+                                f"Failed to create course: {term} is not a valid term"
+                            )
                         )
                         continue
 
-                
-
-                
                 id = 4000000
                 try:
-                    id += DEPARTMENT_NAME_TO_NUMBER[departments[0].name] * 10000 # the second 2 digits are the department number
+                    id += (
+                        DEPARTMENT_NAME_TO_NUMBER[departments[0].name] * 10000
+                    )  # the second 2 digits are the department number
                 except KeyError:
                     self.stdout.write(
-                        self.style.ERROR(f"Failed to create course: {departments[0].name} is not a valid department")
+                        self.style.ERROR(
+                            f"Failed to create course: {departments[0].name} is not a valid department"
+                        )
                     )
                     continue
-                if len(codes[0].value) == 9: id += 1000 # 4th digit is half course flag (0 for full, 1 for half)
-                id += int(codes[0].value[5:8]) # last 3 characters of course code are the course number
-                
+                if len(codes[0].value) == 9:
+                    id += 1000  # 4th digit is half course flag (0 for full, 1 for half)
+                id += int(
+                    codes[0].value[5:8]
+                )  # last 3 characters of course code are the course number
 
                 # Create course
                 course, _ = Course.objects.update_or_create(
@@ -284,11 +287,20 @@ class Command(BaseCommand):
                         "courseName": course_data["course_name"],
                         "credits": course_data.get("credits", 4),
                         "courseDescription": course_data["description"],
-                        "courseMaterialsLink": course_data.get("course_materials_links", [None])[0] or "",
+                        "courseMaterialsLink": course_data.get(
+                            "course_materials_links", [None]
+                        )[0]
+                        or "",
                         "placement_course": placementCourse,
-                        "professor_override": course_data.get("prerequisites", {}).get("professor_override", False),
-                        "prereqDescription": course_data.get("prerequisites", {}).get("text", ""),
-                        "enrollmentText": course_data.get("overGuidelines", {}).get("text", ""),
+                        "professor_override": course_data.get("prerequisites", {}).get(
+                            "professor_override", False
+                        ),
+                        "prereqDescription": course_data.get("prerequisites", {}).get(
+                            "text", ""
+                        ),
+                        "enrollmentText": course_data.get("overGuidelines", {}).get(
+                            "text", ""
+                        ),
                         "prefForMajor": course_data.get("overGuidelines", {}).get(
                             "preferenceForMajor", False
                         ),
@@ -320,7 +332,7 @@ class Command(BaseCommand):
                 course.divisions.set(divisions)
                 course.keywords.set(keywords)
                 course.required_courses.set(required)
-                course.recommended_courses.set(recommended) 
+                course.recommended_courses.set(recommended)
 
                 course.save()
 
@@ -343,7 +355,6 @@ class Command(BaseCommand):
                         },
                     )
                     sections.append(section)
-
 
                 self.stdout.write(
                     self.style.SUCCESS(

@@ -38,5 +38,5 @@ DEPARTMENT_NAME_TO_NUMBER = {
     "Russian": 37,
     "Sexuality Wmn's & Gndr Studies": 38,
     "Spanish": 39,
-    "Theater and Dance": 40
+    "Theater and Dance": 40,
 }

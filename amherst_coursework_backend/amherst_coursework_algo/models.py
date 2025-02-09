@@ -353,11 +353,11 @@ class Keyword(models.Model):
 
     Parameters
     ----------
-    value : str
+    name : str
         The keyword value
     """
 
-    value = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.value
@@ -365,7 +365,7 @@ class Keyword(models.Model):
     class Meta:
         verbose_name = "Keyword"
         verbose_name_plural = "Keywords"
-        ordering = ["value"]
+        ordering = ["name"]
 
 
 class Division(models.Model):

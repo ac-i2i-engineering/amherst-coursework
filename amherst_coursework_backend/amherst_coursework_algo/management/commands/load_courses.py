@@ -180,6 +180,9 @@ class Command(BaseCommand):
                     keywords.append(keyword)
 
                 codes = []
+                if len(course_data.get("course_acronyms", [])) == 0:
+                    raise KeyError("No course codes found for course")
+
                 for code in course_data.get("course_acronyms", []):
                     code, _ = CourseCode.objects.get_or_create(
                         value=code,
@@ -188,6 +191,8 @@ class Command(BaseCommand):
 
                 departments = []
                 deptList = course_data.get("departments", {})
+                if len(deptList) == 0:
+                    raise KeyError("No departments found for course")
                 i = 0
                 for department, link in deptList.items():
                     dept, _ = Department.objects.get_or_create(
@@ -207,15 +212,6 @@ class Command(BaseCommand):
                         "recommended", []
                     )
                 ]
-
-                required = []
-                for reqSet in course_data.get("prerequisites", {}).get("required", []):
-                    prereq_set = PrerequisiteSet.objects.create()
-                    courses = [
-                        Course.objects.get_or_create(id=req)[0] for req in reqSet
-                    ]
-                    prereq_set.courses.set(courses)
-                    required.append(prereq_set)
 
                 placement_id = course_data.get("prerequisites", {}).get("placement")
                 placementCourse = None
@@ -331,8 +327,16 @@ class Command(BaseCommand):
                 course.janOfferings.set(janOfferings)
                 course.divisions.set(divisions)
                 course.keywords.set(keywords)
-                course.required_courses.set(required)
                 course.recommended_courses.set(recommended)
+
+                for reqSet in course_data.get("prerequisites", {}).get("required", []):
+                    prereq_set = PrerequisiteSet.objects.create(
+                        prerequisite_for=course,
+                    )
+                    courses = [
+                        Course.objects.get_or_create(id=req)[0] for req in reqSet
+                    ]
+                    prereq_set.courses.set(courses)
 
                 course.save()
 
@@ -345,7 +349,7 @@ class Command(BaseCommand):
                     )
                     section, _ = Section.objects.update_or_create(
                         section_number=section_number,
-                        myCourse=course,
+                        section_for=course,
                         defaults={
                             "days": section_data["daysOfWeek"],
                             "start_time": parse_time(section_data["startTime"]),
@@ -364,6 +368,8 @@ class Command(BaseCommand):
 
             except Exception as e:
                 self.stdout.write(
-                    self.style.ERROR(f"Failed to create course: {str(e)}")
+                    self.style.ERROR(
+                        f"Failed to create course: {str(e)} for {course_data}"
+                    )
                 )
                 raise

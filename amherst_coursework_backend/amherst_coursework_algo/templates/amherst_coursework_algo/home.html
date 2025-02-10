@@ -10,7 +10,7 @@
                         <h2>{{ course.courseName }}</h2>
                         <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
-                            {% for dept in course.department.all %}
+                            {% for dept in course.departments.all %}
                                 {{ dept.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>

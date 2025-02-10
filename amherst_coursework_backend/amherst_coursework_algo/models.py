@@ -108,9 +108,6 @@ class Course(models.Model):
     prereqDescription = models.TextField(
         blank=True, help_text="Text description of prerequisites"
     )
-    required_courses = models.ManyToManyField(
-        "PrerequisiteSet", blank=True, related_name="required_for"
-    )
     recommended_courses = models.ManyToManyField(
         "Course", blank=True, related_name="recommended_for"
     )
@@ -118,7 +115,11 @@ class Course(models.Model):
         default=False, help_text="Can professor override prerequisites?"
     )
     placement_course = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="placement_for",
     )
     corequisites = models.ManyToManyField("self", blank=True, symmetrical=True)
     professors = models.ManyToManyField("Professor", related_name="courses")
@@ -210,10 +211,18 @@ class PrerequisiteSet(models.Model):
 
     Parameters
     ----------
+    prerequisite_for : ForeignKey
+        Course this set of prerequisites is for
     courses : ManyToManyField
         One set of courses that can be completed to satisfy prerequisites
     """
 
+    prerequisite_for = models.ForeignKey(
+        "Course",
+        on_delete=models.CASCADE,
+        related_name="required_courses",
+        default=None,
+    )
     courses = models.ManyToManyField("Course")
 
     def __str__(self):
@@ -260,7 +269,7 @@ class Section(models.Model):
     ----------
     section_number: int
         The section number
-    myCourse : ForeignKey
+    section_for : ForeignKey
         Course this section is for
     days : str
         Days of the week the section meets
@@ -279,7 +288,7 @@ class Section(models.Model):
         help_text="Section number",
         default=1,
     )
-    myCourse = models.ForeignKey(
+    section_for = models.ForeignKey(
         "Course",
         on_delete=models.CASCADE,
         related_name="sections",
@@ -317,7 +326,7 @@ class Section(models.Model):
         verbose_name = "Section"
         verbose_name_plural = "Sections"
         ordering = ["days", "start_time"]
-        unique_together = ("myCourse", "section_number")
+        unique_together = ("section_for", "section_number")
 
 
 class Year(models.Model):
@@ -336,7 +345,9 @@ class Year(models.Model):
 
     id = models.AutoField(primary_key=True)
     year = models.IntegerField(validators=[MinValueValidator(1900)])
-    link = models.URLField(max_length=200, help_text="Link to course catalog")
+    link = models.URLField(
+        max_length=200, help_text="Link to course catalog", null=True
+    )
 
     def __str__(self):
         return str(self.year)

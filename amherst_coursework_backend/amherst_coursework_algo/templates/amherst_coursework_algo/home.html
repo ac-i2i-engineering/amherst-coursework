@@ -4,6 +4,19 @@
     <div class = "main-content">
         <div class="container">
             <h1>Amherst College Course Catalog</h1>
+
+            <form method="GET" action="{% url 'catalog:home' %}" class="search-form">
+                <select name="department" class="search-dropdown">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.code }}" {% if selected_dept == dept.code %}selected{% endif %}>
+                            {{ dept.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="search-button">Search</button>
+            </form>
+
             <div class="course-list">
                 {% for course in courses %}
                     <div class="course-card">

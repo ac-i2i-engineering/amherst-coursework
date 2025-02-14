@@ -1,13 +1,24 @@
 from django.shortcuts import get_object_or_404, render
-from .models import Course
+from .models import Course, Department
 
 
 def home(request):
+    departments = Department.objects.all().order_by("name")
+    selected_dept = request.GET.get("department", "")
+
     courses = Course.objects.all().order_by("courseName")
-    context = {
-        "courses": courses,
-    }
-    return render(request, "amherst_coursework_algo/home.html", context)
+    if selected_dept:
+        courses = courses.filter(departments__code=selected_dept)
+
+    return render(
+        request,
+        "amherst_coursework_algo/home.html",
+        {
+            "departments": departments,
+            "courses": courses,
+            "selected_dept": selected_dept,
+        },
+    )
 
 
 def course_details(request, course_id):

@@ -7,8 +7,6 @@ from amherst_coursework_algo.models import (
     Course,
     CourseCode,
     Department,
-    OverGuidelines,
-    Prerequisites,
     PrerequisiteSet,
     Professor,
     Section,
@@ -27,23 +25,51 @@ class CourseModelTest(TestCase):
             courseDescription="Learn to code",
             credits=4,
         )
-        self.course_code = CourseCode.objects.create(value="COSC111")
+        self.course_code = CourseCode.objects.create(value="COSC-111")
 
     def test_course_creation(self):
         self.assertEqual(self.course.courseName, "Intro to Computer Science")
         self.assertEqual(self.course.credits, 4)
 
     def test_course_relationships(self):
-        self.course.department.add(self.department)
+        self.course.departments.add(self.department)
         self.course.courseCodes.add(self.course_code)
-        self.assertEqual(self.course.department.first(), self.department)
+        self.assertEqual(self.course.departments.first(), self.department)
         self.assertEqual(self.course.courseCodes.first(), self.course_code)
 
     def test_invalid_course_id(self):
         with self.assertRaises(ValidationError):
             Course.objects.create(
-                id=99999999, courseName="Test Course"  # Invalid ID
+                id=99999999, courseName="Test Course"  # Invalid ID - more than 7 digits
             ).full_clean()
+
+    def test_enrollment_caps_validation(self):
+        course = Course.objects.create(
+            id=5140112, courseName="Test Course", overallCap=20
+        )
+
+        # Test valid caps
+        course.freshmanCap = 10
+        course.sophomoreCap = 10
+        course.juniorCap = 10
+        course.seniorCap = 10
+        course.full_clean()  # Should not raise error
+
+        # Test invalid cap
+        course.freshmanCap = 25  # Exceeds overall cap
+        with self.assertRaises(ValidationError):
+            course.full_clean()
+
+    def test_prerequisites(self):
+        prereq_course = Course.objects.create(id=5140110, courseName="Prereq Course")
+        prereq_set = PrerequisiteSet.objects.create(prerequisite_for=self.course)
+        prereq_set.courses.add(prereq_course)
+        prereq_set.save()
+
+        self.course.recommended_courses.add(prereq_course)
+
+        self.assertIn(prereq_set, self.course.required_courses.all())
+        self.assertEqual(self.course.recommended_courses.first(), prereq_course)
 
 
 class DepartmentModelTest(TestCase):
@@ -70,7 +96,7 @@ class SectionModelTest(TestCase):
     def test_section_creation(self):
         section = Section.objects.create(
             section_number=1,
-            myCourse=self.course,
+            section_for=self.course,
             days="MWF",
             start_time=time(9, 0),
             end_time=time(9, 50),
@@ -83,7 +109,7 @@ class SectionModelTest(TestCase):
         with self.assertRaises(ValidationError):
             Section.objects.create(
                 section_number=1,
-                myCourse=self.course,
+                section_for=self.course,
                 days="XYZ",  # Invalid days
                 start_time=time(9, 0),
                 end_time=time(9, 50),
@@ -95,7 +121,7 @@ class SectionModelTest(TestCase):
         with self.assertRaises(ValidationError):
             Section.objects.create(
                 section_number=1,
-                myCourse=self.course,
+                section_for=self.course,
                 days="MWF",
                 start_time=time(10, 0),
                 end_time=time(9, 0),  # End before start
@@ -103,40 +129,17 @@ class SectionModelTest(TestCase):
                 professor=self.professor,
             ).full_clean()
 
-
-class OverGuidelinesModelTest(TestCase):
-    def setUp(self):
-        self.course = Course.objects.create(id=5140111, courseName="Test Course")
-
-    def test_cap_validation(self):
+    def test_duplicate_days(self):
         with self.assertRaises(ValidationError):
-            OverGuidelines.objects.create(
-                myCourse=self.course,
-                text="Test guidelines",
-                overallCap=20,
-                freshmanCap=25,  # Exceeds overall cap
+            Section.objects.create(
+                section_number=1,
+                section_for=self.course,
+                days="MMW",  # Duplicate M
+                start_time=time(9, 0),
+                end_time=time(10, 0),
+                location="MERR 131",
+                professor=self.professor,
             ).full_clean()
-
-
-class PrerequisitesModelTest(TestCase):
-    def setUp(self):
-        self.course = Course.objects.create(id=5140111, courseName="Advanced Course")
-        self.prereq_course = Course.objects.create(
-            id=5140110, courseName="Intro Course"
-        )
-
-    def test_prerequisites_creation(self):
-        prereq_set = PrerequisiteSet.objects.create()
-        prereq_set.courses.add(self.prereq_course)
-
-        prerequisites = Prerequisites.objects.create(
-            description="Must complete intro course", professor_override=True
-        )
-        prerequisites.required_courses.add(prereq_set)
-        prerequisites.recommended_courses.add(self.prereq_course)
-
-        self.assertEqual(prerequisites.required_courses.first(), prereq_set)
-        self.assertTrue(prerequisites.professor_override)
 
 
 class YearModelTest(TestCase):
@@ -160,8 +163,8 @@ class ProfessorModelTest(TestCase):
 
 class CourseCodeModelTest(TestCase):
     def test_course_code_creation(self):
-        code = CourseCode.objects.create(value="COSC111")
-        self.assertEqual(str(code), "COSC111")
+        code = CourseCode.objects.create(value="COSC-111")
+        self.assertEqual(str(code), "COSC-111")
 
     def test_invalid_code_length(self):
         with self.assertRaises(ValidationError):

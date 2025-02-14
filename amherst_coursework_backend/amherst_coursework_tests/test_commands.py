@@ -1,119 +1,188 @@
+import pytest
 from django.core.management import call_command
 from django.test import TestCase
-from django.core.management.base import CommandError
 from amherst_coursework_algo.models import (
     Course,
-    Department,
     CourseCode,
+    Department,
     Professor,
     Section,
     Year,
-    OverGuidelines,
-    Prerequisites,
-    PrerequisiteSet,
 )
-import os
 import json
+from io import StringIO
+from django.core.management.base import CommandError
 
 
-class LoadCoursesCommandTest(TestCase):
-    def setUp(self):
-        self.json_file_path = "/tmp/test_courses.json"
-        self.course_data = [
+class TestLoadCourses(TestCase):
+
+    def test_load_basic_course_data(self):
+        """Test loading basic course data without relationships"""
+
+        test_data = [
             {
-                "id": 5140111,
-                "courseLink": "amherst.edu",
-                "courseName": "Intro to Comp Sci I",
-                "courseCodes": ["COSC111"],
-                "deptNames": ["Computer Science"],
-                "deptLinks": [
-                    "https://www.amherst.edu/academiclife/departments/computer_science"
-                ],
-                "descriptionText": "This course introduces ideas and techniques that are fundamental to computer science.",
-                "overGuidelines": {
-                    "text": "Preference to first-year and sophomore students.",
-                    "preferenceForMajors": False,
-                    "overallCap": 40,
-                    "freshmanCap": 40,
-                    "sophomoreCap": 20,
-                    "juniorCap": 20,
-                    "seniorCap": 20,
-                },
-                "credits": 4,
-                "prerequisites": {
-                    "text": "none",
-                    "required": [],
-                    "recommended": [],
-                    "profPermOver": False,
-                },
-                "corequisites": [5141111],
-                "profNames": ["Lillian Pentecost", "Matteo Riondato"],
-                "profLinks": [
-                    "https://www.amherst.edu/people/facstaff/lpentecost",
-                    "https://www.amherst.edu/people/facstaff/mriondato",
-                ],
-                "sections": {
-                    "01": {
-                        "daysOfWeek": "MWF",
-                        "startTime": "09:00:00",
-                        "endTime": "09:50:00",
-                        "location": "SCCEA131",
-                        "profName": "Lillian Pentecost",
-                    },
-                    "02": {
-                        "daysOfWeek": "MWF",
-                        "startTime": "13:00:00",
-                        "endTime": "13:50:00",
-                        "location": "SCCEA011",
-                        "profName": "Matteo Riondato",
-                    },
-                },
+                "course_url": "https://test.edu/course1",
+                "course_name": "Test Course 1",
+                "course_acronyms": ["TEST-101"],
+                "divisions": ["Humanities"],
+                "departments": {"Computer Science": "https://test.edu/dept1"},
+                "description": "Test course description",
+            }
+        ]
+
+        with open("test_courses.json", "w") as f:
+            json.dump(test_data, f)
+
+        call_command("load_courses", "test_courses.json")
+
+        # Verify course was created
+        course = Course.objects.first()
+        print(course.courseDescription)
+        self.assertEqual(course.courseName, "Test Course 1")
+        self.assertEqual(course.courseDescription, "Test course description")
+
+    def test_load_course_with_offerings(self):
+        """Test loading course with offerings data"""
+
+        test_data = [
+            {
+                "course_name": "Test Course",
+                "course_acronyms": ["TEST-101"],
+                "departments": {"Computer Science": "https://test.edu/dept"},
                 "offerings": {
-                    "fall": [2019, 2022, 2023],
-                    "fallLinks": [
-                        "https://www.amherst.edu/academiclife/departments/courses/1920F/COSC/COSC-111-1920F",
-                        "https://www.amherst.edu/academiclife/departments/courses/2223F/COSC/COSC-111-2223F",
-                        "https://www.amherst.edu/academiclife/departments/courses/2324F/COSC/COSC-111-2324F",
-                    ],
-                    "spring": [2023, 2024],
-                    "springLinks": [
-                        "https://www.amherst.edu/academiclife/departments/courses/2223S/COSC/COSC-111-2223S",
-                        "https://www.amherst.edu/academiclife/departments/courses/2324S/COSC/COSC-111-2324S",
-                    ],
-                    "january": [],
-                    "januaryLinks": [],
+                    "Fall 2023": "https://test.edu/fall2023",
+                    "Spring 2024": "https://test.edu/spring2024",
+                },
+                "description": "Test course description",
+            }
+        ]
+
+        with open("test_courses.json", "w") as f:
+            json.dump(test_data, f)
+
+        call_command("load_courses", "test_courses.json")
+
+        # Verify offerings were created
+        course = Course.objects.first()
+        self.assertEqual(course.fallOfferings.count(), 1)
+        self.assertEqual(course.springOfferings.count(), 1)
+
+    def test_load_course_with_professors(self):
+        """Test loading course with professor data"""
+
+        test_data = [
+            {
+                "course_name": "Test Course",
+                "course_acronyms": ["TEST-101"],
+                "departments": {"Computer Science": "https://test.edu/dept"},
+                "profNames": ["Dr. Test Professor"],
+                "profLinks": ["https://test.edu/prof1"],
+                "description": "Test course description",
+            }
+        ]
+
+        with open("test_courses.json", "w") as f:
+            json.dump(test_data, f)
+
+        call_command("load_courses", "test_courses.json")
+
+        # Verify professor was created and linked
+        course = Course.objects.first()
+        self.assertEqual(course.professors.count(), 1)
+        professor = course.professors.first()
+        self.assertEqual(professor.name, "Dr. Test Professor")
+        self.assertEqual(professor.link, "https://test.edu/prof1")
+
+    def test_invalid_json(self):
+        """Test handling of invalid JSON file"""
+        with open("nonexistent.json", "w") as f:
+            f.write("invalid json")
+
+        with self.assertRaises(json.JSONDecodeError):
+            call_command("load_courses", "nonexistent.json")
+
+    def test_missing_required_fields(self):
+        """Test handling of JSON missing required fields"""
+
+        test_data = [
+            {
+                "course_url": "https://test.edu/course",
+                "departments": {"Computer Science": "https://test.edu/dept"},
+                # Missing course_name and other required fields
+            }
+        ]
+
+        with open("test_courses.json", "w") as f:
+            json.dump(test_data, f)
+
+        with self.assertRaises(KeyError):
+            call_command("load_courses", "test_courses.json")
+
+    def test_comprehensive_course_load(self):
+        """Test loading complete course data with all relationships"""
+
+        test_data = [
+            {
+                "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/ANTH/ANTH-245-2425S",
+                "course_name": "Medical Anthropology",
+                "course_acronyms": ["ANTH-245"],
+                "divisions": ["Humanities", "Social Sciences"],
+                "departments": {
+                    "Anthropology and Sociology": "https://www.amherst.edu/academiclife/departments/anthropology_sociology/courses"
+                },
+                "description": "The aim of this course is to introduce the ways that medical anthropologists understand illness...",
+                "keywords": [
+                    "Attention to Issues of Class",
+                    "Attention to Issues of Gender and Sexuality",
+                    "Attention to Issues of Race",
+                    "Transnational or World Cultures Taught in English",
+                ],
+                "offerings": {
+                    "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/ANTH/ANTH-245-2324F"
                 },
             }
         ]
-        with open(self.json_file_path, "w") as f:
-            json.dump(self.course_data, f)
 
-    def tearDown(self):
-        if os.path.exists(self.json_file_path):
-            os.remove(self.json_file_path)
+        with open("test_courses.json", "w") as f:
+            json.dump(test_data, f)
 
-    def test_load_courses_success(self):
-        call_command("load_courses", self.json_file_path)
-        course = Course.objects.get(id=5140111)
-        self.assertEqual(course.courseName, "Intro to Comp Sci I")
+        call_command("load_courses", "test_courses.json")
+
+        # Verify course basic info
+        course = Course.objects.first()
+        self.assertEqual(course.courseName, "Medical Anthropology")
+        self.assertTrue(course.courseDescription.startswith("The aim of this course"))
         self.assertEqual(
-            course.courseDescription,
-            "This course introduces ideas and techniques that are fundamental to computer science.",
+            course.courseLink,
+            "https://www.amherst.edu/academiclife/departments/courses/2425S/ANTH/ANTH-245-2425S",
         )
-        self.assertEqual(course.credits, 4)
-        self.assertEqual(course.courseLink, "amherst.edu")
-        self.assertEqual(course.courseCodes.first().value, "COSC111")
-        self.assertEqual(course.department.first().name, "Computer Science")
-        self.assertEqual(course.professors.count(), 2)
-        self.assertEqual(course.sections.count(), 2)
-        self.assertEqual(course.fallOfferings.count(), 3)
-        self.assertEqual(course.springOfferings.count(), 2)
-        self.assertEqual(course.janOfferings.count(), 0)
-        self.assertEqual(course.overGuidelines.overallCap, 40)
 
-    def test_load_courses_invalid_id(self):
-        self.course_data[0]["id"] = 99999999  # Invalid ID
-        with open(self.json_file_path, "w") as f:
-            json.dump(self.course_data, f)
-        with self.assertRaises(ValueError):
-            call_command("load_courses", self.json_file_path)
+        # Verify course code
+        code = CourseCode.objects.first()
+        self.assertEqual(code.value, "ANTH-245")
+        self.assertIn(course, code.courses.all())
+
+        # Verify departments
+        dept = Department.objects.first()
+        self.assertEqual(dept.name, "Anthropology and Sociology")
+        self.assertIn(course, dept.courses.all())
+
+        # Verify offerings
+        self.assertEqual(course.fallOfferings.count(), 1)
+        self.assertEqual(course.springOfferings.count(), 0)
+
+        # Verify divisions
+        self.assertEqual(course.divisions.count(), 2)
+        self.assertIn(
+            "Humanities", [division.name for division in course.divisions.all()]
+        )
+        self.assertIn(
+            "Social Sciences", [division.name for division in course.divisions.all()]
+        )
+
+        # Verify keywords
+        self.assertEqual(course.keywords.count(), 4)
+        self.assertIn(
+            "Attention to Issues of Race",
+            [keyword.name for keyword in course.keywords.all()],
+        )

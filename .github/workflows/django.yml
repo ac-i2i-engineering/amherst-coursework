@@ -36,6 +36,11 @@ jobs:
       working-directory: ./amherst_coursework_backend
       run: |
         pytest --cov --cov-fail-under=85
+    - name: Run Migrations
+      working-directory: ./amherst_coursework_backend
+      run: |
+        python manage.py makemigrations
+        python manage.py migrate
     - name: Test Load Command
       working-directory: ./amherst_coursework_backend
       run: |

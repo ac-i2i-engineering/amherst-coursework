@@ -4,13 +4,85 @@
     <div class = "main-content">
         <div class="container">
             <h1>Amherst College Course Catalog</h1>
+            
+            <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
+                <div class="dropdown" onmouseleave="submitForm()">
+                    <button type="button" class="dropbtn">
+                        {% if selected_depts %}
+                            Select Departments
+                        {% else %}
+                            All Departments
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        {% for dept in departments %}
+                            <label class="dropdown-item">
+                                <input type="checkbox" 
+                                       name="department" 
+                                       value="{{ dept.code }}"
+                                       {% if dept.code in selected_depts %}checked{% endif %}>
+                                {{ dept.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="dropdown" onmouseleave="submitForm()">
+                    <button type="button" class="dropbtn">
+                        {% if selected_divs %}
+                            Select Divisions
+                        {% else %}
+                            All Divisions
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        {% for div in divisions %}
+                            <label class="dropdown-item">
+                                <input type="checkbox" 
+                                       name="division" 
+                                       value="{{ div.name }}"
+                                       {% if div.name in selected_divs %}checked{% endif %}>
+                                {{ div.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="dropdown" onmouseleave="submitForm()">
+                    <button type="button" class="dropbtn">
+                        {% if selected_levels %}
+                            Select Level Courses
+                        {% else %}
+                            All Levels
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        {% for level in levels %}
+                            <label class="dropdown-item">
+                                <input type="checkbox" 
+                                       name="level" 
+                                       value="{{ level }}"
+                                       {% if level in selected_levels %}checked{% endif %}>
+                                {{ level }}-Level Courses
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                function submitForm() {
+                    document.getElementById('filterForm').submit();
+                }
+                </script>
+
             <div class="course-list">
                 {% for course in courses %}
                     <div class="course-card">
                         <h2>{{ course.courseName }}</h2>
                         <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
-                            {% for dept in course.department.all %}
+                            {% for dept in course.departments.all %}
                                 {{ dept.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>

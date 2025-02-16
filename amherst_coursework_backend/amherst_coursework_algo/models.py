@@ -33,14 +33,40 @@ class Course(models.Model):
         Related CourseCode objects (e.g., "COSC111")
     courseDescription : TextField
         Description of the course
-    department : ManyToManyField
+    courseMaterialsLink : URLField
+        URL link to course materials
+    keywords : ManyToManyField
+        Keywords associated with the course
+    divisions : ManyToManyField
+        Academic divisions the course belongs to
+    departments : ManyToManyField
         Related Department objects for this course
-    overGuidelines : OneToOneField
-        Related OverGuidelines object for handling overenrollment
+    enrollmentText : TextField
+        Text describing enrollment details
+    prefForMajor : bool
+        Whether course has preference for majors
+    overallCap : int
+        Overall enrollment cap for the course
+    freshmanCap : int
+        Enrollment cap for freshmen
+    sophomoreCap : int
+        Enrollment cap for sophomores
+    juniorCap : int
+        Enrollment cap for juniors
+    seniorCap : int
+        Enrollment cap for seniors
     credits : int
         Number of course credits (2 or 4)
-    prerequisites : OneToOneField
-        Related Prerequisites object
+    prereqDescription : TextField
+        Description of prerequisites
+    required_courses : ManyToManyField
+        Required prerequisite course sets
+    recommended_courses : ManyToManyField
+        Recommended prerequisite courses
+    professor_override : bool
+        Whether professor can override prerequisites
+    placement_course : int
+        Course ID for placement test course
     corequisites : ManyToManyField
         Related Course objects that are corequisites
     professors : ManyToManyField
@@ -52,34 +78,51 @@ class Course(models.Model):
     springOfferings : ManyToManyField
         Years the course is offered in Spring semester
     janOfferings : ManyToManyField
-        Years the course is offered in the January term
+        Years the course is offered in January term
     """
 
     id = models.IntegerField(
         primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(9999999)]
     )
-    courseLink = models.URLField(max_length=200, blank=True)
+    courseLink = models.URLField(max_length=200, blank=True, null=True)
     courseName = models.CharField(max_length=200)
-    courseCodes = models.ManyToManyField("CourseCode")
+    courseCodes = models.ManyToManyField("CourseCode", related_name="courses")
     courseDescription = models.TextField(blank=True)
-    # categories = models.ManyToManyField('Category', related_name='courses')
-    department = models.ManyToManyField("Department", related_name="dept_courses")
-    overGuidelines = models.OneToOneField(
-        "OverGuidelines", on_delete=models.SET_NULL, null=True, blank=True
+    courseMaterialsLink = models.URLField(max_length=200, blank=True, null=True)
+    keywords = models.ManyToManyField("Keyword", related_name="courses")
+    divisions = models.ManyToManyField("Division", related_name="courses")
+    departments = models.ManyToManyField("Department", related_name="courses")
+    enrollmentText = models.TextField(
+        default="Contact the professor for enrollment details."
     )
+    prefForMajor = models.BooleanField(default=False)
+    overallCap = models.PositiveIntegerField(default=0)
+    freshmanCap = models.PositiveIntegerField(default=0)
+    sophomoreCap = models.PositiveIntegerField(default=0)
+    juniorCap = models.PositiveIntegerField(default=0)
+    seniorCap = models.PositiveIntegerField(default=0)
+
     credits = models.IntegerField(
         default=4, choices=[(2, "2 credits"), (4, "4 credits")]
     )
-    prerequisites = models.OneToOneField(
-        "Prerequisites",
-        on_delete=models.SET_NULL,
+    prereqDescription = models.TextField(
+        blank=True, help_text="Text description of prerequisites"
+    )
+    recommended_courses = models.ManyToManyField(
+        "Course", blank=True, related_name="recommended_for"
+    )
+    professor_override = models.BooleanField(
+        default=False, help_text="Can professor override prerequisites?"
+    )
+    placement_course = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="prerequisites_for",
+        related_name="placement_for",
     )
     corequisites = models.ManyToManyField("self", blank=True, symmetrical=True)
     professors = models.ManyToManyField("Professor", related_name="courses")
-    sections = models.ManyToManyField("Section")
     fallOfferings = models.ManyToManyField(
         "Year", related_name="fOfferings", blank=True
     )
@@ -87,6 +130,26 @@ class Course(models.Model):
         "Year", related_name="sOfferings", blank=True
     )
     janOfferings = models.ManyToManyField("Year", related_name="jOfferings", blank=True)
+
+    def clean(self):
+        """Validate that year caps don't exceed overall cap"""
+        super().clean()
+
+        if self.overallCap > 0:  # Only validate if overall cap is set
+            caps = {
+                "Freshman": self.freshmanCap,
+                "Sophomore": self.sophomoreCap,
+                "Junior": self.juniorCap,
+                "Senior": self.seniorCap,
+            }
+
+            for year, cap in caps.items():
+                if cap > self.overallCap:
+                    raise ValidationError(
+                        {
+                            f"{year.lower()}Cap": f"{year} cap ({cap}) cannot exceed overall cap ({self.overallCap})"
+                        }
+                    )
 
     def __str__(self):
         return self.courseName
@@ -99,11 +162,11 @@ class CourseCode(models.Model):
     Parameters
     ----------
     value : str
-        The 7-8 character course code (e.g., "COSC111", "CHEM165L")
+        The 8-9 character course code (e.g., "COSC-111", "CHEM-165L")
     """
 
     value = models.CharField(
-        max_length=8, validators=[MinLengthValidator(7), MaxLengthValidator(8)]
+        max_length=9, validators=[MinLengthValidator(8), MaxLengthValidator(9)]
     )
 
     def __str__(self):
@@ -142,127 +205,30 @@ class Department(models.Model):
         verbose_name_plural = "Departments"
 
 
-class OverGuidelines(models.Model):
-    """
-    OverGuidelines model representing overenrollment instructions for a course.
-
-    Parameters
-    ----------
-    myCourse : ForeignKey
-        Course this overenrollment guideline is for
-    text : str
-        Instructions for handling overenrollment
-    prefForMajor : bool
-        Whether the course is preferred for majors
-    overallCap : int
-        Maximum total enrollment limit
-    freshmanCap : int
-        Enrollment cap for freshmen
-    sophomoreCap : int
-        Enrollment cap for sophomores
-    juniorCap : int
-        Enrollment cap for juniors
-    seniorCap : int
-        Enrollment cap for seniors
-    """
-
-    myCourse = models.ForeignKey("Course", on_delete=models.CASCADE, default=None)
-    text = models.TextField()
-    prefForMajor = models.BooleanField(default=False)
-    overallCap = models.PositiveIntegerField(default=0)
-    freshmanCap = models.PositiveIntegerField(default=0)
-    sophomoreCap = models.PositiveIntegerField(default=0)
-    juniorCap = models.PositiveIntegerField(default=0)
-    seniorCap = models.PositiveIntegerField(default=0)
-
-    def clean(self):
-        """Validate that year caps don't exceed overall cap"""
-        super().clean()
-
-        if self.overallCap > 0:  # Only validate if overall cap is set
-            caps = {
-                "Freshman": self.freshmanCap,
-                "Sophomore": self.sophomoreCap,
-                "Junior": self.juniorCap,
-                "Senior": self.seniorCap,
-            }
-
-            for year, cap in caps.items():
-                if cap > self.overallCap:
-                    raise ValidationError(
-                        {
-                            f"{year.lower()}Cap": f"{year} cap ({cap}) cannot exceed overall cap ({self.overallCap})"
-                        }
-                    )
-
-    def __str__(self):
-        return self.text
-
-    class Meta:
-        verbose_name = "Overenrollment Guidelines"
-        verbose_name_plural = "Overenrollment Guidelines"
-
-
-class Prerequisites(models.Model):
-    """
-    Prerequisites model representing course prerequisites.
-
-    Parameters
-    ----------
-    description : str
-        Text description of prerequisites
-    required_courses : ManyToManyField
-        Sets of courses where completing any single set satisfies prerequisites
-    recommended_courses : ManyToManyField
-        Courses that are recommended but not required
-    professor_override : bool
-        Whether professor can override prerequisites
-    placement_course : OneToOneField
-        Course that students need to place out of to satisfy prerequisites
-    """
-
-    description = models.TextField(
-        blank=True, help_text="Text description of prerequisites"
-    )
-    required_courses = models.ManyToManyField(
-        "PrerequisiteSet", blank=True, related_name="required_for"
-    )
-    recommended_courses = models.ManyToManyField(
-        "Course", blank=True, related_name="recommended_for"
-    )
-    professor_override = models.BooleanField(
-        default=False, help_text="Can professor override prerequisites?"
-    )
-    placement_course = models.OneToOneField(
-        "Course",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="placement_for",
-    )
-
-    def __str__(self):
-        return self.description
-
-    class Meta:
-        verbose_name = "Prerequisites"
-        verbose_name_plural = "Prerequisites"
-
-
 class PrerequisiteSet(models.Model):
     """
     PrerequisiteSet model representing a set of prerequisites for a course.
 
     Parameters
     ----------
+    prerequisite_for : ForeignKey
+        Course this set of prerequisites is for
     courses : ManyToManyField
         One set of courses that can be completed to satisfy prerequisites
     """
 
+    prerequisite_for = models.ForeignKey(
+        "Course",
+        on_delete=models.CASCADE,
+        related_name="required_courses",
+        default=None,
+    )
     courses = models.ManyToManyField("Course")
 
     def __str__(self):
-        return ", ".join([str(course) for course in self.courses])
+        return ", ".join(
+            [str(course) for course in self.courses.all().select_related()]
+        )
 
     class Meta:
         verbose_name = "Prerequisite Set"
@@ -303,7 +269,7 @@ class Section(models.Model):
     ----------
     section_number: int
         The section number
-    myCourse : ForeignKey
+    section_for : ForeignKey
         Course this section is for
     days : str
         Days of the week the section meets
@@ -322,10 +288,10 @@ class Section(models.Model):
         help_text="Section number",
         default=1,
     )
-    myCourse = models.ForeignKey(
+    section_for = models.ForeignKey(
         "Course",
         on_delete=models.CASCADE,
-        related_name="course_sections",
+        related_name="sections",
         default=None,
     )
     days = models.CharField(
@@ -345,8 +311,12 @@ class Section(models.Model):
     )
 
     def clean(self):
+        super().clean()
         if self.start_time >= self.end_time:
             raise ValidationError(_("End time must be after start time"))
+
+        if len(set(self.days)) != len(self.days):
+            raise ValidationError(_("Duplicate days not allowed"))
 
     def __str__(self):
 
@@ -356,7 +326,7 @@ class Section(models.Model):
         verbose_name = "Section"
         verbose_name_plural = "Sections"
         ordering = ["days", "start_time"]
-        unique_together = ("myCourse", "section_number")
+        unique_together = ("section_for", "section_number")
 
 
 class Year(models.Model):
@@ -375,7 +345,9 @@ class Year(models.Model):
 
     id = models.AutoField(primary_key=True)
     year = models.IntegerField(validators=[MinValueValidator(1900)])
-    link = models.URLField(max_length=200, help_text="Link to course catalog")
+    link = models.URLField(
+        max_length=200, help_text="Link to course catalog", null=True
+    )
 
     def __str__(self):
         return str(self.year)
@@ -384,3 +356,45 @@ class Year(models.Model):
         verbose_name = "Year"
         verbose_name_plural = "Years"
         ordering = ["year"]
+
+
+class Keyword(models.Model):
+    """
+    Keyword model representing keywords associated with courses.
+
+    Parameters
+    ----------
+    name : str
+        The keyword value
+    """
+
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.value
+
+    class Meta:
+        verbose_name = "Keyword"
+        verbose_name_plural = "Keywords"
+        ordering = ["name"]
+
+
+class Division(models.Model):
+    """
+    Division model representing academic divisions at Amherst College.
+
+    Parameters
+    ----------
+    name : str
+        The full name of the division (e.g., "Science & Mathematics", "Social Sciences")
+    """
+
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Division"
+        verbose_name_plural = "Divisions"
+        ordering = ["name"]

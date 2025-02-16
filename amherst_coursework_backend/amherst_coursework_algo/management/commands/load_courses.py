@@ -5,12 +5,16 @@ from amherst_coursework_algo.models import (
     Course,
     Department,
     CourseCode,
-    OverGuidelines,
-    Prerequisites,
     PrerequisiteSet,
     Professor,
     Section,
     Year,
+    Division,
+    Keyword,
+)
+from amherst_coursework_algo.config.course_dictionaries import (
+    DEPARTMENT_NAME_TO_NUMBER,
+    DEPARTMENT_NAME_TO_CODE,
 )
 import json
 
@@ -31,93 +35,40 @@ Example:
 
 JSON Format Requirements:
     - Each course object must have:
-        - id (int): Between 1000000 and 9999999 
-        - courseName (str): Name of the course
-        - descriptionText (str): Course description
+        - course_name (str): Name of the course 
+        - description (str): Course description
     - Optional fields include:
-        - deptNames (list): List of department names
-        - deptLinks (list): List of department links
-        - courseCodes (list): List of course codes
+        - course_url (str): URL to course page
+        - course_materials_links (list): List of course materials URLs
+        - course_acronyms (list): List of course codes 
+        - departments (dict): Department names mapped to dept URLs
         - prerequisites (dict): Course prerequisites information
+            - text (str): Text description of prerequisites
+            - required (list): List of required course ID sets
+            - recommended (list): List of recommended course IDs
+            - placement (int): ID of placement test course
+            - professor_override (bool): Whether prof can override prereqs
         - corequisites (list): List of corequisite course IDs
         - profNames (list): List of professor names
         - profLinks (list): List of professor links
-        - offerings (dict): Course offerings by term
+        - credits (int): Number of credits (default 4)
+        - divisions (list): Academic divisions
+        - keywords (list): Course keywords/tags
+        - offerings (dict): Course offerings with links by term
         - sections (dict): Section information
         - overGuidelines (dict): Enrollment guidelines
-
-Example JSON:
-[
-    {
-    "id": 5140111,
-    "courseLink" : "amherst.edu",
-    "courseName": "Intro to Comp Sci I",
-    "courseCodes": ["COSC111"],
-    "categories": ["programming", "computer science", "java"],
-    "deptNames": ["Computer Science"],
-    "deptLinks": [
-        "https://www.amherst.edu/academiclife/departments/computer_science"
-    ],
-    "descriptionText": "This course introduces ideas and techniques that are fundamental to computer science. The course emphasizes procedural abstraction, algorithmic methods, and structured design techniques. Students will gain a working knowledge of a block-structured programming language and will use the language to solve a variety of problems illustrating ideas in computer science. A selection of other elementary topics will be presented. A laboratory section will meet once a week to give students practice with programming constructs.",
-    "overGuidelines": {
-        "text": "Preference to first-year and sophomore students.",
-        "preferenceForMajors": false,
-        "overallCap": 40,
-        "freshmanCap": 40,
-        "sophomoreCap": 20,
-        "juniorCap": 20,
-        "seniorCap": 20
-    },
-    "credits": 4,
-    "prerequisites": {
-        "text": "none",
-        "required": [],
-        "recommended": [],
-        "profPermOver": false
-    },
-    "corequisites": [5141111],
-    "profNames": ["Lillian Pentecost", "Matteo Riondato"],
-    "profLinks": [
-        "https://www.amherst.edu/people/facstaff/lpentecost",
-        "https://www.amherst.edu/people/facstaff/mriondato"
-    ],
-    "sections": {
-        "01": {
-        "daysOfWeek": "MWF",
-        "startTime": "09:00:00",
-        "endTime": "09:50:00",
-        "location": "SCCEA131",
-        "profName": "Lillian Pentecost"
-        },
-        "02": {
-        "daysOfWeek": "MWF",
-        "startTime": "13:00:00",
-        "endTime": "13:50:00",
-        "location": "SCCEA011",
-        "profName": "Matteo Riondato"
-        }
-    },
-    "offerings": {
-        "fall": [2019, 2022, 2023],
-        "fallLinks": [
-        "https://www.amherst.edu/academiclife/departments/courses/1920F/COSC/COSC-111-1920F",
-        "https://www.amherst.edu/academiclife/departments/courses/2223F/COSC/COSC-111-2223F",
-        "https://www.amherst.edu/academiclife/departments/courses/2324F/COSC/COSC-111-2324F"
-        ],
-        "spring": [2023, 2024],
-        "springLinks": [
-        "https://www.amherst.edu/academiclife/departments/courses/2223S/COSC/COSC-111-2223S",
-        "https://www.amherst.edu/academiclife/departments/courses/2324S/COSC/COSC-111-2324S"
-        ],
-        "january": [],
-        "januaryLinks": []
-    }
-    }
-]
+            - text (str): Enrollment text
+            - preferenceForMajor (bool): Preference for majors
+            - overallCap (int): Overall enrollment cap
+            - freshmanCap (int): Freshman cap
+            - sophomoreCap (int): Sophomore cap
+            - juniorCap (int): Junior cap
+            - seniorCap (int): Senior cap
 
 Notes:
     - Uses Django's atomic transaction to ensure database consistency
-    - Will create new records or update existing ones based on primary keys
+    - Will create new records or update existing ones based on primary keys 
+    - Course IDs are automatically generated based on department and course number
     - Logs success/failure messages for each course processed
 """
 
@@ -143,7 +94,7 @@ class Command(BaseCommand):
         The method performs the following operations:
         1. Reads course data from JSON file
         2. For each course:
-            - Validates course ID
+            - Creates course ID
             - Creates/updates department records
             - Creates/updates course codes
             - Processes prerequisites (recommended, required, and placement courses)
@@ -163,31 +114,45 @@ class Command(BaseCommand):
 
         for course_data in courses_data:
             try:
-                courseID = course_data.get("id", 0)
-                if courseID > 9999999 or courseID < 0:
-                    raise ValueError(f"Invalid course ID: {courseID}")
 
-                departments = []
-                deptList = course_data.get("deptNames", [])
-                deptLinks = course_data.get("deptLinks", [])
-                for i in range(len(deptList)):
-                    dept, _ = Department.objects.get_or_create(
-                        name=deptList[i],
-                        defaults={
-                            "code": deptList[i][
-                                :4
-                            ].upper(),  # Assume code is first 4 characters of name; will have to convert to some sort of lookup table later
-                            "link": deptLinks[i],
-                        },
+                divisions = []
+                for division in course_data.get("divisions", []):
+                    division, _ = Division.objects.get_or_create(
+                        name=division,
                     )
-                    departments.append(dept)
+                    divisions.append(division)
+
+                keywords = []
+                for keyword in course_data.get("keywords", []):
+                    keyword, _ = Keyword.objects.get_or_create(
+                        name=keyword,
+                    )
+                    keywords.append(keyword)
 
                 codes = []
-                for code in course_data.get("courseCodes", []):
+                if len(course_data.get("course_acronyms", [])) == 0:
+                    raise KeyError("No course codes found for course")
+
+                for code in course_data.get("course_acronyms", []):
                     code, _ = CourseCode.objects.get_or_create(
                         value=code,
                     )
                     codes.append(code)
+
+                departments = []
+                deptList = course_data.get("departments", {})
+                if len(deptList) == 0:
+                    raise KeyError("No departments found for course")
+                i = 0
+                for department, link in deptList.items():
+                    dept, _ = Department.objects.get_or_create(
+                        name=department,
+                        defaults={
+                            "code": DEPARTMENT_NAME_TO_CODE[department],
+                        },
+                    )
+                    departments.append(dept)
+                    i += 1
 
                 recommended = [
                     Course.objects.get_or_create(id=rec)[0]
@@ -196,30 +161,10 @@ class Command(BaseCommand):
                     )
                 ]
 
-                required = []
-                for reqSet in course_data.get("prerequisites", {}).get("required", []):
-                    prereq_set = PrerequisiteSet.objects.create()
-                    courses = [
-                        Course.objects.get_or_create(id=req)[0] for req in reqSet
-                    ]
-                    prereq_set.courses.set(courses)
-                    required.append(prereq_set)
-
                 placement_id = course_data.get("prerequisites", {}).get("placement")
                 placementCourse = None
                 if placement_id:
                     placementCourse, _ = Course.objects.get_or_create(id=placement_id)
-
-                prereq, _ = Prerequisites.objects.get_or_create(
-                    description=course_data.get("prerequisites", {}).get("text", ""),
-                    professor_override=course_data.get("prerequisites", {}).get(
-                        "profPermOver", False
-                    ),
-                    placement_course=placementCourse,
-                )
-
-                prereq.recommended_courses.set(recommended)
-                prereq.required_courses.set(required)
 
                 corequisites = [
                     Course.objects.get_or_create(id=rec)[0]
@@ -236,59 +181,70 @@ class Command(BaseCommand):
                     professors.append(professor)
 
                 fallOfferings = []
-                fallOfferingsData = course_data.get("offerings", {}).get("fall", [])
-                fallLinks = course_data.get("offerings", {}).get("fallLinks", [])
-                for i in range(len(fallOfferingsData)):
-                    year, _ = Year.objects.get_or_create(
-                        year=fallOfferingsData[i],
-                        link=fallLinks[i],
-                    )
-                    fallOfferings.append(year)
-
                 springOfferings = []
-                springOfferingsData = course_data.get("offerings", {}).get("spring", [])
-                springLinks = course_data.get("offerings", {}).get("springLinks", [])
-                for i in range(len(springOfferingsData)):
-                    year, _ = Year.objects.get_or_create(
-                        year=springOfferingsData[i],
-                        link=springLinks[i],
-                    )
-                    springOfferings.append(year)
-
                 janOfferings = []
-                janOfferingsData = course_data.get("offerings", {}).get("jan", [])
-                janLinks = course_data.get("offerings", {}).get("janLinks", [])
-                for i in range(len(janOfferingsData)):
+
+                offerings = course_data.get("offerings", {})
+                for offering, link in offerings.items():
                     year, _ = Year.objects.get_or_create(
-                        year=janOfferingsData[i],
-                        link=janLinks[i],
+                        year=int(offering.split()[-1]),
+                        link=link,
                     )
-                    janOfferings.append(year)
+                    term = offering.split()[0]
+                    if term == "Fall":
+                        fallOfferings.append(year)
+                    elif term == "Spring":
+                        springOfferings.append(year)
+                    elif term == "January":
+                        janOfferings.append(year)
+                    else:
+                        self.stdout.write(
+                            self.style.ERROR(
+                                f"Failed to create course: {term} is not a valid term"
+                            )
+                        )
+                        continue
+
+                id = 4000000
+                try:
+                    id += (
+                        DEPARTMENT_NAME_TO_NUMBER[departments[0].name] * 10000
+                    )  # the second 2 digits are the department number
+                except KeyError:
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Failed to create course: {departments[0].name} is not a valid department"
+                        )
+                    )
+                    continue
+                if len(codes[0].value) == 9:
+                    id += 1000  # 4th digit is half course flag (0 for full, 1 for half)
+                id += int(
+                    codes[0].value[5:8]
+                )  # last 3 characters of course code are the course number
 
                 # Create course
                 course, _ = Course.objects.update_or_create(
-                    id=course_data["id"],
+                    id=id,
                     defaults={
-                        "courseLink": course_data.get("courseLink", ""),
-                        "courseName": course_data["courseName"],
+                        "courseLink": course_data.get("course_url", ""),
+                        "courseName": course_data["course_name"],
                         "credits": course_data.get("credits", 4),
-                        "courseDescription": course_data["descriptionText"],
-                        "prerequisites": prereq,
-                    },
-                )
-
-                course.courseCodes.set(codes)
-                course.department.set(departments)
-                course.corequisites.set(corequisites)
-                course.professors.set(professors)
-                course.fallOfferings.set(fallOfferings)
-                course.springOfferings.set(springOfferings)
-                course.janOfferings.set(janOfferings)
-
-                overGuide, _ = OverGuidelines.objects.update_or_create(
-                    myCourse=course,
-                    defaults={
-                        "text": course_data.get("overGuidelines", {}).get("text", ""),
+                        "courseDescription": course_data["description"],
+                        "courseMaterialsLink": course_data.get(
+                            "course_materials_links", [None]
+                        )[0]
+                        or "",
+                        "placement_course": placementCourse,
+                        "professor_override": course_data.get("prerequisites", {}).get(
+                            "professor_override", False
+                        ),
+                        "prereqDescription": course_data.get("prerequisites", {}).get(
+                            "text", ""
+                        ),
+                        "enrollmentText": course_data.get("overGuidelines", {}).get(
+                            "text", ""
+                        ),
                         "prefForMajor": course_data.get("overGuidelines", {}).get(
                             "preferenceForMajor", False
                         ),
@@ -310,7 +266,26 @@ class Command(BaseCommand):
                     },
                 )
 
-                course.overGuidelines = overGuide
+                course.courseCodes.set(codes)
+                course.departments.set(departments)
+                course.corequisites.set(corequisites)
+                course.professors.set(professors)
+                course.fallOfferings.set(fallOfferings)
+                course.springOfferings.set(springOfferings)
+                course.janOfferings.set(janOfferings)
+                course.divisions.set(divisions)
+                course.keywords.set(keywords)
+                course.recommended_courses.set(recommended)
+
+                for reqSet in course_data.get("prerequisites", {}).get("required", []):
+                    prereq_set = PrerequisiteSet.objects.create(
+                        prerequisite_for=course,
+                    )
+                    courses = [
+                        Course.objects.get_or_create(id=req)[0] for req in reqSet
+                    ]
+                    prereq_set.courses.set(courses)
+
                 course.save()
 
                 sections = []
@@ -322,7 +297,7 @@ class Command(BaseCommand):
                     )
                     section, _ = Section.objects.update_or_create(
                         section_number=section_number,
-                        myCourse=course,
+                        section_for=course,
                         defaults={
                             "days": section_data["daysOfWeek"],
                             "start_time": parse_time(section_data["startTime"]),
@@ -333,8 +308,6 @@ class Command(BaseCommand):
                     )
                     sections.append(section)
 
-                course.sections.set(sections)
-
                 self.stdout.write(
                     self.style.SUCCESS(
                         f'Successfully created course "{course.courseName}"'
@@ -343,6 +316,8 @@ class Command(BaseCommand):
 
             except Exception as e:
                 self.stdout.write(
-                    self.style.ERROR(f"Failed to create course: {str(e)}")
+                    self.style.ERROR(
+                        f"Failed to create course: {str(e)} for {course_data}"
+                    )
                 )
                 raise

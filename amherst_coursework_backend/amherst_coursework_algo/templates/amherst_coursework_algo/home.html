@@ -7,7 +7,13 @@
             
             <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
                 <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">Select Departments</button>
+                    <button type="button" class="dropbtn">
+                        {% if selected_depts %}
+                            Select Departments
+                        {% else %}
+                            All Departments
+                        {% endif %}
+                    </button>
                     <div class="dropdown-content">
                         {% for dept in departments %}
                             <label class="dropdown-item">
@@ -21,60 +27,42 @@
                     </div>
                 </div>
 
-                <div class="dropdown">
+                <div class="dropdown" onmouseleave="submitForm()">
                     <button type="button" class="dropbtn">
-                        {% if selected_div %}
-                            {{ selected_div }}
+                        {% if selected_divs %}
+                            Select Divisions
                         {% else %}
                             All Divisions
                         {% endif %}
                     </button>
                     <div class="dropdown-content">
-                        <label class="dropdown-item">
-                            <input type="radio" 
-                                   name="division" 
-                                   value=""
-                                   {% if not selected_div %}checked{% endif %}
-                                   onchange="submitForm()">
-                            All Divisions
-                        </label>
                         {% for div in divisions %}
                             <label class="dropdown-item">
-                                <input type="radio" 
+                                <input type="checkbox" 
                                        name="division" 
                                        value="{{ div.name }}"
-                                       {% if selected_div == div.name %}checked{% endif %}
-                                       onchange="submitForm()">
+                                       {% if div.name in selected_divs %}checked{% endif %}>
                                 {{ div.name }}
                             </label>
                         {% endfor %}
                     </div>
                 </div>
 
-                <div class="dropdown">
+                <div class="dropdown" onmouseleave="submitForm()">
                     <button type="button" class="dropbtn">
-                        {% if selected_level %}
-                            {{ selected_level }}-Level Courses
+                        {% if selected_levels %}
+                            Select Level Courses
                         {% else %}
                             All Levels
                         {% endif %}
                     </button>
                     <div class="dropdown-content">
-                        <label class="dropdown-item">
-                            <input type="radio" 
-                                   name="level" 
-                                   value=""
-                                   onchange="submitForm()"
-                                   {% if not selected_level %}checked{% endif %}>
-                            All Levels
-                        </label>
                         {% for level in levels %}
                             <label class="dropdown-item">
-                                <input type="radio" 
+                                <input type="checkbox" 
                                        name="level" 
                                        value="{{ level }}"
-                                       onchange="submitForm()"
-                                       {% if selected_level == level %}checked{% endif %}>
+                                       {% if level in selected_levels %}checked{% endif %}>
                                 {{ level }}-Level Courses
                             </label>
                         {% endfor %}

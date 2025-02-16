@@ -12,7 +12,10 @@ from amherst_coursework_algo.models import (
     Division,
     Keyword,
 )
-from amherst_coursework_algo.config.course_dictionaries import DEPARTMENT_NAME_TO_NUMBER, DEPARTMENT_NAME_TO_CODE
+from amherst_coursework_algo.config.course_dictionaries import (
+    DEPARTMENT_NAME_TO_NUMBER,
+    DEPARTMENT_NAME_TO_CODE,
+)
 import json
 
 """A Django management command to load course data from a JSON file into the database.

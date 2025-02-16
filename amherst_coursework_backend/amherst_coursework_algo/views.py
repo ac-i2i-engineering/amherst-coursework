@@ -18,10 +18,10 @@ def home(request):
     if selected_level:
         level_prefix = selected_level[0]
 
-
-        courses = courses.filter(courseCodes__value__contains=f"-{level_prefix}").distinct()
+        courses = courses.filter(
+            courseCodes__value__contains=f"-{level_prefix}"
+        ).distinct()
         print(f"Filtered courses: {[c.courseName for c in courses]}")
-
 
     return render(
         request,

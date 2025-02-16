@@ -12,7 +12,7 @@ from amherst_coursework_algo.models import (
     Division,
     Keyword,
 )
-from amherst_coursework_algo.config.course_dictionaries import DEPARTMENT_NAME_TO_NUMBER
+from amherst_coursework_algo.config.course_dictionaries import DEPARTMENT_NAME_TO_NUMBER, DEPARTMENT_NAME_TO_CODE
 import json
 
 """A Django management command to load course data from a JSON file into the database.
@@ -145,9 +145,7 @@ class Command(BaseCommand):
                     dept, _ = Department.objects.get_or_create(
                         name=department,
                         defaults={
-                            "code": codes[i].value.split("-")[
-                                0
-                            ],  # Get department code from course code (assumes departments and course codes are listed in same order)
+                            "code": DEPARTMENT_NAME_TO_CODE[department],
                         },
                     )
                     departments.append(dept)

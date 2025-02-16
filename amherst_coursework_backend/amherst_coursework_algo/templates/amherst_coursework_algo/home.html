@@ -4,18 +4,89 @@
     <div class = "main-content">
         <div class="container">
             <h1>Amherst College Course Catalog</h1>
+            
+            <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
+                <div class="dropdown" onmouseleave="submitForm()">
+                    <button type="button" class="dropbtn">Select Departments</button>
+                    <div class="dropdown-content">
+                        {% for dept in departments %}
+                            <label class="dropdown-item">
+                                <input type="checkbox" 
+                                       name="department" 
+                                       value="{{ dept.code }}"
+                                       {% if dept.code in selected_depts %}checked{% endif %}>
+                                {{ dept.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
 
-            <form method="GET" action="{% url 'catalog:home' %}" class="search-form">
-                <select name="department" class="search-dropdown">
-                    <option value="">All Departments</option>
-                    {% for dept in departments %}
-                        <option value="{{ dept.code }}" {% if selected_dept == dept.code %}selected{% endif %}>
-                            {{ dept.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="search-button">Search</button>
+                <div class="dropdown">
+                    <button type="button" class="dropbtn">
+                        {% if selected_div %}
+                            {{ selected_div }}
+                        {% else %}
+                            All Divisions
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        <label class="dropdown-item">
+                            <input type="radio" 
+                                   name="division" 
+                                   value=""
+                                   {% if not selected_div %}checked{% endif %}
+                                   onchange="submitForm()">
+                            All Divisions
+                        </label>
+                        {% for div in divisions %}
+                            <label class="dropdown-item">
+                                <input type="radio" 
+                                       name="division" 
+                                       value="{{ div.name }}"
+                                       {% if selected_div == div.name %}checked{% endif %}
+                                       onchange="submitForm()">
+                                {{ div.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button type="button" class="dropbtn">
+                        {% if selected_level %}
+                            {{ selected_level }}-Level Courses
+                        {% else %}
+                            All Levels
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-content">
+                        <label class="dropdown-item">
+                            <input type="radio" 
+                                   name="level" 
+                                   value=""
+                                   onchange="submitForm()"
+                                   {% if not selected_level %}checked{% endif %}>
+                            All Levels
+                        </label>
+                        {% for level in levels %}
+                            <label class="dropdown-item">
+                                <input type="radio" 
+                                       name="level" 
+                                       value="{{ level }}"
+                                       onchange="submitForm()"
+                                       {% if selected_level == level %}checked{% endif %}>
+                                {{ level }}-Level Courses
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
             </form>
+
+            <script>
+                function submitForm() {
+                    document.getElementById('filterForm').submit();
+                }
+                </script>
 
             <div class="course-list">
                 {% for course in courses %}

@@ -171,4 +171,5 @@ calendar_json_outputs
 .vscode
 amherst_coursework_backend/nonexistent.json
 amherst_coursework_backend/test_courses.json
-amherst_coursework_backend/db.sqlite3
+
+env

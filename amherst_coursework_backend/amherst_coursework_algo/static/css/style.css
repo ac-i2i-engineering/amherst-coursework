@@ -134,3 +134,23 @@ body .course-card {
     border-radius: 4px;
     cursor: pointer;
 }
+
+.search-container {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 5px rgba(74,144,226,0.3);
+}

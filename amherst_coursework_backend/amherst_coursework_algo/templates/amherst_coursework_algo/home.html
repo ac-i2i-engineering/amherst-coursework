@@ -6,6 +6,16 @@
             <h1>Amherst College Course Catalog</h1>
             
             <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
+                <div class="search-container">
+                    <input type="text" 
+                           name="search" 
+                           placeholder="Search courses..."
+                           value="{{ search_query|default:'' }}"
+                           class="search-input">
+                </div>
+
+                
+                
                 <div class="dropdown" onmouseleave="submitForm()">
                     <button type="button" class="dropbtn">
                         {% if selected_depts %}

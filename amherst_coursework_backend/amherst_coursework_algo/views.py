@@ -10,11 +10,11 @@ def home(request):
     selected_depts = request.GET.getlist("department", "")
     selected_divs = request.GET.getlist("division", "")
     selected_levels = request.GET.getlist("level", "")
-    search_query = request.GET.get('search', '')
+    search_query = request.GET.get("search", "")
 
     courses = Course.objects.all().order_by("courseName")
     if search_query:
-        courses = courses.filter(courseName__icontains=search_query)
+        courses = courses.filter(courseName__icontains=search_query).distinct()
     if selected_depts:
         courses = courses.filter(departments__code__in=selected_depts).distinct()
     if selected_divs:

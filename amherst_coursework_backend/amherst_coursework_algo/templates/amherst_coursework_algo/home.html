@@ -116,7 +116,7 @@
                             <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
                         {% endif %}
                         <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
-                        <button class="cart-button" onclick="toggleCart('{{ course.id }}', '{{ course.courseName|escapejs }}')"
+                        <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
                         data-course-id="{{course.id}}"> Add to Cart</button>
                     </div>
                 {% endfor %}
@@ -145,6 +145,7 @@
             
             // Check if course is already in cart
             let courseIndex = cart.indexOf(courseId);
+            event = event || window.event;
             let button = event.target;
         
             if (courseIndex === -1) {

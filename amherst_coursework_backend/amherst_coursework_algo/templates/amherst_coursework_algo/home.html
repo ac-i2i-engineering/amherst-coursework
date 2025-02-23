@@ -1,80 +1,39 @@
 {% extends "amherst_coursework_algo/base.html" %}
 {% block content %}
 <div class = "page-container">
+
+    <div id="side-panel" class="side-panel">
+        <button class="close-panel" onclick="togglePanel()">×</button>
+        <div id="panel-content">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+
+    <div id="cart-side-panel" class="side-panel cart-panel">
+        <h3>Saved Schedule</h3>
+        <div id="cart-items"></div>
+        <div id="cart-total">Total Courses: <span id="cart-count">0</span></div>
+        <button class="close-panel" onclick="toggleCartPanel()">×</button>
+    </div>
+
+    <button id="cart-toggle" class="cart-toggle-button" onclick="toggleCartPanel()">
+        View Saved Schedule (<span id="cart-count-header">0</span>)
+    </button>
+
     <div class = "main-content">
         <div class="container">
             <h1>Amherst College Course Catalog</h1>
-            
+
             <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_depts %}
-                            Select Departments
-                        {% else %}
-                            All Departments
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for dept in departments %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="department" 
-                                       value="{{ dept.code }}"
-                                       {% if dept.code in selected_depts %}checked{% endif %}>
-                                {{ dept.name }}
-                            </label>
-                        {% endfor %}
-                    </div>
+                <div class="search-container">
+                    <input type="text" 
+                           name="search" 
+                           placeholder="Search courses..."
+                           value="{{ search_query|default:'' }}"
+                           class="search-input">
                 </div>
-
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_divs %}
-                            Select Divisions
-                        {% else %}
-                            All Divisions
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for div in divisions %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="division" 
-                                       value="{{ div.name }}"
-                                       {% if div.name in selected_divs %}checked{% endif %}>
-                                {{ div.name }}
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_levels %}
-                            Select Level Courses
-                        {% else %}
-                            All Levels
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for level in levels %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="level" 
-                                       value="{{ level }}"
-                                       {% if level in selected_levels %}checked{% endif %}>
-                                {{ level }}-Level Courses
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
+                
             </form>
-
-            <script>
-                function submitForm() {
-                    document.getElementById('filterForm').submit();
-                }
-                </script>
 
             <div class="course-list">
                 {% for course in courses %}
@@ -89,18 +48,173 @@
                         {% if course.courseLink %}
                             <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
                         {% endif %}
+                        <p> Code:
+                            {% for code in course.courseCodes.all %}
+                                {{ code.value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> Divisions:
+                            {% for div in course.divisions.all %}
+                                {{ div.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> Keywords:
+                            {% for keyword in course.keywords.all %}
+                                {{ keyword.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> 
+                        {% if course.courseMaterialsLink %}
+                            <a href="{{ course.courseMaterialsLink }}" target="_blank">Course Materials Link</a>
+                        {% endif %}
+                        </p>
+
                         <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
+                        <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
+                        data-course-id="{{course.id}}"> Add to Saved Schedule</button>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 
-    <div id="side-panel" class="side-panel">
-        <button class="close-panel" onclick="togglePanel()">×</button>
-        <div id="panel-content">
-            <!-- Content loaded dynamically -->
-        </div>
-    </div>
+    
+
+
+    <script>
+        function submitForm() {
+            document.getElementById('filterForm').submit();
+        }
+        </script>
+
+    <script>
+        function toggleCartPanel() {
+            const panel = document.getElementById('cart-side-panel');
+            panel.classList.toggle('open');
+            updateCartDisplay();
+        }
+        function toggleCart(courseId) {
+            // Get existing cart or initialize empty array
+            let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+            
+            // Check if course is already in cart
+            let courseIndex = cart.indexOf(courseId)
+            event = event || window.event;
+            let button = event.target;
+        
+            if (courseIndex === -1) {
+                cart.push(courseId);
+                updateButtonState(courseId, true);
+            } else {
+                cart.splice(courseIndex, 1);
+                updateButtonState(courseId, false);
+            }
+        
+            // Save updated cart
+            localStorage.setItem('courseCart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+        // 1. Get DOM elements
+        const cartItems = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartCountHeader = document.getElementById('cart-count-header');
+        
+        // 2. Get cart data from localStorage
+        const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+
+        // 3. Clear existing content
+        cartItems.innerHTML = '';
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
+            cartCount.textContent = '0';
+            cartCountHeader.textContent = '0';
+            return;
+        }
+        
+        // Fetch course details from server
+        fetch(`/cart-courses/?${cart.map(id => `ids[]=${id}`).join('&')}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+        })
+            .then(data => {
+                cartItems.innerHTML = '';
+                data.courses.forEach(course => {
+                    const courseElement = document.createElement('div');
+                    courseElement.className = 'cart-item';
+                    courseElement.innerHTML = `
+                        <div class="cart-item-name">${course.name}</div>
+                        <button class="remove-from-cart" 
+                                onclick="toggleCart('${course.id}')">
+                                X
+                        </button>
+                    `;
+                    cartItems.appendChild(courseElement);
+                });
+                cartCount.textContent = cart.length;
+                cartCountHeader.textContent = cart.length;
+            });
+    }
+
+        function updateButtonState(courseId, inCart) {
+        // Update all buttons for this course
+        document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
+            button.textContent = inCart ? 'Remove from Saved Schedule' : 'Add to Saved Schedule';
+            if (inCart) {
+                button.classList.add('in-cart');
+            } else {
+                button.classList.remove('in-cart');
+            }
+        });
+}
+        </script>
+    
+    <script>
+        function togglePanel(courseId = null) {
+            const panel = document.getElementById('side-panel');
+            const panelContent = document.getElementById('panel-content');
+            
+            if (courseId) {
+                // This fetch call connects to your Django view
+                fetch(`/details/${courseId}/`)  
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load course details: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                    .then(html => {
+                        panelContent.innerHTML = html;
+                        panel.classList.add('open');
+                    });
+            } else {
+                panel.classList.remove('open');
+            }
+        }
+    </script>
+
+    <script>
+        // Initialize cart display when DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+
+            
+            // Update button states to match cart
+            const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+            document.querySelectorAll('.cart-button').forEach(button => {
+                const courseId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (cart.includes(courseId)) {
+                    button.textContent = 'Remove from Saved Schedule';
+                    button.classList.add('in-cart');
+                }
+            });
+        });
+    </script>
+
 </div>
 {% endblock %}

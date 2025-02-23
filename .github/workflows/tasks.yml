@@ -25,7 +25,7 @@ jobs:
     - name: Run Django Management Commands
       working-directory: ./amherst_coursework_backend
       run: |
-        python manage.py flush
+        echo "yes" | python manage.py flush
         python manage.py load_courses ./test.json
     - name: Commit and Push Changes
       run: |

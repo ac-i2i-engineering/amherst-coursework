@@ -10,14 +10,14 @@
     </div>
 
     <div id="cart-side-panel" class="side-panel cart-panel">
-        <h3>Course Cart</h3>
+        <h3>Saved Schedule</h3>
         <div id="cart-items"></div>
         <div id="cart-total">Total Courses: <span id="cart-count">0</span></div>
         <button class="close-panel" onclick="toggleCartPanel()">×</button>
     </div>
 
     <button id="cart-toggle" class="cart-toggle-button" onclick="toggleCartPanel()">
-        View Cart (<span id="cart-count-header">0</span>)
+        View Saved Schedule (<span id="cart-count-header">0</span>)
     </button>
 
     <div class = "main-content">
@@ -33,74 +33,7 @@
                            class="search-input">
                 </div>
                 
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_depts %}
-                            Select Departments
-                        {% else %}
-                            All Departments
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for dept in departments %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="department" 
-                                       value="{{ dept.code }}"
-                                       {% if dept.code in selected_depts %}checked{% endif %}>
-                                {{ dept.name }}
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_divs %}
-                            Select Divisions
-                        {% else %}
-                            All Divisions
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for div in divisions %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="division" 
-                                       value="{{ div.name }}"
-                                       {% if div.name in selected_divs %}checked{% endif %}>
-                                {{ div.name }}
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="dropdown" onmouseleave="submitForm()">
-                    <button type="button" class="dropbtn">
-                        {% if selected_levels %}
-                            Select Level Courses
-                        {% else %}
-                            All Levels
-                        {% endif %}
-                    </button>
-                    <div class="dropdown-content">
-                        {% for level in levels %}
-                            <label class="dropdown-item">
-                                <input type="checkbox" 
-                                       name="level" 
-                                       value="{{ level }}"
-                                       {% if level in selected_levels %}checked{% endif %}>
-                                {{ level }}-Level Courses
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-
             </form>
-
-            
-
 
             <div class="course-list">
                 {% for course in courses %}
@@ -115,9 +48,30 @@
                         {% if course.courseLink %}
                             <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
                         {% endif %}
+                        <p> Code:
+                            {% for code in course.courseCodes.all %}
+                                {{ code.value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> Divisions:
+                            {% for div in course.divisions.all %}
+                                {{ div.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> Keywords:
+                            {% for keyword in course.keywords.all %}
+                                {{ keyword.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p> 
+                        {% if course.courseMaterialsLink %}
+                            <a href="{{ course.courseMaterialsLink }}" target="_blank">Course Materials Link</a>
+                        {% endif %}
+                        </p>
+
                         <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
                         <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
-                        data-course-id="{{course.id}}"> Add to Cart</button>
+                        data-course-id="{{course.id}}"> Add to Saved Schedule</button>
                     </div>
                 {% endfor %}
             </div>
@@ -144,7 +98,7 @@
             let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
             
             // Check if course is already in cart
-            let courseIndex = cart.indexOf(courseId);
+            let courseIndex = cart.indexOf(courseId)
             event = event || window.event;
             let button = event.target;
         
@@ -174,7 +128,7 @@
         cartItems.innerHTML = '';
 
         if (cart.length === 0) {
-            cartItems.innerHTML = '<p>Your cart is empty</p>';
+            cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
             cartCount.textContent = '0';
             cartCountHeader.textContent = '0';
             return;
@@ -210,7 +164,7 @@
         function updateButtonState(courseId, inCart) {
         // Update all buttons for this course
         document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
-            button.textContent = inCart ? 'Remove from Cart' : 'Add to Cart';
+            button.textContent = inCart ? 'Remove from Saved Schedule' : 'Add to Saved Schedule';
             if (inCart) {
                 button.classList.add('in-cart');
             } else {
@@ -227,8 +181,13 @@
             
             if (courseId) {
                 // This fetch call connects to your Django view
-                fetch(`/details/${courseId}/`)
-                    .then(response => response.text())
+                fetch(`/details/${courseId}/`)  
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load course details: ${response.status}`);
+                    }
+                    return response.text();
+                })
                     .then(html => {
                         panelContent.innerHTML = html;
                         panel.classList.add('open');
@@ -250,7 +209,7 @@
             document.querySelectorAll('.cart-button').forEach(button => {
                 const courseId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
                 if (cart.includes(courseId)) {
-                    button.textContent = 'Remove from Cart';
+                    button.textContent = 'Remove from Saved Schedule';
                     button.classList.add('in-cart');
                 }
             });

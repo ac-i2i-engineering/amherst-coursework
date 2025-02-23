@@ -24,7 +24,7 @@ def home(request):
         level_prefixes = [selected_level[0] for selected_level in selected_levels]
         level_filters = Q()
         for prefix in level_prefixes:
-            level_filters |= Q(courseCodes__value__contains=f"-{prefix}")
+            level_filters |= Q(courseCodes__value__contains=f"{prefix}")
         courses = courses.filter(level_filters).distinct()
         print(f"Filtered courses: {[c.courseName for c in courses]}")
 
@@ -36,9 +36,6 @@ def home(request):
             "divisions": divisions,
             "levels": levels,
             "courses": courses,
-            "selected_depts": selected_depts,
-            "selected_divs": selected_divs,
-            "selected_levels": selected_levels,
             "search_query": search_query,
         },
     )

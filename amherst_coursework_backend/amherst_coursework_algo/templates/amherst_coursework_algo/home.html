@@ -1,5 +1,8 @@
 {% extends "amherst_coursework_algo/base.html" %}
 {% block content %}
+
+{{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
+
 <div class = "page-container">
 
     <div id="side-panel" class="side-panel">
@@ -24,20 +27,20 @@
         <div class="container">
             <h1>Amherst College Course Catalog</h1>
 
-            <form method="GET" action="{% url 'catalog:home' %}" class="search-form" id="filterForm">
-                <div class="search-container">
-                    <input type="text" 
-                           name="search" 
-                           placeholder="Search courses..."
-                           value="{{ search_query|default:'' }}"
-                           class="search-input">
-                </div>
-                
-            </form>
+            <div class="search-container">
+                <input type="text" 
+                       id="searchInput"
+                       placeholder="Search courses..."
+                       class="search-input"
+                       oninput="filterCourses(this.value, 0.3)">
+            </div>
 
-            <div class="course-list">
+            <div class="course-containter">
                 {% for course in courses %}
-                    <div class="course-card">
+                <div class="course-card" 
+                        data-course-name="{{ course.courseName }}"
+                        data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}">
                         <h2>{{ course.courseName }}</h2>
                         <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
@@ -82,6 +85,44 @@
 
 
     <script>
+
+    const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent);
+
+    function normalizeCode(code) {
+        // Remove any non-alphanumeric characters
+        const cleaned = code.replace(/[^a-z0-9]/gi, '');
+        return cleaned;
+    }
+
+    // Modify your existing filterCourses function
+    function filterCourses(searchQuery, similarityThreshold) {
+        searchQuery = searchQuery.toLowerCase().trim();
+        const courseCards = document.querySelectorAll('.course-card');
+        
+
+        courseCards.forEach(card => {
+            let matches = false;
+            
+            // Simple text matching
+            const courseName = card.dataset.courseName.toLowerCase();
+            const departmentCodes = card.dataset.departmentCodes.split(',');
+            const departmentNames = departmentCodes.map(code => 
+                CODE_TO_NAME[code.trim()] || ''
+            ).filter(name => name);
+            const courseCodes = card.dataset.courseCodes.split(',');
+            
+            matches = courseName.includes(searchQuery) || 
+                    departmentCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
+                    courseCodes.some(code => normalizeCode(code.toLowerCase()).includes(searchQuery)) ||
+                    courseCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
+                    departmentNames.some(name => name.toLowerCase().includes(searchQuery)); 
+            
+            card.style.display = matches ? 'block' : 'none'; 
+        });
+    }
+
+
+
         function submitForm() {
             document.getElementById('filterForm').submit();
         }

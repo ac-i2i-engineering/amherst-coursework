@@ -40,7 +40,9 @@
                 <div class="course-card" 
                         data-course-name="{{ course.courseName }}"
                         data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}">
                         <h2>{{ course.courseName }}</h2>
                         <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
@@ -110,12 +112,16 @@
                 CODE_TO_NAME[code.trim()] || ''
             ).filter(name => name);
             const courseCodes = card.dataset.courseCodes.split(',');
+            const courseDivisions = card.dataset.courseDivisions.split(',');
+            const courseKeywords = card.dataset.courseKeywords.split(',');
             
             matches = courseName.includes(searchQuery) || 
                     departmentCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
+                    departmentNames.some(name => name.toLowerCase().includes(searchQuery)) ||
                     courseCodes.some(code => normalizeCode(code.toLowerCase()).includes(searchQuery)) ||
                     courseCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
-                    departmentNames.some(name => name.toLowerCase().includes(searchQuery)); 
+                    courseDivisions.some(division => division.toLowerCase().includes(searchQuery)) ||
+                    courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery)); 
             
             card.style.display = matches ? 'block' : 'none'; 
         });

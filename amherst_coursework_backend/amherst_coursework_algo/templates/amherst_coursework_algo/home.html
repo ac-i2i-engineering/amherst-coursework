@@ -44,23 +44,20 @@
                         data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-description="{{ course.courseDescription }}">
+                        <p style="margin-top: 0;">
+                        {% for div in course.divisions.all %}
+                            <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
+                        {% endfor %}
+                        </p>
                         <h2>{{ course.courseName }}</h2>
                         <p>Department: 
                             {% for dept in course.departments.all %}
                                 {{ dept.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
-                        {% if course.courseLink %}
-                            <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
-                        {% endif %}
                         <p> Code:
                             {% for code in course.courseCodes.all %}
                                 {{ code.value }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                        <p> Divisions:
-                            {% for div in course.divisions.all %}
-                                {{ div.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
                         <p> Keywords:
@@ -68,14 +65,11 @@
                                 {{ keyword.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
-                        <p> 
-                        {% if course.courseMaterialsLink %}
-                            <a href="{{ course.courseMaterialsLink }}" target="_blank">Course Materials Link</a>
-                        {% endif %}
-                        </p>
-                        <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
-                        <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
-                        data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                        <div class="course-buttons">
+                            <button class ="panel-button" onclick="togglePanel('{{ course.id }}')">Show Details</button>
+                            <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
+                            data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -279,7 +273,8 @@
     function togglePanel(courseId = null) {
         const panel = document.getElementById('side-panel');
         const panelContent = document.getElementById('panel-content');
-        
+        const mainContent = document.querySelector('.main-content');
+
         if (courseId) {
             // This fetch call connects to your Django view
             fetch(`/details/${courseId}/`)  
@@ -292,9 +287,11 @@
                 .then(html => {
                     panelContent.innerHTML = html;
                     panel.classList.add('open');
+                    mainContent.classList.add('shifted');
                 });
         } else {
             panel.classList.remove('open');
+            mainContent.classList.remove('shifted');
         }
     }
 

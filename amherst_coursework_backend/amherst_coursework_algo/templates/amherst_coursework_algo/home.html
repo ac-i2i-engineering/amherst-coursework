@@ -32,7 +32,7 @@
                        id="searchInput"
                        placeholder="Search courses..."
                        class="search-input"
-                       oninput="filterCourses(this.value, 0.3)">
+                       oninput="filterCourses(this.value, 0.05)">
             </div>
 
             <div class="course-containter">
@@ -42,7 +42,8 @@
                         data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                        data-course-description="{{ course.courseDescription }}">
                         <h2>{{ course.courseName }}</h2>
                         <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
@@ -90,6 +91,38 @@
 
     const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent);
 
+    function tokenize(text) {
+        return text.toLowerCase()
+            .replace(/[^\w\s]/g, '')
+            .split(/\s+/)
+            .filter(word => word.length > 3);
+    }
+
+    function calculateTF(tokens) {
+        const tf = {};
+        tokens.forEach(token => {
+            tf[token] = (tf[token] || 0) + 1;
+        });
+        return tf;
+    }
+
+    function cosineSimilarity(tf1, tf2) {
+        let dotProduct = 0;
+        let norm1 = 0;
+        let norm2 = 0;
+        
+        for (const term in tf1) {
+            if (tf2[term]) dotProduct += tf1[term] * tf2[term];
+            norm1 += tf1[term] * tf1[term];
+        }
+        
+        for (const term in tf2) {
+            norm2 += tf2[term] * tf2[term];
+        }
+        
+        return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
+    }
+
     function normalizeCode(code) {
         // Remove any non-alphanumeric characters
         const cleaned = code.replace(/[^a-z0-9]/gi, '');
@@ -101,6 +134,7 @@
         searchQuery = searchQuery.toLowerCase().trim();
         const courseCards = document.querySelectorAll('.course-card');
         
+        let similarity_search = searchQuery.length > 5;
 
         courseCards.forEach(card => {
             let matches = false;
@@ -123,6 +157,23 @@
                     courseDivisions.some(division => division.toLowerCase().includes(searchQuery)) ||
                     courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery)); 
             
+            if (similarity_search) {
+                // Cosine similarity matching
+                const courseText = `${card.dataset.courseName} ${card.dataset.courseDescription}`;
+                
+                const queryTokens = tokenize(searchQuery);
+                const courseTokens = tokenize(courseText);
+                
+                
+                const queryTF = calculateTF(queryTokens);
+                const courseTF = calculateTF(courseTokens);
+                
+                const similarity = cosineSimilarity(queryTF, courseTF);
+                console.log(queryTokens, courseTokens, similarity);
+                matches = matches || similarity > similarityThreshold;
+            }
+
+
             card.style.display = matches ? 'block' : 'none'; 
         });
     }

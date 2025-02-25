@@ -17,7 +17,7 @@ def home(request):
         "amherst_coursework_algo/home.html",
         {
             "courses": courses,
-            'DEPARTMENT_CODE_TO_NAME': DEPARTMENT_CODE_TO_NAME,
+            "DEPARTMENT_CODE_TO_NAME": DEPARTMENT_CODE_TO_NAME,
         },
     )
 

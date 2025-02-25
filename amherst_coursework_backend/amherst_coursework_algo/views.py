@@ -11,7 +11,6 @@ from amherst_coursework_algo.config.course_dictionaries import (
 
 def home(request):
     courses = Course.objects.all().order_by("courseName")
-
     return render(
         request,
         "amherst_coursework_algo/home.html",
@@ -31,7 +30,6 @@ def get_cart_courses(request):
 
 def course_details(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    # Return partial template for AJAX requests
     return render(
         request,
         "amherst_coursework_algo/course_details_partial.html",

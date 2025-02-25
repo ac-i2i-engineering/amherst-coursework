@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Amherst Course Catalog</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <script>
     function togglePanel(courseId = null) {

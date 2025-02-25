@@ -1,6 +1,18 @@
 <!-- course_details_partial.html -->
 <div class="panel-details">
     <h2>{{ course.courseName }}</h2>
+    <div style="display: block; margin-bottom: 20px; font-style: none;">
+        <span><i class="fa-solid fa-circle-info"></i>
+        {% if course.courseLink %}
+            <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
+        {% endif %}
+        </span>
+        <span><i class="fa-solid fa-book"></i>
+        {% if course.courseMaterialsLink %}
+            <a href="{{ course.courseMaterialsLink }}" target="_blank">Course Materials Link</a>
+        {% endif %}
+        </span>
+    </div>
     <p class="standard-paragraph">{{ course.courseDescription }}</p>
     <!-- Other course details -->
 </div>

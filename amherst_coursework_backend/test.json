@@ -668,5 +668,33 @@
             "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/ANTH/ANTH-245-2122F",
             "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/ANTH/ANTH-245-2324F"
         }
+    },
+    {
+        "course_url": "https://www.amherst.edu/academiclife/departments/courses/2425S/COSC/COSC-111L-2425S",
+        "course_name": "Introduction to Computer Science Lab",
+        "course_acronyms": [
+            "COSC-111L"
+        ],
+        "divisions": [
+            "Science & Mathematics"
+        ],
+        "departments": {
+            "Computer Science": "https://www.amherst.edu/academiclife/departments/computer_science/courses"
+        },
+        "course_materials_links": [
+            "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2425S&division1=&department1=COSC&course1=111L&section1=01",
+            "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2425S&division1=&department1=COSC&course1=111L&section1=02",
+            "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2425S&division1=&department1=COSC&course1=111L&section1=03",
+            "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2425S&division1=&department1=COSC&course1=111L&section1=04"
+        ],
+        "description": "Lab section for COSC 111 This course introduces ideas and techniques that are fundamental to computer science. The course emphasizes procedural abstraction, algorithmic methods, and structured design techniques. Students will gain a working knowledge of a block-structured programming language and will use the language to solve a variety of problems illustrating ideas in computer science. A selection of other elementary topics will be presented. A laboratory section will meet once a week to give students practice with programming constructs. Two class hours and one one-hour laboratory per week. Limited to 40 students per class (20 per lab). In the Fall, 20 seats per class are reserved for first-year students. Fall semester: Professors Riondato and Wu. Spring semester: Professors Pentecost and Wu. How to handle overenrollment: Preference to first-year and sophomore students. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: See COSC 111 Quantitative ReasoningDivisions: Science & Mathematics",
+        "course_times_location": "<details class=\"js-form-wrapper form-wrapper\" id=\"acad-course-page-detail-head\"> <summary aria-controls=\"acad-course-page-detail-head\" aria-expanded=\"false\" role=\"button\">Course times and locations</summary><div class=\"details-wrapper\">\n<h5>COSC 111L - LAB</h5><p><strong>Section 01</strong><br>F 9:00 AM - 9:50 AM SCCE A331</br></p><p><strong>Section 02</strong><br/>F 10:00 AM - 10:50 AM SCCE A331</p><p><strong>Section 03</strong><br/>F 11:00 AM - 11:50 AM SCCE A331</p><p><strong>Section 04</strong><br/>F 12:00 PM - 12:50 PM SCCE A331</p></div>\n</details>",
+        "keywords": [
+            "Quantitative Reasoning"
+        ],
+        "offerings": {
+            "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/COSC/COSC-111L-2223F",
+            "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/COSC/COSC-111L-2425F"
+        }
     }
 ]

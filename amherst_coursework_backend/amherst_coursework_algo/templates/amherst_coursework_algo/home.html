@@ -38,6 +38,7 @@
             <div class="course-containter">
                 {% for course in courses %}
                 <div class="course-card" 
+                        data-course-id="{{ course.id }}"
                         data-course-name="{{ course.courseName }}"
                         data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
@@ -45,7 +46,6 @@
                         data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-description="{{ course.courseDescription }}">
                         <h2>{{ course.courseName }}</h2>
-                        <p>Credits: {{ course.credits }}</p>
                         <p>Department: 
                             {% for dept in course.departments.all %}
                                 {{ dept.name }}{% if not forloop.last %}, {% endif %}
@@ -136,6 +136,11 @@
         
         let similarity_search = searchQuery.length > 5;
 
+        if(searchQuery.includes("half"))
+            {
+                console.log("half");
+            }
+
         courseCards.forEach(card => {
             let matches = false;
             
@@ -148,6 +153,9 @@
             const courseCodes = card.dataset.courseCodes.split(',');
             const courseDivisions = card.dataset.courseDivisions.split(',');
             const courseKeywords = card.dataset.courseKeywords.split(',');
+            const courseID = card.dataset.courseId;
+            const halfFlag = Math.floor(courseID / 1000) % 10;
+            console.log(courseName, halfFlag);
             
             matches = courseName.includes(searchQuery) || 
                     departmentCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
@@ -155,7 +163,8 @@
                     courseCodes.some(code => normalizeCode(code.toLowerCase()).includes(searchQuery)) ||
                     courseCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
                     courseDivisions.some(division => division.toLowerCase().includes(searchQuery)) ||
-                    courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery)); 
+                    courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery));
+            
             
             if (similarity_search) {
                 // Cosine similarity matching
@@ -171,6 +180,18 @@
                 const similarity = cosineSimilarity(queryTF, courseTF);
                 console.log(queryTokens, courseTokens, similarity);
                 matches = matches || similarity > similarityThreshold;
+            }
+
+            if(searchQuery.includes("half"))
+            {
+                if(searchQuery.length > 4) 
+                {
+                    matches = matches && halfFlag;
+                }
+                else
+                {
+                    matches = halfFlag;
+                }
             }
 
 

@@ -1,5 +1,26 @@
-/* amherst_coursework_algo/static/css/style.css */
-body .course-container {
+/* Layout Components */
+.page-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-content {
+    flex: 1;
+    transition: margin 0.3s ease;
+    margin-right: 0;
+}
+
+/* Course Grid */
+.course-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
@@ -13,70 +34,75 @@ body .course-container {
     padding: 15px;
     transition: opacity 0.3s ease, transform 0.3s ease;
     display: block;
-    opacity: 1; 
+    opacity: 1;
 }
 
 .course-card.hidden {
     display: none;
 }
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-.button {
-    background-color: #441f7e;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-/* style.css */
-.page-container {
-    display: flex;          /* Creates side-by-side layout */
-    width: 100%;
-    min-height: 100vh;
-    position: relative;     /* For child positioning */
-    overflow-x: hidden;     /* Prevent horizontal scroll */
-}
 
-.main-content {
-    flex: 1;               /* Takes available space */
-    transition: margin 0.3s ease;
-    margin-right: 0;       /* Initial state */
-}
-
+/* Side Panel Styles */
 .side-panel {
-    position: fixed;       /* Fix panel to viewport */
+    position: fixed;
     top: 0;
-    right: -600px;             /* Align to right */
-    height: 100vh;        /* Full height */
-    width: 0;             /* Hidden initially */
+    right: -600px;
+    height: 100vh;
+    width: 0;
     background: #fff;
     border-left: 1px solid #ddd;
-    overflow-y: auto;     /* Scroll if content is tall */
+    overflow-y: auto;
     transition: width 0.3s ease;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
 }
 
 .side-panel.open {
-    width: 40%;         /* Panel width when open */
+    width: 40%;
     right: 0;
 }
 
-.close-panel {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    border: none;
-    background: none;
-    font-size: 24px;
+.panel-content {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Cart Panel Specific */
+.cart-panel {
+    padding: 20px;
+}
+
+.cart-items-container {
+    margin: 15px 0;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+}
+
+.cart-item-name {
+    flex: 1;
+    margin-right: 10px;
+}
+
+#cart-total {
+    margin-top: 20px;
+    font-weight: bold;
+    border-top: 2px solid #eee;
+    padding-top: 10px;
+}
+
+/* Buttons */
+.button, .cart-button, .dropbtn, .search-dropdown {
+    background-color: #4a0099;
+    color: white;
+    padding: 10px;
+    border: 4px solid #4a0099;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -89,18 +115,70 @@ body .course-container {
     cursor: pointer;
 }
 
-.panel-content {
-    padding: 20px;        /* Inner spacing */
+.close-panel {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.remove-from-cart {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-from-cart:hover {
+    background-color: #cc0000;
+}
+
+.cart-toggle-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #4a0099;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+}
+
+.in-cart {
+    background-color: #874ec4;
+    border: 4px solid #874ec4;
+}
+
+/* Search Components */
+.search-container {
+    margin-bottom: 20px;
     width: 100%;
-    box-sizing: border-box;
+    max-width: 500px;
 }
-.standard-paragraph {
+
+.search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 16px;
-    line-height: 1.5;
-    margin: 20px 20px;
 }
 
+.search-input:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 5px rgba(74,144,226,0.3);
+}
 
+/* Dropdown Components */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -132,119 +210,15 @@ body .course-container {
     background-color: #f5f5f5;
 }
 
-.dropbtn {
-    background-color: #4a0099;
-    color: white;
-    padding: 10px 10px;
-    border: 4px solid #4a0099;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.search-dropdown {
-    background-color: #4a0099;
-    color: white;
-    padding: 10px 10px;
-    border: 4px solid #4a0099;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.search-container {
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 500px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+/* Utility Classes */
+.standard-paragraph {
     font-size: 16px;
+    line-height: 1.5;
+    margin: 20px;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: #4A90E2;
-    box-shadow: 0 0 5px rgba(74,144,226,0.3);
-}
-
-.cart-panel {
-    padding: 20px
-}
-
-#cart-content {
-    padding: 20px;
-    margin-top: 40px;    /* Space for close button */
-}
-
-.cart-items-container {
-    margin: 15px 0;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 5px;
-}
-
-.cart-item-name {
-    flex: 1;
-    margin-right: 10px;
-}
-
-.remove-from-cart {
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.remove-from-cart:hover {
-    background-color: #cc0000;
-}
-
-#cart-total {
-    margin-top: 20px;
-    font-weight: bold;
-    border-top: 2px solid #eee;
-    padding-top: 10px;
-}
-
-.in-cart {
-    background-color: #874ec4 !important;
-    border: 4px solid #874ec4 !important;
-}
-
-.cart-button {
-    background-color: #4a0099;
-    color: white;
-    padding: 10px 10px;
-    border: 4px solid #4a0099;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
+/* Panel Toggle States */
 .side-panel.open ~ .cart-toggle-button,
 .cart-panel.open ~ .cart-toggle-button {
     display: none;
-}
-.cart-toggle-button {
-    display: block;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    background-color: #4a0099;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }

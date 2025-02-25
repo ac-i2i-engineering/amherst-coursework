@@ -55,9 +55,6 @@
                                 {{ dept.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
-                        {% if course.courseLink %}
-                            <a href="{{ course.courseLink }}" target="_blank">Course Link</a>
-                        {% endif %}
                         <p> Code:
                             {% for code in course.courseCodes.all %}
                                 {{ code.value }}{% if not forloop.last %}, {% endif %}
@@ -67,11 +64,6 @@
                             {% for keyword in course.keywords.all %}
                                 {{ keyword.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
-                        </p>
-                        <p> 
-                        {% if course.courseMaterialsLink %}
-                            <a href="{{ course.courseMaterialsLink }}" target="_blank">Course Materials Link</a>
-                        {% endif %}
                         </p>
                         <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
                         <button class="cart-button" onclick="toggleCart('{{ course.id }}')"

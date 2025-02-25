@@ -44,7 +44,7 @@
                         data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-description="{{ course.courseDescription }}">
-                        <p>
+                        <p style="margin-top: 0;">
                         {% for div in course.divisions.all %}
                             <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
                         {% endfor %}
@@ -65,9 +65,11 @@
                                 {{ keyword.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
-                        <button class = 'panel-button' onclick="togglePanel('{{ course.id }}')">Show Details</button>
-                        <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
-                        data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                        <div class="course-buttons">
+                            <button class ="panel-button" onclick="togglePanel('{{ course.id }}')">Show Details</button>
+                            <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
+                            data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

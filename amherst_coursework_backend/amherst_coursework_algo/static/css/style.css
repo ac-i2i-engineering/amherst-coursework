@@ -23,7 +23,7 @@
 }
 
 .main-content.shifted {
-    margin-right: calc(40% + 20px);
+    margin-right: calc(40% + 100px);
 }
 
 h1, h2 {
@@ -108,6 +108,7 @@ p {
     right: -600px;
     height: 100vh;
     width: 0;
+    padding: 40px;
     background: #fff;
     border-left: 1px solid #ddd;
     overflow-y: auto;
@@ -124,6 +125,11 @@ p {
     padding: 20px;
     width: 100%;
     box-sizing: border-box;
+}
+
+.panel-details h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 
 /* Cart Panel Specific */

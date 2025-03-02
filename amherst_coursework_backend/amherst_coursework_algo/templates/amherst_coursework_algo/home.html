@@ -31,19 +31,13 @@
                        id="searchInput"
                        placeholder="Search courses..."
                        class="search-input"
-                       oninput="filterCourses(this.value, 0.05)">
+                       oninput="search_filter(this.value, 0.05)">
             </div>
 
             <div class="course-containter">
                 {% for course in courses %}
                 <div class="course-card" 
-                        data-course-id="{{ course.id }}"
-                        data-course-name="{{ course.courseName }}"
-                        data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-description="{{ course.courseDescription }}">
+                        data-course-id="{{ course.id }}">
                         <h2>{{ course.courseName }}</h2>
                         <p>Department: 
                             {% for dept in course.departments.all %}
@@ -86,7 +80,39 @@
 
 
     <script>
+
+    
     const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent);
+
+    let globalCourseList = [];
+
+    // Add this function to initialize courses
+    async function initializeCourses() {
+        const courseCards = document.querySelectorAll('.course-card');
+        
+        // Fetch all courses once
+        await Promise.all(Array.from(courseCards).map(async (card, index) => {
+            const courseId = card.dataset.courseId;
+            const course = await getCourseById(courseId);
+            if (course) {
+                globalCourseList[index] = course;
+            }
+        }));
+    }
+
+    async function getCourseById(courseId) {
+        try {
+            const response = await fetch(`/api/course/${courseId}/`);
+            if (!response.ok) {
+                throw new Error('Course not found');
+            }
+            const data = await response.json();
+            return data.course;
+        } catch (error) {
+            console.error('Error fetching course:', error);
+            return null;
+        }
+}
 
     function tokenize(text) {
         return text.toLowerCase()
@@ -111,6 +137,11 @@
         for (const term in tf1) {
             if (tf2[term]) dotProduct += tf1[term] * tf2[term];
             norm1 += tf1[term] * tf1[term];
+            for (const docTerm in tf2) {
+                if (docTerm.includes(term)) {
+                    dotProduct += tf1[term] * tf2[docTerm];
+                }
+            }
         }
         
         for (const term in tf2) {
@@ -126,69 +157,140 @@
         return cleaned;
     }
 
-    function filterCourses(searchQuery, similarityThreshold) {
+    function relevant_courseName(searchQuery, courses) {
+        return courses.map(course => 
+            course.name.toLowerCase().includes(searchQuery.toLowerCase()) ? 1 : 0
+        );
+    }
+
+    function relevant_departmentCodes(searchQuery, courses) {
+        return courses.map(course => 
+            course.departments.some(dept => 
+                dept.code.toLowerCase().includes(searchQuery.toLowerCase())
+            ) ? 1 : 0
+        );
+    }
+
+    function relevant_departmentNames(searchQuery, courses) {
+        return courses.map(course => 
+            course.departments.some(dept => 
+                dept.name.toLowerCase().includes(searchQuery.toLowerCase())
+            ) ? 1 : 0
+        );
+    }
+
+    function relevant_courseCodes(searchQuery, courses) {
+        return courses.map(course => 
+            course.courseCodes.some(code => 
+                code.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                normalizeCode(code.toLowerCase()).includes(searchQuery.toLowerCase())
+            ) ? 1 : 0
+        );
+    }
+
+    function relevant_divisions(searchQuery, courses) {
+        return courses.map(course => 
+            course.divisions.some(division => 
+                division.toLowerCase().includes(searchQuery.toLowerCase())
+            ) ? 1 : 0
+        );
+    }
+
+    function relevant_keywords(searchQuery, courses) {
+        return courses.map(course => 
+            course.keywords.some(word => 
+                word.toLowerCase().includes(searchQuery.toLowerCase())
+            ) ? 1 : 0
+        );
+    }
+    
+    function similarity_filtering(query, courses, similarityThreshold) {
+        return courses.map(course => {
+        // Combine all relevant course information
+        const courseText = [
+            course.name || '',
+            course.description || '',
+            (course.departments || []).map(dept => dept.name).join(' '),
+            (course.professors || []).map(prof => prof.name).join(' '),
+            (course.keywords || []).join(' ')
+        ].join(' ').toLowerCase();
+
+        // Tokenize and create term frequency vectors
+        const queryTokens = tokenize(query);
+        const courseTokens = tokenize(courseText);
+        
+        const queryTF = calculateTF(queryTokens);
+        const courseTF = calculateTF(courseTokens);
+        
+        // Calculate similarity
+        const similarity = cosineSimilarity(queryTF, courseTF);
+        
+        return similarity > similarityThreshold ? 1 : 0;
+    });
+    }
+
+
+    function half_courses(searchQuery, courses) {
+        if (searchQuery.toLowerCase().includes("half")) {
+            return courses.map(course => {
+                // Convert ID to string and get 4th digit from right
+                const idString = course.id.toString();
+                const fourthDigit = idString.length >= 4 ? 
+                    parseInt(idString[idString.length - 4]) : 0;
+                // Return 1 if fourth digit is 1 (half course), 0 otherwise
+                return fourthDigit === 1 ? 1 : 0;
+            });
+        }
+        // If not searching for half courses, return array of 1s
+        return courses.map(() => 1);
+    }
+
+    async function search_filter(searchQuery, similarityThreshold) {
         searchQuery = searchQuery.toLowerCase().trim();
         const courseCards = document.querySelectorAll('.course-card');
+        const courseList = [];
         
-        let similarity_search = searchQuery.length > 5;
+        // Get indicator lists from each relevancy function
+        const nameIndicators = relevant_courseName(searchQuery, globalCourseList);
+        const deptCodeIndicators = relevant_departmentCodes(searchQuery, globalCourseList);
+        const deptNameIndicators = relevant_departmentNames(searchQuery, globalCourseList);
+        const courseCodeIndicators = relevant_courseCodes(searchQuery, globalCourseList);
+        const divisionIndicators = relevant_divisions(searchQuery, globalCourseList);
+        const keywordIndicators = relevant_keywords(searchQuery, globalCourseList);
+        const halfFlag = half_courses(searchQuery, globalCourseList);
+        const similarityIndicators = similarity_filtering(searchQuery, globalCourseList, similarityThreshold)
 
-        courseCards.forEach(card => {
-            let matches = false;
-            
-            // Simple text matching
-            const courseName = card.dataset.courseName.toLowerCase();
-            const departmentCodes = card.dataset.departmentCodes.split(',');
-            const departmentNames = departmentCodes.map(code => 
-                CODE_TO_NAME[code.trim()] || ''
-            ).filter(name => name);
-            const courseCodes = card.dataset.courseCodes.split(',');
-            const courseDivisions = card.dataset.courseDivisions.split(',');
-            const courseKeywords = card.dataset.courseKeywords.split(',');
-            const courseID = card.dataset.courseId;
-            const halfFlag = Math.floor(courseID / 1000) % 10;
-            console.log(courseName, halfFlag);
-            
-            matches = courseName.includes(searchQuery) || 
-                    departmentCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
-                    departmentNames.some(name => name.toLowerCase().includes(searchQuery)) ||
-                    courseCodes.some(code => normalizeCode(code.toLowerCase()).includes(searchQuery)) ||
-                    courseCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
-                    courseDivisions.some(division => division.toLowerCase().includes(searchQuery)) ||
-                    courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery));
-            
-            
-            if (similarity_search) {
-                // Cosine similarity matching
-                const courseText = `${card.dataset.courseName} ${card.dataset.courseDescription}`;
-                
-                const queryTokens = tokenize(searchQuery);
-                const courseTokens = tokenize(courseText);
-                
-                
-                const queryTF = calculateTF(queryTokens);
-                const courseTF = calculateTF(courseTokens);
-                
-                const similarity = cosineSimilarity(queryTF, courseTF);
-                console.log(queryTokens, courseTokens, similarity);
-                matches = matches || similarity > similarityThreshold;
+        // Combine indicators using bitwise OR
+        const finalIndicators = nameIndicators.map((val, idx) => {
+            const baseMatch = val | 
+                deptCodeIndicators[idx] | 
+                deptNameIndicators[idx] | 
+                courseCodeIndicators[idx] | 
+                divisionIndicators[idx] | 
+                keywordIndicators[idx]
+            if (searchQuery.includes("half")) {
+                return baseMatch && halfFlag[idx];
             }
 
-            if(searchQuery.includes("half"))
-            {
-                if(searchQuery.length > 4) 
-                {
-                    matches = matches && halfFlag;
-                }
-                else
-                {
-                    matches = halfFlag;
-                }
+            if (searchQuery.length > 5) {
+                return baseMatch || similarityIndicators[idx]
             }
+            
+            return baseMatch;
+        }
+        );
+        
 
-
-            card.style.display = matches ? 'block' : 'none'; 
+        courseCards.forEach((card, index) => {
+            if (finalIndicators[index]) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
         });
+
     }
+
 
     function toggleCartPanel() {
         const panel = document.getElementById('cart-side-panel');
@@ -297,9 +399,11 @@
             panel.classList.remove('open');
         }
     }
+    
 
         // Initialize cart display when DOM content is loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+        await initializeCourses();
         updateCartDisplay();
 
         // Update button states to match cart

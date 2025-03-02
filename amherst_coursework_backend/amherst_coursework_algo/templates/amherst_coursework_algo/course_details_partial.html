@@ -3,7 +3,7 @@
 <!-- course_details_partial.html -->
 <div class="panel-details">
     <h2>{{ course.courseName }}</h2>
-    <div style="display: block; margin-bottom: 20px; font-style: none;">
+    <div class="panel-links" style="display: block; margin-bottom: 20px; font-style: none;">
         <span style="margin-right: 5px;"><i class="fa-solid fa-circle-info" style="color: #9556b0"></i>
         {% if course.courseLink %}
             <a href="{{ course.courseLink }}" target="_blank" style="color: #5f4d73; text-decoration: none;">Course Link</a>

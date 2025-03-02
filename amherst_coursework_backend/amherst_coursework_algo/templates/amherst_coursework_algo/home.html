@@ -4,7 +4,6 @@
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
 
 <div class = "page-container">
-
     <div id="side-panel" class="side-panel">
         <button class="close-panel" onclick="togglePanel()">×</button>
         <div id="panel-content">
@@ -36,7 +35,7 @@
 
             <div class="course-container">
                 {% for course in courses %}
-                <div class="course-card" 
+                <div class="course-card"
                         data-course-id="{{ course.id }}"
                         data-course-name="{{ course.courseName }}"
                         data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
@@ -48,32 +47,23 @@
                             <div class="course-card-left">
                                 <p class="course-code">
                                     {% for code in course.courseCodes.all %}
-                                        {{ code.value }}{% if not forloop.last %}, {% endif %}
+                                    <span class="course-code">{{ code.value }}</span>{% if not forloop.last %} {% endif %}
                                     {% endfor %}
                                 </p>
                             </div>
                             <div class="course-card-right">
-                                <p style="margin-top: 0;">
-                                    {% for div in course.divisions.all %}
-                                        <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
-                                    {% endfor %}
-                                </p>
-                                <h2 class="course-name">{{ course.courseName }}</h2>
-                                <p> 
-                                    {% for dept in course.departments.all %}
-                                        {{ dept.name }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                                <p class="keywords-text">
-                                    {% for keyword in course.keywords.all %}
-                                        {{ keyword.name }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </p>
-                                <div class="course-buttons">
-                                    <button class ="panel-button" onclick="togglePanel('{{ course.id }}')">Show Details</button>
-                                    <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
-                                    data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                                <div class="course-header">
+                                    <div class="course-divisions">
+                                        {% for div in course.divisions.all %}
+                                            <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <button class="cart-button" onclick="handleCartClick(event, '{{ course.id }}')" data-course-id="{{course.id}}">
+                                        <i class="fa-solid fa-plus" style="color: #fff"></i>
+                                    </button>
                                 </div>
+                                <h2 class="course-name">{{ course.courseName }}</h2>
+                                <p class="course-description">{{ course.courseDescription }}</p>
                             </div>
                         </div>
                     </div>
@@ -190,6 +180,12 @@
         });
     }
 
+    /* Add this to your script section */
+    function handleCartClick(event, courseId) {
+        event.stopPropagation();  // Prevent event from bubbling up to course-card
+        toggleCart(courseId);
+    }
+
     function toggleCartPanel() {
         const panel = document.getElementById('cart-side-panel');
         panel.classList.toggle('open');
@@ -265,15 +261,16 @@
     }
 
     function updateButtonState(courseId, inCart) {
-    // Update all buttons for this course
-    document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
-        button.textContent = inCart ? 'Remove from Saved Schedule' : 'Add to Saved Schedule';
-        if (inCart) {
-            button.classList.add('in-cart');
-        } else {
-            button.classList.remove('in-cart');
-        }
-    });
+        document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
+            const icon = button.querySelector('i');
+            if (inCart) {
+                icon.className = 'fa-solid fa-check';
+                button.classList.add('in-cart');
+            } else {
+                icon.className = 'fa-solid fa-plus';
+                button.classList.remove('in-cart');
+            }
+        });
     }
 
     function togglePanel(courseId = null) {
@@ -283,7 +280,8 @@
         const courseContainer = document.querySelector('.course-container');
 
         if (courseId) {
-            // This fetch call connects to your Django view
+            const clickedCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
+
             fetch(`/details/${courseId}/`)  
             .then(response => {
                 if (!response.ok) {
@@ -297,6 +295,16 @@
                         panel.classList.add('open');
                         mainContent.classList.add('shifted');
                         courseContainer.classList.add('shifted');
+
+                        // After panel opens, scroll the clicked card into view
+                        setTimeout(() => {
+                            if (clickedCard) {
+                                clickedCard.scrollIntoView({ 
+                                    behavior: 'smooth', 
+                                    block: 'center'
+                                });
+                            }
+                        }, 100); // Wait for shift animation to complete
                     });
                 });
         } else {
@@ -304,6 +312,10 @@
             courseContainer.style.opacity = '0';
             courseContainer.classList.add('hidden');
             panel.classList.add('closing');
+
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.classList.remove('active');
+            });
             
             setTimeout(() => {
                 panel.classList.remove('open');
@@ -319,15 +331,32 @@
                     
                     setTimeout(() => {
                         courseContainer.classList.remove('fade-in');
-                    }, 400);
+                    }, 300);
                 }, 200);
-            }, 400);
+            }, 600);
         }
     }
 
         // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', function() {
         updateCartDisplay();
+
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('click', function(event) {
+                if (!event.target.closest('.cart-button')) {
+                    // Remove active class from all cards
+                    document.querySelectorAll('.course-card').forEach(c => {
+                        c.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked card
+                    this.classList.add('active');
+                    
+                    const courseId = this.dataset.courseId;
+                    togglePanel(courseId);
+                }
+            });
+        });
 
         // Update button states to match cart
         const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');

@@ -34,7 +34,7 @@
                        oninput="filterCourses(this.value, 0.05)">
             </div>
 
-            <div class="course-containter">
+            <div class="course-container">
                 {% for course in courses %}
                 <div class="course-card" 
                         data-course-id="{{ course.id }}"
@@ -44,31 +44,37 @@
                         data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-course-description="{{ course.courseDescription }}">
-                        <p style="margin-top: 0;">
-                        {% for div in course.divisions.all %}
-                            <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
-                        {% endfor %}
-                        </p>
-                        <h2>{{ course.courseName }}</h2>
-                        <p>Department: 
-                            {% for dept in course.departments.all %}
-                                {{ dept.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                        <p> Code:
-                            {% for code in course.courseCodes.all %}
-                                {{ code.value }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                        <p> Keywords:
-                            {% for keyword in course.keywords.all %}
-                                {{ keyword.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                        <div class="course-buttons">
-                            <button class ="panel-button" onclick="togglePanel('{{ course.id }}')">Show Details</button>
-                            <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
-                            data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                        <div class="course-card-columns">
+                            <div class="course-card-left">
+                                <p class="course-code">
+                                    {% for code in course.courseCodes.all %}
+                                        {{ code.value }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            <div class="course-card-right">
+                                <p style="margin-top: 0;">
+                                    {% for div in course.divisions.all %}
+                                        <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <h2 class="course-name">{{ course.courseName }}</h2>
+                                <p> 
+                                    {% for dept in course.departments.all %}
+                                        {{ dept.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <p class="keywords-text">
+                                    {% for keyword in course.keywords.all %}
+                                        {{ keyword.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <div class="course-buttons">
+                                    <button class ="panel-button" onclick="togglePanel('{{ course.id }}')">Show Details</button>
+                                    <button class="cart-button" onclick="toggleCart('{{ course.id }}')"
+                                    data-course-id="{{course.id}}"> Add to Saved Schedule</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -274,6 +280,7 @@
         const panel = document.getElementById('side-panel');
         const panelContent = document.getElementById('panel-content');
         const mainContent = document.querySelector('.main-content');
+        const courseContainer = document.querySelector('.course-container');
 
         if (courseId) {
             // This fetch call connects to your Django view
@@ -286,12 +293,35 @@
             })
                 .then(html => {
                     panelContent.innerHTML = html;
-                    panel.classList.add('open');
-                    mainContent.classList.add('shifted');
+                    requestAnimationFrame(() => {
+                        panel.classList.add('open');
+                        mainContent.classList.add('shifted');
+                        courseContainer.classList.add('shifted');
+                    });
                 });
         } else {
-            panel.classList.remove('open');
-            mainContent.classList.remove('shifted');
+            // Closing panel
+            courseContainer.style.opacity = '0';
+            courseContainer.classList.add('hidden');
+            panel.classList.add('closing');
+            
+            setTimeout(() => {
+                panel.classList.remove('open');
+                panel.classList.remove('closing');
+                mainContent.classList.remove('shifted');
+                courseContainer.classList.remove('shifted');
+                
+                // Fade content back in only after panel is closed and layout is adjusted
+                setTimeout(() => {
+                    courseContainer.classList.add('fade-in');
+                    courseContainer.classList.remove('hidden');
+                    courseContainer.style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        courseContainer.classList.remove('fade-in');
+                    }, 400);
+                }, 200);
+            }, 400);
         }
     }
 

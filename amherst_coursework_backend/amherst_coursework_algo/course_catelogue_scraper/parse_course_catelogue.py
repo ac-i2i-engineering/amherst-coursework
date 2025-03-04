@@ -1,7 +1,6 @@
 # TODO: Run the algo on all departments and manually go through the outputs
 
 import time
-import html
 from typing import Tuple
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -113,11 +112,19 @@ def get_all_department_courses():
         return {}
 
 # Helper function to find all siblings including text nodes
-def find_next_siblings_with_text(tag):
-    """Find all siblings (including text nodes) that come after the given tag."""
+def find_next_siblings_with_text(tag, limit: int = -1):
+    """Find siblings (including text nodes) that come after the given tag.
+    
+    Args:
+        tag: The starting tag to find siblings from
+        limit: Maximum number of siblings to return. -1 means no limit.
+    
+    Returns:
+        List of siblings (Tags and text nodes)
+    """
     current = tag.next_sibling
     siblings = []
-    while current:
+    while current and (limit == -1 or len(siblings) < limit):
         if isinstance(current, (NavigableString, Tag)):
             # Only add non-empty text nodes
             if isinstance(current, NavigableString) and current.strip():
@@ -219,6 +226,63 @@ def parse_course_first_deg(html_content, course_url) -> Optional[str]:
             else:
                 logger.debug("Successfully extracted course times and locations")
 
+        # Get professors information
+        professors = []
+        faculty_header = soup.find("h4", string="Faculty")
+        
+        if faculty_header:
+            logger.debug("Found Faculty section header")
+            faculty_p = faculty_header.find_next("p")
+            
+            if faculty_p:
+                faculty_links = faculty_p.find_all("a")
+                logger.debug(f"Found {len(faculty_links)} faculty links")
+                
+                for link in faculty_links:
+                    try:
+                        prof_name = link.text.strip()
+                        prof_link = link["href"]
+                        if not prof_link.startswith('http'):
+                            prof_link = "https://www.amherst.edu" + prof_link
+                            
+                        # Find the next text node after the link and look for section number
+                        next_text = link.next_sibling
+                        if next_text:
+                            section_match = re.search(r'\(Section\s*(\d+)\)', next_text)
+                            section = section_match.group(1) if section_match else None
+                        else:
+                            section = None
+                        
+                        professors.append({
+                            "name": prof_name,
+                            "link": prof_link,
+                            "section": section
+                        })
+                        logger.debug(f"Added professor: {prof_name} (Section: {section})")
+                        
+                    except Exception as e:
+                        logger.error(f"Error parsing professor link: {e}")
+                        continue
+                
+            else:
+                logger.warning("Faculty header found but no paragraph with professor information")
+        else:
+            logger.debug("No Faculty section found, attempting to extract from description")
+            prof_match = re.search(r'Professor (\w+)', description)
+            if prof_match:
+                prof_name = prof_match.group(1)
+                professors.append({
+                    "name": prof_name,
+                    "link": None,
+                    "section": None
+                })
+                logger.debug(f"Extracted professor {prof_name} from description")
+            else:
+                logger.warning("No professor information found in description")
+
+        if not professors:
+            logger.warning("No professor information found for this course")
+
         # Extract divisions and keywords
         keywords_header = soup.find('h4', string='Keywords')
         divisions = []
@@ -285,6 +349,7 @@ def parse_course_first_deg(html_content, course_url) -> Optional[str]:
             "course_acronyms": acronyms,
             "divisions": divisions,
             "departments": departments,
+            "professors": professors,
             "course_materials_links": materials_links,
             "description": description,
             "course_times_location": times_html,
@@ -444,41 +509,166 @@ def parse_course_second_deg(course_data: dict) -> dict:
     course_data["sections"] = sections_info
     return course_data
 
-def process_all_courses_second_deg(testing_mode: bool = False):
-    """Process all courses with second degree parsing."""
-    output_path = 'course_catelogue_scraper/parsing_results/2nd_deg_parsed_courses.json'
+def parse_all_courses_second_deg():
+    """Parse all courses to generate enhanced course information."""
+    input_path = 'course_catelogue_scraper/parsing_results/parsed_courses_detailed.json'
+    output_path = 'course_catelogue_scraper/parsing_results/parsed_courses_second_deg.json'
     
     try:
-        # Read first degree parsed data
-        with open('course_catelogue_scraper/parsing_results/parsed_courses_detailed.json', 'r') as f:
+        # Load existing first degree parsed courses
+        with open(input_path, 'r') as f:
             departments = json.load(f)
             
-        total_depts = len(departments)
-        processed_depts = 0
-            
-        # Process each department's courses
-        for dept_name, courses in departments.items():
-            processed_depts += 1
-            logger.info(f"Processing department {processed_depts}/{total_depts}: {dept_name}")
-            
-            total_courses = len(courses)
-            for i, course in enumerate(courses):
-                logger.info(f"Processing course {i+1}/{total_courses} in {dept_name}")
-                courses[i] = parse_course_second_deg(course)
-                
-                # Save incrementally in testing mode
-                if testing_mode:
-                    with open(output_path, 'w') as f:
-                        json.dump(departments, f, indent=4)
-                    logger.info(f"Saved incremental results to {output_path}")
-                
-        # Save final results
-        with open(output_path, 'w') as f:
-            json.dump(departments, f, indent=4)
-        logger.info(f"Saved final second degree results to {output_path}")
+        # Initialize output structure
+        enhanced_courses = {}
         
+        total_depts = len(departments)
+        for dept_idx, (dept_name, courses) in enumerate(departments.items(), 1):
+            logger.info(f"Processing department {dept_idx}/{total_depts}: {dept_name}")
+            
+            enhanced_courses[dept_name] = []
+            total_courses = len(courses)
+            
+            for course_idx, course in enumerate(courses, 1):
+                logger.info(f"Processing course {course_idx}/{total_courses} in {dept_name}")
+                
+                try:
+                    # Process course and add additional information
+                    enhanced_course = parse_course_second_deg(course)
+                    enhanced_courses[dept_name].append(enhanced_course)
+                    
+                except Exception as e:
+                    logger.error(f"Error processing course {course.get('course_name', 'Unknown')}: {e}")
+                    continue
+                
+            # Save results incrementally after each department
+            with open(output_path, 'w') as f:
+                json.dump(enhanced_courses, f, indent=4)
+            logger.debug(f"Saved incremental results for {dept_name}")
+            
+        logger.info(f"Completed second degree parsing. Results saved to {output_path}")
+        return enhanced_courses
+        
+    except FileNotFoundError:
+        logger.error(f"Input file {input_path} not found")
+        return {}
     except Exception as e:
-        logger.error(f"Error in second degree processing: {e}")
+        logger.error(f"Error in parse_all_courses_second_deg: {e}")
+        return {}
+
+def parse_course_second_deg(course_data: dict) -> dict:
+    """
+    Parse additional course information and restructure data.
+    """
+    try:
+        # Create deep copy to avoid modifying original
+        enhanced_course = course_data.copy()
+        
+        # Initialize section information dictionary
+        section_info = {}
+        
+        # Parse course times and location
+        if course_data.get("course_times_location"):
+            soup = BeautifulSoup(course_data["course_times_location"], "html.parser")
+            
+            # Find all section elements
+            sections = soup.find_all("p")
+            
+            for section in sections:
+                # Extract section number
+                strong = section.find("strong")
+                if strong:
+                    section_num = strong.text.strip().replace("Section ", "")
+                    section_info[section_num] = {
+                        "professor_name": None,
+                        "professor_link": None,
+                        "course_time": None,
+                        "course_location": None,
+                        "course_materials_links": None
+                    }
+                    
+                    # Get the original HTML content with <br> tags
+                    section_html = str(section)
+                    
+                    # Split by <br> tags and clean up
+                    lines = re.split(r'<br\s*/?>', section_html)
+                    
+                    # Skip the first line as it contains the section number
+                    class_schedule = None
+                    for line in lines[1:]:
+                        # Clean HTML tags
+                        clean_line = re.sub(r'<[^>]*>', '', line).strip()
+                        if clean_line:
+                            # Try to extract time and location
+                            pattern = r'(M|Tu|W|Th|F)[\s.]*(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)[\s.]*([A-Za-z0-9\s]+)'
+                    
+                            match = re.search(pattern, clean_line)
+                            if match:
+                                days_str, start_time, end_time, location = match.groups()
+                                
+                                # Split days by comma or slash and clean up
+                                days = [d.strip() for d in re.split(r'[,/]', days_str)]
+                                
+                                # Store the location
+                                section_info[section_num]["course_location"] = location.strip()
+                                
+                                # If this is the first schedule found or has different time
+                                if not class_schedule:
+                                    class_schedule = f"{days_str} {start_time}-{end_time}"
+                                elif f"{start_time}-{end_time}" in class_schedule:
+                                    # If same time pattern, just add new days we haven't seen yet
+                                    current_days = class_schedule.split()[0]
+                                    # Add only new unique days
+                                    for day in days:
+                                        if day not in current_days:
+                                            current_days = current_days + '/' + day
+                                    class_schedule = f"{current_days} {start_time}-{end_time}"
+                                else:
+                                    # Different time pattern, create new schedule
+                                    if class_schedule:
+                                        class_schedule += f"; {days_str} {start_time}-{end_time}"
+                                    else:
+                                        class_schedule = f"{days_str} {start_time}-{end_time}"
+                    
+                    if class_schedule:
+                        section_info[section_num]["course_time"] = class_schedule
+
+        # Match professors to sections
+        for prof in course_data.get("professors", []):
+            section = prof.get("section")
+            if section and section in section_info:
+                section_info[section]["professor_name"] = prof["name"]
+                section_info[section]["professor_link"] = prof["link"]
+
+        # Match course materials links to sections
+        for link in course_data.get("course_materials_links", []):
+            # Extract section number from link
+            section_match = re.search(r'section1=(\d+)', link)
+            if section_match:
+                section_num = section_match.group(1)
+                if section_num in section_info:
+                    section_info[section_num]["course_materials_links"] = link
+
+        # Clean up description - remove course offering text
+        if course_data.get("description"):
+            desc = course_data["description"]
+            # Remove text between parentheses at the start if it contains "Offered as"
+            clean_desc = re.sub(r'^\([^)]*(?:Offered as|Listed as)[^)]*\)\s*', '', desc)
+            enhanced_course["description"] = clean_desc
+
+        # Update enhanced course data
+        enhanced_course["section_information"] = section_info
+        
+        # Remove original fields that were restructured
+        enhanced_course.pop("course_times_location", None)
+        enhanced_course.pop("professors", None)
+        enhanced_course.pop("course_materials_links", None)
+
+        return enhanced_course
+
+    except Exception as e:
+        logger.error(f"Error in parse_course_second_deg: {str(e)}")
+        return course_data
 
 
 if __name__ == "__main__":
@@ -492,7 +682,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     
-    # Set logging level from command line argument
     logger.setLevel(getattr(logging, args.log_level))
-    
-    parse_all_courses(testing_mode=args.testing)
+    parse_all_courses_second_deg()

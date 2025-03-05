@@ -184,7 +184,7 @@ p {
 
 .close-panel {
     position: absolute;
-    right: 10px;
+    left: 10px;
     top: 10px;
     border: none;
     background: none;

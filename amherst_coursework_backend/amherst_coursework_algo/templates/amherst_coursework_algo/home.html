@@ -1,5 +1,6 @@
 {% extends "amherst_coursework_algo/base.html" %}
 {% block content %}
+{% csrf_token %}
 
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
 
@@ -37,13 +38,7 @@
             <div class="course-containter">
                 {% for course in courses %}
                 <div class="course-card" 
-                        data-course-id="{{ course.id }}"
-                        data-course-name="{{ course.courseName }}"
-                        data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-description="{{ course.courseDescription }}">
+                        data-course-id="{{ course.id }}">
                         <p style="margin-top: 0;">
                         {% for div in course.divisions.all %}
                             <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>{% if not forloop.last %} {% endif %}
@@ -112,185 +107,56 @@
             console.error('Error fetching course:', error);
             return null;
         }
-}
-
-    function tokenize(text) {
-        return text.toLowerCase()
-            .replace(/[^\w\s]/g, '')
-            .split(/\s+/)
-            .filter(word => word.length > 3);
-    }
-
-    function calculateTF(tokens) {
-        const tf = {};
-        tokens.forEach(token => {
-            tf[token] = (tf[token] || 0) + 1;
-        });
-        return tf;
-    }
-
-    function cosineSimilarity(tf1, tf2) {
-        let dotProduct = 0;
-        let norm1 = 0;
-        let norm2 = 0;
-        
-        for (const term in tf1) {
-            if (tf2[term]) dotProduct += tf1[term] * tf2[term];
-            norm1 += tf1[term] * tf1[term];
-            for (const docTerm in tf2) {
-                if (docTerm.includes(term)) {
-                    dotProduct += tf1[term] * tf2[docTerm];
-                }
-            }
-        }
-        
-        for (const term in tf2) {
-            norm2 += tf2[term] * tf2[term];
-        }
-        
-        return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-    }
-
-    function normalizeCode(code) {
-        // Remove any non-alphanumeric characters
-        const cleaned = code.replace(/[^a-z0-9]/gi, '');
-        return cleaned;
-    }
-
-    function relevant_courseName(searchQuery, courses) {
-        return courses.map(course => 
-            course.name.toLowerCase().includes(searchQuery.toLowerCase()) ? 1 : 0
-        );
-    }
-
-    function relevant_departmentCodes(searchQuery, courses) {
-        return courses.map(course => 
-            course.departments.some(dept => 
-                dept.code.toLowerCase().includes(searchQuery.toLowerCase())
-            ) ? 1 : 0
-        );
-    }
-
-    function relevant_departmentNames(searchQuery, courses) {
-        return courses.map(course => 
-            course.departments.some(dept => 
-                dept.name.toLowerCase().includes(searchQuery.toLowerCase())
-            ) ? 1 : 0
-        );
-    }
-
-    function relevant_courseCodes(searchQuery, courses) {
-        return courses.map(course => 
-            course.courseCodes.some(code => 
-                code.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                normalizeCode(code.toLowerCase()).includes(searchQuery.toLowerCase())
-            ) ? 1 : 0
-        );
-    }
-
-    function relevant_divisions(searchQuery, courses) {
-        return courses.map(course => 
-            course.divisions.some(division => 
-                division.toLowerCase().includes(searchQuery.toLowerCase())
-            ) ? 1 : 0
-        );
-    }
-
-    function relevant_keywords(searchQuery, courses) {
-        return courses.map(course => 
-            course.keywords.some(word => 
-                word.toLowerCase().includes(searchQuery.toLowerCase())
-            ) ? 1 : 0
-        );
-    }
-    
-    function similarity_filtering(query, courses, similarityThreshold) {
-        return courses.map(course => {
-        // Combine all relevant course information
-        const courseText = [
-            course.name || '',
-            course.description || '',
-            (course.departments || []).map(dept => dept.name).join(' '),
-            (course.professors || []).map(prof => prof.name).join(' '),
-            (course.keywords || []).join(' ')
-        ].join(' ').toLowerCase();
-
-        // Tokenize and create term frequency vectors
-        const queryTokens = tokenize(query);
-        const courseTokens = tokenize(courseText);
-        
-        const queryTF = calculateTF(queryTokens);
-        const courseTF = calculateTF(courseTokens);
-        
-        // Calculate similarity
-        const similarity = cosineSimilarity(queryTF, courseTF);
-        
-        return similarity > similarityThreshold ? 1 : 0;
-    });
-    }
-
-
-    function half_courses(searchQuery, courses) {
-        if (searchQuery.toLowerCase().includes("half")) {
-            return courses.map(course => {
-                // Convert ID to string and get 4th digit from right
-                const idString = course.id.toString();
-                const fourthDigit = idString.length >= 4 ? 
-                    parseInt(idString[idString.length - 4]) : 0;
-                // Return 1 if fourth digit is 1 (half course), 0 otherwise
-                return fourthDigit === 1 ? 1 : 0;
-            });
-        }
-        // If not searching for half courses, return array of 1s
-        return courses.map(() => 1);
     }
 
     async function search_filter(searchQuery, similarityThreshold) {
         searchQuery = searchQuery.toLowerCase().trim();
         const courseCards = document.querySelectorAll('.course-card');
-        const courseList = [];
         
-        // Get indicator lists from each relevancy function
-        const nameIndicators = relevant_courseName(searchQuery, globalCourseList);
-        const deptCodeIndicators = relevant_departmentCodes(searchQuery, globalCourseList);
-        const deptNameIndicators = relevant_departmentNames(searchQuery, globalCourseList);
-        const courseCodeIndicators = relevant_courseCodes(searchQuery, globalCourseList);
-        const divisionIndicators = relevant_divisions(searchQuery, globalCourseList);
-        const keywordIndicators = relevant_keywords(searchQuery, globalCourseList);
-        const halfFlag = half_courses(searchQuery, globalCourseList);
-        const similarityIndicators = similarity_filtering(searchQuery, globalCourseList, similarityThreshold)
-
-        // Combine indicators using bitwise OR
-        const finalIndicators = nameIndicators.map((val, idx) => {
-            const baseMatch = val | 
-                deptCodeIndicators[idx] | 
-                deptNameIndicators[idx] | 
-                courseCodeIndicators[idx] | 
-                divisionIndicators[idx] | 
-                keywordIndicators[idx]
-            if (searchQuery.includes("half")) {
-                return baseMatch && halfFlag[idx];
-            }
-
-            if (searchQuery.length > 5) {
-                return baseMatch || similarityIndicators[idx]
-            }
-            
-            return baseMatch;
-        }
-        );
+        // Get course IDs from data attributes
+        const courseIds = Array.from(courseCards).map(card => card.dataset.courseId);
         
+        // Get indicators from backend
+        const indicators = await filterCoursesByMask(searchQuery, courseIds);
 
+        // Update visibility based on indicators
         courseCards.forEach((card, index) => {
-            if (finalIndicators[index]) {
+            if (indicators[index]) {
                 card.classList.remove('hidden');
             } else {
                 card.classList.add('hidden');
             }
         });
-
     }
 
+    async function filterCoursesByMask(searchQuery, courseIds) {
+        try {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const response = await fetch('/api/masked_filter/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    search_query: searchQuery,
+                    course_ids: courseIds,
+                    similarity_threshold: 0.05
+                })
+            });
+            
+            const data = await response.json();
+            if (data.status === 'success') {
+                return data.indicators;
+            }
+            console.error('Error:', data.message);
+            return new Array(courseIds.length).fill(0);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            return new Array(courseIds.length).fill(0);
+        }
+    }
 
     function toggleCartPanel() {
         const panel = document.getElementById('cart-side-panel');

@@ -146,7 +146,7 @@ p {
     line-height: 1;
 }
 
-.course-name {
+.course-card .course-name {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -161,7 +161,7 @@ p {
     color: #4c4e5a;
 }
 
-.course-description {
+.course-card .course-description {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;

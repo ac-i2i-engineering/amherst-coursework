@@ -99,6 +99,7 @@ p {
 }
 
 .course-code {
+    margin: 0;
     color: #3e3636;
     font-size: 14px;
     font-weight: 600;

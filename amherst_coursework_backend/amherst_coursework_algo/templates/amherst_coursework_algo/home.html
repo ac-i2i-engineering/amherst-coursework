@@ -296,7 +296,6 @@
                         mainContent.classList.add('shifted');
                         courseContainer.classList.add('shifted');
 
-                        // After panel opens, scroll the clicked card into view
                         setTimeout(() => {
                             if (clickedCard) {
                                 clickedCard.scrollIntoView({ 
@@ -304,7 +303,7 @@
                                     block: 'center'
                                 });
                             }
-                        }, 100); // Wait for shift animation to complete
+                        }, 100);
                     });
                 });
         } else {

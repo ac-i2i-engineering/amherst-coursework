@@ -25,32 +25,34 @@
 
             {% if "Spring semester." in desc %}
                 <div class="description-section">
-                    <h3>Spring semester:</h3>
+                    <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Spring semester:</h3>
                     <p>{{ desc|split:"Spring semester."|last|split:"How to handle overenrollment:"|first }}</p>
                 </div>
             {% endif %}
 
             {% if "How to handle overenrollment:" in desc %}
                 <div class="description-section">
-                    <h3>How to handle overenrollment:</h3>
+                    <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">How to handle overenrollment:</h3>
                     <p>{{ desc|split:"How to handle overenrollment:"|last|split:"Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment:"|first }}</p>
-                </div>
-            {% endif %}
-
-            {% if "Cost:" in desc %}
-                <div class="description-section">
-                    <h3>Cost:</h3>
-                    <p>{{ desc|split:"Cost:"|last|split:"? Attention"|first }}</p>
                 </div>
             {% endif %}
 
             {% if "Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment:" in desc %}
                 <div class="description-section">
-                    <h3>Expectations:</h3>
+                    <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Expectations:</h3>
                     <p>{{ desc|split:"Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment:"|last|split:"Divisions:"|first }}</p>
+                </div>
+            {% endif %}
+
+            {% if "Cost:" in desc %}
+                <div class="description-section">
+                    <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Cost:</h3>
+                    <p>{{ desc|safe_split:"Cost:"|last|default:desc }}</p>
                 </div>
             {% endif %}
         {% endwith %}
     </div>
+
+    
     <!-- Other course details -->
 </div>

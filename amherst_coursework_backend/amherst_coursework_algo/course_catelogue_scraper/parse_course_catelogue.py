@@ -631,12 +631,27 @@ def parse_course_second_deg(course_data: dict) -> dict:
                 strong = section.find("strong")
                 if strong:
                     section_num = strong.text.strip().replace("Section ", "")
+                    
+                    # Initialize section info with all days set to null
                     section_info[section_num] = {
                         "professor_name": None,
                         "professor_link": None,
-                        "course_time": None,
                         "course_location": None,
                         "course_materials_links": None,
+                        "mon_start_time": None,
+                        "mon_end_time": None,
+                        "tue_start_time": None,
+                        "tue_end_time": None,
+                        "wed_start_time": None,
+                        "wed_end_time": None,
+                        "thu_start_time": None,
+                        "thu_end_time": None,
+                        "fri_start_time": None,
+                        "fri_end_time": None,
+                        "sat_start_time": None,
+                        "sat_end_time": None,
+                        "sun_start_time": None,
+                        "sun_end_time": None
                     }
 
                     # Get the original HTML content with <br> tags
@@ -646,56 +661,40 @@ def parse_course_second_deg(course_data: dict) -> dict:
                     lines = re.split(r"<br\s*/?>", section_html)
 
                     # Skip the first line as it contains the section number
-                    class_schedule = None
                     for line in lines[1:]:
                         # Clean HTML tags
                         clean_line = re.sub(r"<[^>]*>", "", line).strip()
                         if clean_line:
                             # Try to extract time and location
-                            pattern = r"(M|Tu|W|Th|F)[\s.]*(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)[\s.]*([A-Za-z0-9\s]+)"
-
+                            pattern = r"(M|Tu|W|Th|F|Sa|Su)[\s.]*(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)[\s.]*([A-Za-z0-9\s]+)"
+                            
                             match = re.search(pattern, clean_line)
                             if match:
-                                days_str, start_time, end_time, location = (
-                                    match.groups()
-                                )
-
-                                # Split days by comma or slash and clean up
+                                days_str, start_time, end_time, location = match.groups()
+                                
+                                # Split days if multiple are listed
                                 days = [d.strip() for d in re.split(r"[,/]", days_str)]
-
+                                
                                 # Store the location
-                                section_info[section_num][
-                                    "course_location"
-                                ] = location.strip()
-
-                                # If this is the first schedule found or has different time
-                                if not class_schedule:
-                                    class_schedule = (
-                                        f"{days_str} {start_time}-{end_time}"
-                                    )
-                                elif f"{start_time}-{end_time}" in class_schedule:
-                                    # If same time pattern, just add new days we haven't seen yet
-                                    current_days = class_schedule.split()[0]
-                                    # Add only new unique days
-                                    for day in days:
-                                        if day not in current_days:
-                                            current_days = current_days + "/" + day
-                                    class_schedule = (
-                                        f"{current_days} {start_time}-{end_time}"
-                                    )
-                                else:
-                                    # Different time pattern, create new schedule
-                                    if class_schedule:
-                                        class_schedule += (
-                                            f"; {days_str} {start_time}-{end_time}"
-                                        )
-                                    else:
-                                        class_schedule = (
-                                            f"{days_str} {start_time}-{end_time}"
-                                        )
-
-                    if class_schedule:
-                        section_info[section_num]["course_time"] = class_schedule
+                                section_info[section_num]["course_location"] = location.strip()
+                                
+                                # Map days to their respective fields
+                                day_mapping = {
+                                    "M": ("mon_start_time", "mon_end_time"),
+                                    "Tu": ("tue_start_time", "tue_end_time"),
+                                    "W": ("wed_start_time", "wed_end_time"),
+                                    "Th": ("thu_start_time", "thu_end_time"),
+                                    "F": ("fri_start_time", "fri_end_time"),
+                                    "Sa": ("sat_start_time", "sat_end_time"),
+                                    "Su": ("sun_start_time", "sun_end_time")
+                                }
+                                
+                                # Update times for each day
+                                for day in days:
+                                    if day in day_mapping:
+                                        start_field, end_field = day_mapping[day]
+                                        section_info[section_num][start_field] = start_time
+                                        section_info[section_num][end_field] = end_time
 
         # Match professors to sections
         for prof in course_data.get("professors", []):
@@ -706,7 +705,6 @@ def parse_course_second_deg(course_data: dict) -> dict:
 
         # Match course materials links to sections
         for link in course_data.get("course_materials_links", []):
-            # Extract section number from link
             section_match = re.search(r"section1=(\d+)", link)
             if section_match:
                 section_num = section_match.group(1)
@@ -716,7 +714,6 @@ def parse_course_second_deg(course_data: dict) -> dict:
         # Clean up description - remove course offering text
         if course_data.get("description"):
             desc = course_data["description"]
-            # Remove text between parentheses at the start if it contains "Offered as"
             clean_desc = re.sub(r"^\([^)]*(?:Offered as|Listed as)[^)]*\)\s*", "", desc)
             enhanced_course["description"] = clean_desc
 

@@ -16,6 +16,7 @@ from amherst_coursework_algo.masked_filters import (
     relevant_divisions,
     relevant_keywords,
     relevant_descriptions,
+    relevant_professor_names,
     half_courses,
     compute_similarity_scores,
 )
@@ -98,6 +99,23 @@ class TestMaskedFilters(TestCase):
         courses = [self.course]
         self.assertEqual(relevant_descriptions("python", courses), [1])
         self.assertEqual(relevant_descriptions("javascript", courses), [0])
+    
+    def test_relevant_professor_names(self):
+        """Test professor name matching"""
+        # Test with existing course and professor
+        courses = [self.course]
+        self.assertEqual(relevant_professor_names("john", courses), [1])
+        self.assertEqual(relevant_professor_names("doe", courses), [1])
+        self.assertEqual(relevant_professor_names("smith", courses), [0])
+        
+        # Test with multiple professors
+        second_professor = Professor.objects.create(name="Jane Smith")
+        self.course.professors.add(second_professor)
+        
+        self.assertEqual(relevant_professor_names("jane", courses), [1])
+        self.assertEqual(relevant_professor_names("smith", courses), [1])
+        self.assertEqual(relevant_professor_names("williams", courses), [0])
+
 
     def test_half_courses(self):
         """Test half course filtering"""
@@ -156,6 +174,11 @@ class TestMaskedFilters(TestCase):
                 "query": "chemistry",
                 "should_match": False,
             },
+            {
+                "name": "Professor name search",
+                "query": "john doe",
+                "should_match": True,
+            },
         ]
 
         client = Client()
@@ -192,6 +215,7 @@ class TestMaskedFilters(TestCase):
                 expected_indicator,
                 f"Failed {test_case['name']}: expected {expected_indicator} but got {data['indicators'][0]}",
             )
+
 
     def tearDown(self):
         """Clean up test data"""

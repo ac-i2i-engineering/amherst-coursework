@@ -105,6 +105,7 @@ def relevant_department_names(search_query: str, courses: list) -> list:
     ]
 
 
+
 def relevant_course_codes(search_query: str, courses: list) -> list:
     """
     Return binary indicators for courses with matching course codes.
@@ -218,6 +219,34 @@ def relevant_descriptions(search_query: str, courses: list) -> list:
         for course in courses
     ]
 
+def relevant_professor_names(search_query: str, courses: list) -> list:
+    """
+    Return binary indicators for courses with matching professor names.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against professor names.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching professor.
+    """
+    search_query = search_query.lower()
+    return [
+        (
+            1
+            if any(
+                search_query in professor.name.lower()
+                for professor in course.professors.all()
+            )
+            else 0
+        )
+        for course in courses
+    ]
 
 def half_courses(search_query: str, courses: list) -> list:
     """
@@ -389,6 +418,7 @@ def filter(request):
         division_indicators = relevant_divisions(search_query, courses)
         keyword_indicators = relevant_keywords(search_query, courses)
         description_indicators = relevant_descriptions(search_query, courses)
+        professor_indicators = relevant_professor_names(search_query, courses)
         half_flag = half_courses(search_query, courses)
         similarity_indicators = similarity_filtering(
             search_query, courses, similarity_threshold
@@ -405,6 +435,7 @@ def filter(request):
                 | division_indicators[idx]
                 | keyword_indicators[idx]
                 | description_indicators[idx]
+                | professor_indicators[idx]
             )
 
             if "half" in search_query:

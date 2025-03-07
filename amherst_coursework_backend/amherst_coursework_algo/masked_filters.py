@@ -7,24 +7,62 @@ from amherst_coursework_algo.config.course_dictionaries import (
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
-from django.core.exceptions import ValidationError
 import json
-from django.shortcuts import get_object_or_404
 
 
 def normalize_code(code: str) -> str:
-    """Remove any non-alphanumeric characters from code."""
+    """
+    Remove any non-alphanumeric characters from the given code.
+
+    Parameters
+    ----------
+    code : str
+        The input code string to be normalized.
+
+    Returns
+    -------
+    str
+        The normalized code string containing only alphanumeric characters.
+    """
     return "".join(c for c in code if c.isalnum())
 
 
 def relevant_course_name(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses whose names contain the search query."""
+    """
+    Return binary indicators for courses whose names contain the search query.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against course names.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course name contains the search query.
+    """
     search_query = search_query.lower()
     return [1 if search_query in course.courseName.lower() else 0 for course in courses]
 
 
 def relevant_department_codes(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses with matching department codes."""
+    """
+    Return binary indicators for courses with matching department codes.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against department codes.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching department code.
+    """
     search_query = search_query.lower()
     return [
         (
@@ -39,7 +77,21 @@ def relevant_department_codes(search_query: str, courses: list) -> list:
 
 
 def relevant_department_names(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses with matching department names."""
+    """
+    Return binary indicators for courses with matching department names.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against department names.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching department name.
+    """
     search_query = search_query.lower()
     return [
         (
@@ -54,7 +106,21 @@ def relevant_department_names(search_query: str, courses: list) -> list:
 
 
 def relevant_course_codes(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses with matching course codes."""
+    """
+    Return binary indicators for courses with matching course codes.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against course codes.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching course code.
+    """
     search_query = search_query.lower()
     return [
         (
@@ -71,7 +137,21 @@ def relevant_course_codes(search_query: str, courses: list) -> list:
 
 
 def relevant_divisions(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses with matching divisions."""
+    """
+    Return binary indicators for courses with matching divisions.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against division names.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching division.
+    """
     search_query = search_query.lower()
     return [
         (
@@ -87,7 +167,21 @@ def relevant_divisions(search_query: str, courses: list) -> list:
 
 
 def relevant_keywords(search_query: str, courses: list) -> list:
-    """Return binary indicators for courses with matching keywords."""
+    """
+    Return binary indicators for courses with matching keywords.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against keywords.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course has a matching keyword.
+    """
     search_query = search_query.lower()
     return [
         (
@@ -103,6 +197,21 @@ def relevant_keywords(search_query: str, courses: list) -> list:
 
 
 def relevant_descriptions(search_query: str, courses: list) -> list:
+    """
+    Return binary indicators for courses with matching descriptions.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to match against course descriptions.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course description contains the search query.
+    """
     search_query = search_query.lower()
     return [
         1 if search_query in course.courseDescription.lower() else 0
@@ -110,18 +219,72 @@ def relevant_descriptions(search_query: str, courses: list) -> list:
     ]
 
 
+def half_courses(search_query: str, courses: list) -> list:
+    """
+    Return binary indicators for half courses if query contains 'half'.
+
+    Parameters
+    ----------
+    search_query : str
+        The search query string to check for the word 'half'.
+    courses : list
+        A list of Course objects to be filtered.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course is a half course.
+    """
+    if "half" in search_query.lower():
+        return [
+            1 if len(str(course.id)) >= 4 and str(course.id)[-4] == "1" else 0
+            for course in courses
+        ]
+    return [1] * len(courses)
+
+
 def similarity_filtering(
     query: str, courses: list, similarity_threshold: float
 ) -> list:
-    """Return binary indicators based on text similarity scores."""
+    """
+    Return binary indicators based on text similarity scores.
+
+    Parameters
+    ----------
+    query : str
+        The search query string to compare against course texts.
+    courses : list
+        A list of Course objects to be filtered.
+    similarity_threshold : float
+        The threshold above which a course is considered similar.
+
+    Returns
+    -------
+    list
+        A list of binary indicators (1 or 0) indicating whether each course text is similar to the query.
+    """
     return [
-        1 if compute_similarity(query, course) > similarity_threshold else 0
+        1 if query_course_similarity(query, course) > similarity_threshold else 0
         for course in courses
     ]
 
 
-def compute_similarity(query: str, course) -> float:
-    """Compute similarity between query and course text."""
+def query_course_similarity(query: str, course) -> float:
+    """
+    Compute similarity between query and course text.
+
+    Parameters
+    ----------
+    query : str
+        The search query string.
+    course : Course
+        The Course object whose text is to be compared.
+
+    Returns
+    -------
+    float
+        The similarity score between the query and the course text.
+    """
     course_text = " ".join(
         [
             course.courseName or "",
@@ -134,16 +297,6 @@ def compute_similarity(query: str, course) -> float:
 
     # Use existing compute_similarity_scores function
     return compute_similarity_scores(query, [course_text])[0]
-
-
-def half_courses(search_query: str, courses: list) -> list:
-    """Return binary indicators for half courses if query contains 'half'."""
-    if "half" in search_query.lower():
-        return [
-            1 if len(str(course.id)) >= 4 and str(course.id)[-4] == "1" else 0
-            for course in courses
-        ]
-    return [1] * len(courses)
 
 
 def compute_similarity_scores(query: str, information: List[str]) -> List[float]:
@@ -201,10 +354,7 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
 
 
 def filter(request):
-    """
-    Filter courses based on search query, maintaining order of input course IDs.
-    Returns binary indicators in same order as input IDs.
-    """
+
     if request.method != "POST":
         return JsonResponse({"error": "Only POST requests allowed"}, status=405)
 

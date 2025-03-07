@@ -429,7 +429,9 @@ def filter(request):
                 executor.submit(relevant_descriptions, search_query, courses),
                 executor.submit(relevant_professor_names, search_query, courses),
                 executor.submit(half_courses, search_query, courses),
-                executor.submit(similarity_filtering, search_query, courses, similarity_threshold),
+                executor.submit(
+                    similarity_filtering, search_query, courses, similarity_threshold
+                ),
             ]
 
             # Get all results at once

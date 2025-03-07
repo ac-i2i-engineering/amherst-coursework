@@ -1,5 +1,12 @@
 from django.test import TestCase, Client
-from amherst_coursework_algo.models import Course, Department, CourseCode, Division, Keyword, Professor
+from amherst_coursework_algo.models import (
+    Course,
+    Department,
+    CourseCode,
+    Division,
+    Keyword,
+    Professor,
+)
 from amherst_coursework_algo.masked_filters import (
     normalize_code,
     relevant_course_name,
@@ -10,30 +17,26 @@ from amherst_coursework_algo.masked_filters import (
     relevant_keywords,
     relevant_descriptions,
     half_courses,
-    compute_similarity_scores
+    compute_similarity_scores,
 )
 import json
+
 
 class TestMaskedFilters(TestCase):
     def setUp(self):
         # Create test departments
-        self.dept = Department.objects.create(
-            name="Computer Science",
-            code="COSC"
-        )
+        self.dept = Department.objects.create(name="Computer Science", code="COSC")
 
         # Create test course with explicit id
         self.course = Course.objects.create(
             id=1000000,  # Add explicit id
             courseName="Introduction to Programming",
-            courseDescription="Learn Python programming"
+            courseDescription="Learn Python programming",
         )
         self.course.departments.add(self.dept)
 
         # Create course code
-        code = CourseCode.objects.create(
-            value="COSC-111"
-        )
+        code = CourseCode.objects.create(value="COSC-111")
 
         self.course.courseCodes.add(code)
 
@@ -110,14 +113,13 @@ class TestMaskedFilters(TestCase):
         # Check if scores are floats between 0 and 1
         for i, score in enumerate(scores):
             self.assertTrue(
-                isinstance(score, float),
-                f"Score at index {i} is not a float: {score}"
+                isinstance(score, float), f"Score at index {i} is not a float: {score}"
             )
             self.assertTrue(
                 0 <= score <= 1.00001,
-                f"Score at index {i} is not between 0 and 1: {score}"
+                f"Score at index {i} is not between 0 and 1: {score}",
             )
-            
+
         # First document should have higher similarity
         self.assertTrue(scores[0] > scores[1])
 
@@ -131,80 +133,64 @@ class TestMaskedFilters(TestCase):
 
     def test_filter_combined(self):
         """Test the filter function with all types of searches combined"""
-        
+
         # Create mock request data for each type of search we've already tested
         test_queries = [
             {
                 "name": "Course name search",
                 "query": "programming",
-                "should_match": True
+                "should_match": True,
             },
-            {
-                "name": "Department code search",
-                "query": "cosc",
-                "should_match": True
-            },
+            {"name": "Department code search", "query": "cosc", "should_match": True},
             {
                 "name": "Department name search",
                 "query": "computer science",
-                "should_match": True
+                "should_match": True,
             },
-            {
-                "name": "Course code search",
-                "query": "cosc111",
-                "should_match": True
-            },
-            {
-                "name": "Division search",
-                "query": "science",
-                "should_match": True
-            },
-            {
-                "name": "Keyword search",
-                "query": "programming",
-                "should_match": True
-            },
-            {
-                "name": "Description search",
-                "query": "python",
-                "should_match": True
-            },
+            {"name": "Course code search", "query": "cosc111", "should_match": True},
+            {"name": "Division search", "query": "science", "should_match": True},
+            {"name": "Keyword search", "query": "programming", "should_match": True},
+            {"name": "Description search", "query": "python", "should_match": True},
             {
                 "name": "Non-matching search",
                 "query": "chemistry",
-                "should_match": False
-            }
+                "should_match": False,
+            },
         ]
 
         client = Client()
-        
+
         for test_case in test_queries:
             # Prepare request data
             request_data = {
                 "search_query": test_case["query"],
                 "course_ids": [self.course.id],
-                "similarity_threshold": 0.1
+                "similarity_threshold": 0.1,
             }
-            
+
             # Make request to filter endpoint
             response = client.post(
-                '/api/masked_filter/',
+                "/api/masked_filter/",
                 data=json.dumps(request_data),
-                content_type='application/json'
+                content_type="application/json",
             )
-            
+
             # Check response
-            self.assertEqual(response.status_code, 200, f"Failed on {test_case['name']}")
-            
+            self.assertEqual(
+                response.status_code, 200, f"Failed on {test_case['name']}"
+            )
+
             data = json.loads(response.content)
-            self.assertIn('indicators', data, f"No indicators in response for {test_case['name']}")
-            
+            self.assertIn(
+                "indicators", data, f"No indicators in response for {test_case['name']}"
+            )
+
             # For matching queries, indicator should be 1; for non-matching, 0
             expected_indicator = 1 if test_case["should_match"] else 0
             self.assertEqual(
-                data['indicators'][0],
+                data["indicators"][0],
                 expected_indicator,
-                f"Failed {test_case['name']}: expected {expected_indicator} but got {data['indicators'][0]}"
+                f"Failed {test_case['name']}: expected {expected_indicator} but got {data['indicators'][0]}",
             )
 
     def tearDown(self):

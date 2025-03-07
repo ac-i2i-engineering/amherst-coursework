@@ -10,14 +10,14 @@
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
 }
 
 .main-content {
     flex: 1;
-    transition: margin 0.3s ease;
+    transition: margin-right 0.3s ease-in-out;
     margin-right: 0;
     width: 100%;
 }
@@ -31,36 +31,142 @@ h1, h2 {
 }
 
 p {
-    margin: 12px 0;
-    line-height: 2;
+    line-height: 1.5;
 }
 
 /* Course Grid */
 .course-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
     padding: 20px;
+}
+
+.course-container.fade-in {
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.course-container.hidden {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.course-container.shifted {
+    grid-template-columns: repeat(1, 1fr);
+    opacity: 1;
+}
+
+.course-container.shifted {
+    grid-template-columns: repeat(1, 1fr);
 }
 
 .course-card {
     background: #fff;
     border-radius: 15px;
-    margin: 40px 0;
-    padding: 40px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
     display: block;
     opacity: 1;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.course-card.active {
+    background-color: #f5f0fa;
 }
 
 .course-card.hidden {
     display: none;
 }
 
-/* Customize Course Card */
+/* Course Card Content */
+.course-card-columns {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.course-card-left {
+    display: flex;
+    flex: 0 0 15%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #d4c9e5;
+    border-radius: 15px 0 0 15px;
+    border-right: 1px solid #eee;
+}
+
+.course-code {
+    margin: 0;
+    color: #3e3636;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 2;
+    text-align: center;
+}
+
+.course-card-right {
+    flex: 1;
+    padding: 20px;
+    min-width: 0;
+}
+
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    width: 100%;
+    min-width: 0;
+}
+
+.course-divisions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+}
+
+.course-header .cart-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    white-space: nowrap;
+    border-radius: 50%;
+}
+
+.cart-button i {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.course-card .course-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 50ch;
+    font-size: 16px;
+}
+
 .course-card p {
+    margin-bottom: 0;
+    font-size: 14px;
     color: #4c4e5a;
+}
+
+.course-card .course-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 60ch;
 }
 
 .division-tag {
@@ -92,20 +198,11 @@ p {
     color: #7e4a4d;
 }
 
-.fa-solid {
-    font-size: 15px;
-    margin-right: 2px;
-}
-
-.course-buttons {
-    margin-top: 20px;
-}
-
 /* Side Panel Styles */
 .side-panel {
     position: fixed;
     top: 0;
-    right: -600px;
+    right: -40%;
     height: 100vh;
     width: 0;
     padding: 40px;
@@ -113,12 +210,29 @@ p {
     border-left: 1px solid #ddd;
     overflow-y: auto;
     transition: width 0.3s ease;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(0);
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
 }
 
 .side-panel.open {
     width: 40%;
     right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+.side-panel.closing {
+    transition: all 0.5s ease-in-out;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.panel-links i {
+    font-size: 15px;
+    margin-right: 2px;
 }
 
 .panel-content {
@@ -172,19 +286,9 @@ p {
     cursor: pointer;
 }
 
-.panel-button {
-    background: #b7a5d3;
-    border: none;
-    color: white;
-    margin-right: 5px;
-    padding: 12px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
 .close-panel {
     position: absolute;
-    right: 10px;
+    left: 10px;
     top: 10px;
     border: none;
     background: none;

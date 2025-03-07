@@ -3,7 +3,7 @@ asgiref==3.8.1
 black==24.10.0
 click==8.1.7
 coverage==7.6.9
-Django==5.1.4
+Django==5.1.5
 imagesize==1.4.1
 iniconfig==2.0.0
 packaging==24.2

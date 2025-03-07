@@ -32,7 +32,7 @@
                        id="searchInput"
                        placeholder="Search courses..."
                        class="search-input"
-                       oninput="search_filter(this.value, 0.05)">
+                       oninput="debouncedSearch(this.value, 0.05)">
             </div>
 
             <div class="course-container">
@@ -72,7 +72,7 @@
 
         // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', async function() {
-        await initializeCourses();
+        //await initializeCourses();
         updateCartDisplay();
 
         document.querySelectorAll('.course-card').forEach(card => {

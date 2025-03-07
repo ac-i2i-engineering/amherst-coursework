@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 
 def normalize_code(code: str) -> str:
@@ -395,6 +396,12 @@ def filter(request):
         course_ids = data.get("course_ids", [])
         similarity_threshold = data.get("similarity_threshold", 0.05)
 
+        if not search_query:
+            return JsonResponse({
+                "status": "success", 
+                "indicators": [1] * len(course_ids)
+            })
+
         # Better error handling for course fetching
         courses = []
         for course_id in course_ids:
@@ -411,19 +418,34 @@ def filter(request):
                 {"status": "success", "indicators": [0] * len(course_ids)}
             )
 
-        # Get all indicators
-        name_indicators = relevant_course_name(search_query, courses)
-        dept_code_indicators = relevant_department_codes(search_query, courses)
-        dept_name_indicators = relevant_department_names(search_query, courses)
-        course_code_indicators = relevant_course_codes(search_query, courses)
-        division_indicators = relevant_divisions(search_query, courses)
-        keyword_indicators = relevant_keywords(search_query, courses)
-        description_indicators = relevant_descriptions(search_query, courses)
-        professor_indicators = relevant_professor_names(search_query, courses)
-        half_flag = half_courses(search_query, courses)
-        similarity_indicators = similarity_filtering(
-            search_query, courses, similarity_threshold
-        )
+        # Get all indicators using parallel execution
+        with ThreadPoolExecutor(max_workers=8) as executor:  # Increased workers
+            futures = [
+                executor.submit(relevant_course_name, search_query, courses),
+                executor.submit(relevant_department_codes, search_query, courses),
+                executor.submit(relevant_department_names, search_query, courses),
+                executor.submit(relevant_course_codes, search_query, courses),
+                executor.submit(relevant_divisions, search_query, courses),
+                executor.submit(relevant_keywords, search_query, courses),
+                executor.submit(relevant_descriptions, search_query, courses),
+                executor.submit(relevant_professor_names, search_query, courses),
+                executor.submit(half_courses, search_query, courses)
+        ]
+            
+            # Get all results at once
+            all_results = [future.result() for future in futures]
+            
+            [
+                name_indicators,
+                dept_code_indicators,
+                dept_name_indicators,
+                course_code_indicators,
+                division_indicators,
+                keyword_indicators,
+                description_indicators,
+                professor_indicators,
+                half_flag
+            ] = all_results
 
         # Calculate final indicators maintaining order
         final_indicators = []
@@ -442,8 +464,8 @@ def filter(request):
             if "half" in search_query:
                 result = result and half_flag[idx]
 
-            if len(search_query) > 5:
-                result = result or similarity_indicators[idx]
+        # if len(search_query) > 5:
+            #     result = result or similarity_indicators[idx]
 
             final_indicators.append(result)
 

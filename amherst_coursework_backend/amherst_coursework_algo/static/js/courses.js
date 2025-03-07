@@ -2,6 +2,24 @@ const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent
 
 let globalCourseList = [];
 
+// Add debounce function at the top of your file
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Create debounced version of search_filter
+const debouncedSearch = debounce((query, threshold) => {
+    search_filter(query, threshold);
+}, 400); // 400ms delay
+
 /* Add this to your script section */
 function handleCartClick(event, courseId) {
     event.stopPropagation();  // Prevent event from bubbling up to course-card

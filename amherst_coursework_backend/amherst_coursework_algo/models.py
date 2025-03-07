@@ -294,17 +294,8 @@ class Section(models.Model):
         related_name="sections",
         default=None,
     )
-    days = models.CharField(
-        max_length=5,
-        help_text="Days of week (e.g., MWF, TR)",
-        validators=[
-            RegexValidator(
-                regex="^[MTWRF]+$", message="Days must be combination of M/T/W/R/F"
-            )
-        ],
-    )
-    start_time = models.TimeField(help_text="Section start time")
-    end_time = models.TimeField(help_text="Section end time")
+    monday_start_time = models.TimeField()
+
     location = models.CharField(max_length=100, help_text="Building and room number")
     professor = models.ForeignKey(
         "Professor", on_delete=models.CASCADE, related_name="sections"
@@ -325,7 +316,6 @@ class Section(models.Model):
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
-        ordering = ["days", "start_time"]
         unique_together = ("section_for", "section_number")
 
 

@@ -1,4 +1,5 @@
 DEPARTMENT_NAME_TO_NUMBER = {
+    "Other": 0,
     "American Studies": 1,
     "Anthropology and Sociology": 2,
     "Architectural Studies": 3,
@@ -36,12 +37,13 @@ DEPARTMENT_NAME_TO_NUMBER = {
     "Psychology": 35,
     "Religion": 36,
     "Russian": 37,
-    "Sexuality Wmn's & Gndr Studies": 38,
+    "Sexuality Women's and Gender Studies": 38,
     "Spanish": 39,
     "Theater and Dance": 40,
 }
 
 DEPARTMENT_NAME_TO_CODE = {
+    "Other": "OTHR",
     "American Studies": "AMST",
     "Anthropology and Sociology": "ANTH",
     "Architectural Studies": "ARCH",
@@ -67,7 +69,7 @@ DEPARTMENT_NAME_TO_CODE = {
     "Geology": "GEOL",
     "German": "GERM",
     "History": "HIST",
-    "Latinx and Latin Amer Studies": "LLAS",
+    "Latinx and Latin American Studies": "LLAS",
     "Law, Jurisprudence, and Social Thought": "LJST",
     "Mathematics and Statistics": "MATH",
     "Mellon Seminar": "MLLN",
@@ -111,7 +113,7 @@ DEPARTMENT_CODE_TO_NAME = {
     "GEOL": "Geology",
     "GERM": "German",
     "HIST": "History",
-    "LLAS": "Latinx and Latin Amer Studies",
+    "LLAS": "Latinx and Latin American Studies",
     "LJST": "Law, Jurisprudence, and Social Thought",
     "MATH": "Mathematics and Statistics",
     "STAT": "Mathematics and Statistics",
@@ -128,4 +130,10 @@ DEPARTMENT_CODE_TO_NAME = {
     "SWAG": "Sexuality, Women's and Gender Studies",
     "SPAN": "Spanish",
     "THDA": "Theater and Dance",
+}
+
+MISMATCHED_DEPARTMENT_NAMES = {
+    "Biochemistry-Biophysics": "Biochemistry and Biophysics",
+    "Latinx and Latin Amer Studies": "Latinx and Latin American Studies",
+    "Sexuality, Wmn's & Gndr Studies": "Sexuality, Women's and Gender Studies",
 }

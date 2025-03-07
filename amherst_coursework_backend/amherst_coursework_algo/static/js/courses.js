@@ -167,7 +167,7 @@ async function search_filter(searchQuery, similarityThreshold) {
     const courseIds = Array.from(courseCards).map(card => card.dataset.courseId);
     
     // Get indicators from backend
-    const indicators = await filterCoursesByMask(searchQuery, courseIds);
+    const indicators = await filterCoursesByMask(searchQuery, courseIds, similarityThreshold);
 
     // Update visibility based on indicators
     courseCards.forEach((card, index) => {
@@ -179,7 +179,7 @@ async function search_filter(searchQuery, similarityThreshold) {
     });
 }
 
-async function filterCoursesByMask(searchQuery, courseIds) {
+async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) {
     try {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const response = await fetch('/api/masked_filter/', {
@@ -191,7 +191,7 @@ async function filterCoursesByMask(searchQuery, courseIds) {
             body: JSON.stringify({
                 search_query: searchQuery,
                 course_ids: courseIds,
-                similarity_threshold: 0.05
+                similarity_threshold: similarityThreshold
             })
         });
         

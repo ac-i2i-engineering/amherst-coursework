@@ -418,7 +418,7 @@ def filter(request):
             )
 
         # Get all indicators using parallel execution
-        with ThreadPoolExecutor(max_workers=8) as executor:  # Increased workers
+        with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
             futures = [
                 executor.submit(relevant_course_name, search_query, courses),
                 executor.submit(relevant_department_codes, search_query, courses),
@@ -429,6 +429,7 @@ def filter(request):
                 executor.submit(relevant_descriptions, search_query, courses),
                 executor.submit(relevant_professor_names, search_query, courses),
                 executor.submit(half_courses, search_query, courses),
+                executor.submit(similarity_filtering, search_query, courses, similarity_threshold),
             ]
 
             # Get all results at once
@@ -444,6 +445,7 @@ def filter(request):
                 description_indicators,
                 professor_indicators,
                 half_flag,
+                similarity_indicators,
             ] = all_results
 
         # Calculate final indicators maintaining order
@@ -463,8 +465,8 @@ def filter(request):
             if "half" in search_query:
                 result = result and half_flag[idx]
 
-            # if len(search_query) > 5:
-            #     result = result or similarity_indicators[idx]
+            if len(search_query) > 5:
+                result = result or similarity_indicators[idx]
 
             final_indicators.append(result)
 

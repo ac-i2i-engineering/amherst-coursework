@@ -397,10 +397,9 @@ def filter(request):
         similarity_threshold = data.get("similarity_threshold", 0.05)
 
         if not search_query:
-            return JsonResponse({
-                "status": "success", 
-                "indicators": [1] * len(course_ids)
-            })
+            return JsonResponse(
+                {"status": "success", "indicators": [1] * len(course_ids)}
+            )
 
         # Better error handling for course fetching
         courses = []
@@ -429,12 +428,12 @@ def filter(request):
                 executor.submit(relevant_keywords, search_query, courses),
                 executor.submit(relevant_descriptions, search_query, courses),
                 executor.submit(relevant_professor_names, search_query, courses),
-                executor.submit(half_courses, search_query, courses)
-        ]
-            
+                executor.submit(half_courses, search_query, courses),
+            ]
+
             # Get all results at once
             all_results = [future.result() for future in futures]
-            
+
             [
                 name_indicators,
                 dept_code_indicators,
@@ -444,7 +443,7 @@ def filter(request):
                 keyword_indicators,
                 description_indicators,
                 professor_indicators,
-                half_flag
+                half_flag,
             ] = all_results
 
         # Calculate final indicators maintaining order
@@ -464,7 +463,7 @@ def filter(request):
             if "half" in search_query:
                 result = result and half_flag[idx]
 
-        # if len(search_query) > 5:
+            # if len(search_query) > 5:
             #     result = result or similarity_indicators[idx]
 
             final_indicators.append(result)

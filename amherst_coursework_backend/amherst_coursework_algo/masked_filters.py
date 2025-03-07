@@ -105,7 +105,6 @@ def relevant_department_names(search_query: str, courses: list) -> list:
     ]
 
 
-
 def relevant_course_codes(search_query: str, courses: list) -> list:
     """
     Return binary indicators for courses with matching course codes.
@@ -219,6 +218,7 @@ def relevant_descriptions(search_query: str, courses: list) -> list:
         for course in courses
     ]
 
+
 def relevant_professor_names(search_query: str, courses: list) -> list:
     """
     Return binary indicators for courses with matching professor names.
@@ -247,6 +247,7 @@ def relevant_professor_names(search_query: str, courses: list) -> list:
         )
         for course in courses
     ]
+
 
 def half_courses(search_query: str, courses: list) -> list:
     """

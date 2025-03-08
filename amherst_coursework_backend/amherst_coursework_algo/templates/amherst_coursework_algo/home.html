@@ -29,10 +29,15 @@
 
             <div class="search-container">
                 <input type="text" 
-                       id="searchInput"
-                       placeholder="Search courses..."
-                       class="search-input"
-                       oninput="debouncedSearch(this.value, 0.3)">
+                    id="searchInput"
+                    placeholder="Search courses..."
+                    class="search-input">
+                <button id="searchButton" class="search-button" onclick="handleSearch()">
+                    <i class="fa-solid fa-search"></i> Search
+                </button>
+                <div id="search-loading" style="display: none;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Searching...
+                </div>
             </div>
 
             <div class="course-container">
@@ -90,6 +95,13 @@
                     togglePanel(courseId);
                 }
             });
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearch();
+            }
         });
 
         // Update button states to match cart

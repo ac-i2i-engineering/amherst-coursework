@@ -123,8 +123,8 @@ STATIC_URL = "/static/"  # Add leading slash
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "amherst_coursework_algo" / "static"]
 
-# Use the simpler WhiteNoise storage backend first to make sure it works
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# Change this line to use CompressedManifestStaticFilesStorage
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Configure WhiteNoise
 WHITENOISE_MANIFEST_STRICT = False
@@ -134,3 +134,24 @@ WHITENOISE_USE_FINDERS = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Add logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'whitenoise': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

@@ -405,14 +405,26 @@ def filter(request):
 
         # Better error handling for course fetching
         if len(courses) == 0:
+            courses_dict = {
+                str(course.id): course 
+                for course in Course.objects.filter(
+                    id__in=course_ids
+                ).prefetch_related(
+                    'departments',
+                    'professors',
+                    'courseCodes',
+                    'divisions',
+                    'keywords'
+                )
+            }
+            
+            # Maintain order from course_ids
             for course_id in course_ids:
-                try:
-                    course = Course.objects.get(id=course_id)
+                course = courses_dict.get(str(course_id))
+                if course:
                     courses.append(course)
-                except Course.DoesNotExist:
-                    print("Error:" + str(course_id))
-                    # Skip non-existent courses
-                    continue
+                else:
+                    print(f"Error: Course {course_id} not found")
 
         if not courses:
             return JsonResponse(

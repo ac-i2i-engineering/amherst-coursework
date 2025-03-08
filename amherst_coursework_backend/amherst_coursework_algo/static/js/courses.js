@@ -181,13 +181,26 @@ async function search_filter(searchQuery, similarityThreshold) {
 
 async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) {
     try {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // Get CSRF token from cookie if not available in the form
+        let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+        
+        // If no CSRF token in form, try to get from cookie
+        if (!csrftoken) {
+            csrftoken = getCookie('csrftoken');
+        }
+        
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        // Only add CSRF token if we found one
+        if (csrftoken) {
+            headers['X-CSRFToken'] = csrftoken;
+        }
+        
         const response = await fetch('/api/masked_filter/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
-            },
+            headers: headers,
             body: JSON.stringify({
                 search_query: searchQuery,
                 course_ids: courseIds,
@@ -206,6 +219,22 @@ async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) 
         console.error('Error:', error);
         return new Array(courseIds.length).fill(0);
     }
+}
+
+// Helper function to get cookie by name (for CSRF token)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function updateCartDisplay() {

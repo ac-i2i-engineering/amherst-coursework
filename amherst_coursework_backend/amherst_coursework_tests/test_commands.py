@@ -75,18 +75,18 @@ class TestLoadCourses(TestCase):
         """Test loading course with professor data"""
 
         test_data = {
-                "Test Department" : [
+            "Test Department": [
                 {
-                "course_name": "Test Course",
-                "course_acronyms": ["TEST-101"],
-                "departments": {"Computer Science": "https://test.edu/dept"},
-                "section_information": {
-                    "01": {
-                        "professor_name": "Dr. Test Professor",
-                        "professor_link": "https://test.edu/prof1",
-                    }
-                },
-                "description": "Test course description",
+                    "course_name": "Test Course",
+                    "course_acronyms": ["TEST-101"],
+                    "departments": {"Computer Science": "https://test.edu/dept"},
+                    "section_information": {
+                        "01": {
+                            "professor_name": "Dr. Test Professor",
+                            "professor_link": "https://test.edu/prof1",
+                        }
+                    },
+                    "description": "Test course description",
                 }
             ]
         }
@@ -129,11 +129,11 @@ class TestLoadCourses(TestCase):
                         "Attention to Issues of Class",
                         "Attention to Issues of Gender and Sexuality",
                         "Attention to Issues of Race",
-                        "Transnational or World Cultures Taught in English"
+                        "Transnational or World Cultures Taught in English",
                     ],
                     "offerings": {
                         "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/ANTH/ANTH-245-2324F"
-                    }
+                    },
                 }
             ]
         }
@@ -184,7 +184,7 @@ class TestLoadCourses(TestCase):
 
     def test_load_course_with_sections(self):
         """Test loading course with section data including meeting times"""
-        
+
         test_data = {
             "Computer Science": [
                 {
@@ -203,7 +203,7 @@ class TestLoadCourses(TestCase):
                             "wed_start_time": "9:00 AM",
                             "wed_end_time": "9:50 AM",
                             "fri_start_time": "9:00 AM",
-                            "fri_end_time": "9:50 AM"
+                            "fri_end_time": "9:50 AM",
                         },
                         "02": {
                             "professor_name": "Dr. Another Professor",
@@ -214,9 +214,9 @@ class TestLoadCourses(TestCase):
                             "wed_start_time": "10:00 AM",
                             "wed_end_time": "10:50 AM",
                             "fri_start_time": "10:00 AM",
-                            "fri_end_time": "10:50 AM"
-                        }
-                    }
+                            "fri_end_time": "10:50 AM",
+                        },
+                    },
                 }
             ]
         }
@@ -229,13 +229,13 @@ class TestLoadCourses(TestCase):
         # Verify course was created with sections
         course = Course.objects.first()
         self.assertEqual(course.sections.count(), 2)
-        
+
         # Verify first section details
         section1 = course.sections.get(section_number="01")
         self.assertEqual(section1.professor.name, "Dr. Test Professor")
         self.assertEqual(section1.location, "TEST 101")
         self.assertEqual(section1.monday_start_time.strftime("%I:%M %p"), "09:00 AM")
-        
+
         # Verify second section details
         section2 = course.sections.get(section_number="02")
         self.assertEqual(section2.professor.name, "Dr. Another Professor")
@@ -247,7 +247,7 @@ class TestLoadCourses(TestCase):
 
     def test_section_with_null_times(self):
         """Test loading section with null meeting times"""
-        
+
         test_data = {
             "Computer Science": [
                 {
@@ -264,9 +264,9 @@ class TestLoadCourses(TestCase):
                             "tue_start_time": "11:00 AM",
                             "tue_end_time": "12:15 PM",
                             "thu_start_time": "11:00 AM",
-                            "thu_end_time": "12:15 PM"
+                            "thu_end_time": "12:15 PM",
                         }
-                    }
+                    },
                 }
             ]
         }

@@ -18,7 +18,7 @@ from amherst_coursework_algo.config.course_dictionaries import (
     MISMATCHED_DEPARTMENT_NAMES,
 )
 import json
-from datetime import datetime 
+from datetime import datetime
 
 """A Django management command to load course data from a JSON file into the database.
 
@@ -75,8 +75,6 @@ Notes:
 """
 
 
-
-
 class Command(BaseCommand):
     def parse_ampm_time(time_str):
         """
@@ -87,13 +85,13 @@ class Command(BaseCommand):
 
         Returns:
             time: A Django time object if parsing is successful, None otherwise
-            
+
         Examples:
             >>> parse_ampm_time('9:00 AM')
             datetime.time(9, 0)
             >>> parse_ampm_time('invalid')
             None
-            >>> parse_ampm_time(None) 
+            >>> parse_ampm_time(None)
             None
         """
         """Parse time string with AM/PM format"""
@@ -101,12 +99,12 @@ class Command(BaseCommand):
             return None
         try:
             # Parse time like "9:00 AM" into Django time object
-            parsed_time = datetime.strptime(time_str, '%I:%M %p')
+            parsed_time = datetime.strptime(time_str, "%I:%M %p")
             return parsed_time.time()
         except ValueError as e:
             print(f"Error parsing time: {time_str}")
             return None
-        
+
     help = "Load courses from JSON file"
 
     def add_arguments(self, parser):
@@ -219,7 +217,6 @@ class Command(BaseCommand):
                         Course.objects.get_or_create(id=rec)[0]
                         for rec in course_data.get("corequisites", {})
                     ]
-
 
                     fallOfferings = []
                     springOfferings = []
@@ -335,37 +332,80 @@ class Command(BaseCommand):
                     for section_number, section_data in course_data.get(
                         "section_information", {}
                     ).items():
-                        if i == 0 : courseMaterialsLink = section_data.get("course_materials_links",  "https://www.amherst.edu/")
+                        if i == 0:
+                            courseMaterialsLink = section_data.get(
+                                "course_materials_links", "https://www.amherst.edu/"
+                            )
                         sectionProfessor, _ = Professor.objects.get_or_create(
-                            name=section_data.get("professor_name", "Unknown Professor") if section_data.get("professor_name") else "Unknown Professor",
-                            link=section_data.get("professor_link", "https://www.amherst.edu/") if section_data.get("professor_link") else "https://www.amherst.edu/",
+                            name=(
+                                section_data.get("professor_name", "Unknown Professor")
+                                if section_data.get("professor_name")
+                                else "Unknown Professor"
+                            ),
+                            link=(
+                                section_data.get(
+                                    "professor_link", "https://www.amherst.edu/"
+                                )
+                                if section_data.get("professor_link")
+                                else "https://www.amherst.edu/"
+                            ),
                         )
                         section, _ = Section.objects.update_or_create(
                             section_number=section_number,
                             section_for=course,
                             defaults={
-                                "monday_start_time": Command.parse_ampm_time(section_data.get("mon_start_time")),
-                                "monday_end_time": Command.parse_ampm_time(section_data.get("mon_end_time")),
-                                "tuesday_start_time": Command.parse_ampm_time(section_data.get("tue_start_time")),
-                                "tuesday_end_time": Command.parse_ampm_time(section_data.get("tue_end_time")),
-                                "wednesday_start_time": Command.parse_ampm_time(section_data.get("wed_start_time")),
-                                "wednesday_end_time": Command.parse_ampm_time(section_data.get("wed_end_time")),
-                                "thursday_start_time": Command.parse_ampm_time(section_data.get("thu_start_time")),
-                                "thursday_end_time": Command.parse_ampm_time(section_data.get("thu_end_time")),
-                                "friday_start_time": Command.parse_ampm_time(section_data.get("fri_start_time")),
-                                "friday_end_time": Command.parse_ampm_time(section_data.get("fri_end_time")),
-                                "saturday_start_time": Command.parse_ampm_time(section_data.get("sat_start_time")),
-                                "saturday_end_time": Command.parse_ampm_time(section_data.get("sat_end_time")),
-                                "sunday_start_time": Command.parse_ampm_time(section_data.get("sun_start_time")),
-                                "sunday_end_time": Command.parse_ampm_time(section_data.get("sun_end_time")),
+                                "monday_start_time": Command.parse_ampm_time(
+                                    section_data.get("mon_start_time")
+                                ),
+                                "monday_end_time": Command.parse_ampm_time(
+                                    section_data.get("mon_end_time")
+                                ),
+                                "tuesday_start_time": Command.parse_ampm_time(
+                                    section_data.get("tue_start_time")
+                                ),
+                                "tuesday_end_time": Command.parse_ampm_time(
+                                    section_data.get("tue_end_time")
+                                ),
+                                "wednesday_start_time": Command.parse_ampm_time(
+                                    section_data.get("wed_start_time")
+                                ),
+                                "wednesday_end_time": Command.parse_ampm_time(
+                                    section_data.get("wed_end_time")
+                                ),
+                                "thursday_start_time": Command.parse_ampm_time(
+                                    section_data.get("thu_start_time")
+                                ),
+                                "thursday_end_time": Command.parse_ampm_time(
+                                    section_data.get("thu_end_time")
+                                ),
+                                "friday_start_time": Command.parse_ampm_time(
+                                    section_data.get("fri_start_time")
+                                ),
+                                "friday_end_time": Command.parse_ampm_time(
+                                    section_data.get("fri_end_time")
+                                ),
+                                "saturday_start_time": Command.parse_ampm_time(
+                                    section_data.get("sat_start_time")
+                                ),
+                                "saturday_end_time": Command.parse_ampm_time(
+                                    section_data.get("sat_end_time")
+                                ),
+                                "sunday_start_time": Command.parse_ampm_time(
+                                    section_data.get("sun_start_time")
+                                ),
+                                "sunday_end_time": Command.parse_ampm_time(
+                                    section_data.get("sun_end_time")
+                                ),
                                 "professor": sectionProfessor,
-                                "location": section_data.get("course_location", "Unknown Location"),
+                                "location": section_data.get(
+                                    "course_location", "Unknown Location"
+                                ),
                             },
                         )
                         sections.append(section)
                         professors.append(sectionProfessor)
-                        i+=1
-                    
+                        i += 1
+
                     course.professors.set(professors)
                     course.courseMaterialsLink = courseMaterialsLink
                     course.save()

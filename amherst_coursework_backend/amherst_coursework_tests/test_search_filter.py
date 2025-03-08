@@ -214,7 +214,6 @@ class TestMaskedFilters(TestCase):
     #             "indicators", data, f"No indicators in response for {test_case['name']}"
     #         )
 
-            
     #         print(data["indicators"])
 
     #         # For matching queries, indicator should be 1; for non-matching, 0

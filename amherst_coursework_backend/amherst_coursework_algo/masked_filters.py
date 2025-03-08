@@ -419,7 +419,7 @@ def filter(request):
             return JsonResponse(
                 {"status": "success", "indicators": [0] * len(course_ids)}
             )
-        
+
         if len(search_query) > 20:
 
             # Get all indicators using parallel execution
@@ -435,7 +435,10 @@ def filter(request):
                     executor.submit(relevant_professor_names, search_query, courses),
                     executor.submit(half_courses, search_query, courses),
                     executor.submit(
-                        similarity_filtering, search_query, courses, similarity_threshold
+                        similarity_filtering,
+                        search_query,
+                        courses,
+                        similarity_threshold,
                     ),
                 ]
 

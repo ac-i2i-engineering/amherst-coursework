@@ -308,14 +308,14 @@ class Section(models.Model):
     section_number = models.CharField(
         validators=[
             RegexValidator(
-                regex=r'^\d{2}[A-Z]?$',
-                message='Section number must be 2 digits optionally followed by a capital letter',
-                code='invalid_section_number'
+                regex=r"^\d{2}[A-Z]?$",
+                message="Section number must be 2 digits optionally followed by a capital letter",
+                code="invalid_section_number",
             )
         ],
         help_text="Section number (digits or L for lab)",
         max_length=2,
-        default="1"
+        default="1",
     )
     section_for = models.ForeignKey(
         "Course",
@@ -327,7 +327,7 @@ class Section(models.Model):
     monday_start_time = models.TimeField(null=True)
     monday_end_time = models.TimeField(null=True)
     tuesday_start_time = models.TimeField(null=True)
-    tuesday_end_time = models.TimeField(null=True) 
+    tuesday_end_time = models.TimeField(null=True)
     wednesday_start_time = models.TimeField(null=True)
     wednesday_end_time = models.TimeField(null=True)
     thursday_start_time = models.TimeField(null=True)
@@ -346,24 +346,26 @@ class Section(models.Model):
 
     def clean(self):
         super().clean()
-        
+
         # Check that start times are before end times for each day
         time_pairs = [
-            ('monday', self.monday_start_time, self.monday_end_time),
-            ('tuesday', self.tuesday_start_time, self.tuesday_end_time),
-            ('wednesday', self.wednesday_start_time, self.wednesday_end_time),
-            ('thursday', self.thursday_start_time, self.thursday_end_time),
-            ('friday', self.friday_start_time, self.friday_end_time),
-            ('saturday', self.saturday_start_time, self.saturday_end_time),
-            ('sunday', self.sunday_start_time, self.sunday_end_time),
+            ("monday", self.monday_start_time, self.monday_end_time),
+            ("tuesday", self.tuesday_start_time, self.tuesday_end_time),
+            ("wednesday", self.wednesday_start_time, self.wednesday_end_time),
+            ("thursday", self.thursday_start_time, self.thursday_end_time),
+            ("friday", self.friday_start_time, self.friday_end_time),
+            ("saturday", self.saturday_start_time, self.saturday_end_time),
+            ("sunday", self.sunday_start_time, self.sunday_end_time),
         ]
-        
+
         errors = {}
         for day, start_time, end_time in time_pairs:
             if start_time and end_time:  # Only validate if both times are set
                 if start_time >= end_time:
-                    errors[f'{day}_start_time'] = f'{day.capitalize()} start time must be before end time'
-        
+                    errors[f"{day}_start_time"] = (
+                        f"{day.capitalize()} start time must be before end time"
+                    )
+
         if errors:
             raise ValidationError(errors)
 

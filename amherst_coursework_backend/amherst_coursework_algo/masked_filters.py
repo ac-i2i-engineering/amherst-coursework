@@ -271,10 +271,10 @@ def half_courses(search_query: str, courses: list) -> list:
     """
     if "half" in search_query.lower():
         return [
-            1 if len(str(course.id)) >= 4 and str(course.id)[-4] == "1" else 0
+            1 if str(course.id)[3] == "1" else 0
             for course in courses
         ]
-    return [1] * len(courses)
+    return [0] * len(courses)
 
 
 def similarity_filtering(
@@ -421,7 +421,7 @@ def filter(request):
             )
 
         if len(search_query) > 20:
-
+            print("similarity search activated")
             # Get all indicators using parallel execution
             with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
                 futures = [
@@ -500,12 +500,15 @@ def filter(request):
                 | professor_indicators[idx]
             )
 
-            if "half" in search_query:
-                result = result and half_flag[idx]
-
             if len(search_query) > 20:
                 result = result or similarity_indicators[idx]
 
+            if "half" in search_query:
+                if search_query != "half":
+                    result = result and half_flag[idx]
+                else:
+                    result = half_flag[idx]
+            
             final_indicators.append(result)
 
         return JsonResponse({"status": "success", "indicators": final_indicators})

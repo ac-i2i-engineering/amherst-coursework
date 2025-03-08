@@ -41,6 +41,8 @@
             </div>
 
             <div class="course-container">
+                <div id="no-results-message" class="no-results-message" style="display: none;"></div>
+
                 {% for course in courses %}
                 <div class="course-card"
                         data-course-id="{{ course.id }}">

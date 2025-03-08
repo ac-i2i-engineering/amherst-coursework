@@ -178,6 +178,7 @@ async function getCourseById(courseId) {
 async function search_filter(searchQuery, similarityThreshold) {
     searchQuery = searchQuery.toLowerCase().trim();
     const courseCards = document.querySelectorAll('.course-card');
+    const courseContainer = document.querySelector('.course-container'); 
     
     // Add loading indicator
     document.getElementById('search-loading').style.display = 'inline-block';
@@ -188,14 +189,36 @@ async function search_filter(searchQuery, similarityThreshold) {
     // Get indicators from backend
     const indicators = await filterCoursesByMask(searchQuery, courseIds, similarityThreshold);
 
+    courseCount = 0
     // Update visibility based on indicators
     courseCards.forEach((card, index) => {
         if (indicators[index]) {
             card.classList.remove('hidden');
+            courseCount += 1;
         } else {
             card.classList.add('hidden');
         }
     });
+
+    if (courseCount === 0) {
+        // Remove existing no-results message if it exists
+        const existingMessage = courseContainer.querySelector('.no-results-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        // Create and add new no-results message
+        const noResultsMessage = document.createElement('div');
+        noResultsMessage.className = 'no-results-message';
+        noResultsMessage.innerHTML = `No results available for "${searchQuery}"`;
+        courseContainer.appendChild(noResultsMessage);
+    } else {
+        // Remove no-results message if it exists
+        const noResultsMessage = courseContainer.querySelector('.no-results-message');
+        if (noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
     
     // Hide loading indicator
     document.getElementById('search-loading').style.display = 'none';

@@ -201,6 +201,7 @@ async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) 
         const response = await fetch('/api/masked_filter/', {
             method: 'POST',
             headers: headers,
+            credentials: 'include',  // Add this line to include cookies
             body: JSON.stringify({
                 search_query: searchQuery,
                 course_ids: courseIds,

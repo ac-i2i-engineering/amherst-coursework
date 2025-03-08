@@ -267,26 +267,55 @@ class Section(models.Model):
 
     Parameters
     ----------
-    section_number: int
-        The section number
+    section_number: str
+        The section number (digits or L for lab)
     section_for : ForeignKey
         Course this section is for
-    days : str
-        Days of the week the section meets
-    start_time : TimeField
-        Start time of the section
-    end_time : TimeField
-        End time of the section
+    monday_start_time : TimeField
+        Start time for Monday meeting
+    monday_end_time : TimeField
+        End time for Monday meeting
+    tuesday_start_time : TimeField
+        Start time for Tuesday meeting
+    tuesday_end_time : TimeField
+        End time for Tuesday meeting
+    wednesday_start_time : TimeField
+        Start time for Wednesday meeting
+    wednesday_end_time : TimeField
+        End time for Wednesday meeting
+    thursday_start_time : TimeField
+        Start time for Thursday meeting
+    thursday_end_time : TimeField
+        End time for Thursday meeting
+    friday_start_time : TimeField
+        Start time for Friday meeting
+    friday_end_time : TimeField
+        End time for Friday meeting
+    saturday_start_time : TimeField
+        Start time for Saturday meeting
+    saturday_end_time : TimeField
+        End time for Saturday meeting
+    sunday_start_time : TimeField
+        Start time for Sunday meeting
+    sunday_end_time : TimeField
+        End time for Sunday meeting
     location : str
         Building and room number
     professor : ForeignKey
         Professor teaching this section
     """
 
-    section_number = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(99)],
-        help_text="Section number",
-        default=1,
+    section_number = models.CharField(
+        validators=[
+            RegexValidator(
+                regex=r"^\d{2}[A-Z]?$",
+                message="Section number must be 2 digits optionally followed by a capital letter",
+                code="invalid_section_number",
+            )
+        ],
+        help_text="Section number (digits or L for lab)",
+        max_length=2,
+        default="1",
     )
     section_for = models.ForeignKey(
         "Course",
@@ -294,17 +323,22 @@ class Section(models.Model):
         related_name="sections",
         default=None,
     )
-    days = models.CharField(
-        max_length=5,
-        help_text="Days of week (e.g., MWF, TR)",
-        validators=[
-            RegexValidator(
-                regex="^[MTWRF]+$", message="Days must be combination of M/T/W/R/F"
-            )
-        ],
-    )
-    start_time = models.TimeField(help_text="Section start time")
-    end_time = models.TimeField(help_text="Section end time")
+
+    monday_start_time = models.TimeField(null=True)
+    monday_end_time = models.TimeField(null=True)
+    tuesday_start_time = models.TimeField(null=True)
+    tuesday_end_time = models.TimeField(null=True)
+    wednesday_start_time = models.TimeField(null=True)
+    wednesday_end_time = models.TimeField(null=True)
+    thursday_start_time = models.TimeField(null=True)
+    thursday_end_time = models.TimeField(null=True)
+    friday_start_time = models.TimeField(null=True)
+    friday_end_time = models.TimeField(null=True)
+    saturday_start_time = models.TimeField(null=True)
+    saturday_end_time = models.TimeField(null=True)
+    sunday_start_time = models.TimeField(null=True)
+    sunday_end_time = models.TimeField(null=True)
+
     location = models.CharField(max_length=100, help_text="Building and room number")
     professor = models.ForeignKey(
         "Professor", on_delete=models.CASCADE, related_name="sections"
@@ -312,20 +346,35 @@ class Section(models.Model):
 
     def clean(self):
         super().clean()
-        if self.start_time >= self.end_time:
-            raise ValidationError(_("End time must be after start time"))
 
-        if len(set(self.days)) != len(self.days):
-            raise ValidationError(_("Duplicate days not allowed"))
+        # Check that start times are before end times for each day
+        time_pairs = [
+            ("monday", self.monday_start_time, self.monday_end_time),
+            ("tuesday", self.tuesday_start_time, self.tuesday_end_time),
+            ("wednesday", self.wednesday_start_time, self.wednesday_end_time),
+            ("thursday", self.thursday_start_time, self.thursday_end_time),
+            ("friday", self.friday_start_time, self.friday_end_time),
+            ("saturday", self.saturday_start_time, self.saturday_end_time),
+            ("sunday", self.sunday_start_time, self.sunday_end_time),
+        ]
+
+        errors = {}
+        for day, start_time, end_time in time_pairs:
+            if start_time and end_time:  # Only validate if both times are set
+                if start_time >= end_time:
+                    errors[f"{day}_start_time"] = (
+                        f"{day.capitalize()} start time must be before end time"
+                    )
+
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
-
-        return f"{self.days} {self.start_time}-{self.end_time} in {self.location}"
+        return f"{self.section_number} for {self.section_for}"
 
     class Meta:
         verbose_name = "Section"
         verbose_name_plural = "Sections"
-        ordering = ["days", "start_time"]
         unique_together = ("section_for", "section_number")
 
 

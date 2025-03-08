@@ -1,7 +1,9 @@
 {% extends "amherst_coursework_algo/base.html" %}
+{% load static %}
 {% block content %}
-
+{% csrf_token %}
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
+<script src="{% static 'js/courses.js' %}"></script>
 
 <div class = "page-container">
     <div id="side-panel" class="side-panel">
@@ -30,19 +32,13 @@
                        id="searchInput"
                        placeholder="Search courses..."
                        class="search-input"
-                       oninput="filterCourses(this.value, 0.05)">
+                       oninput="debouncedSearch(this.value, 0.3)">
             </div>
 
             <div class="course-container">
                 {% for course in courses %}
                 <div class="course-card"
-                        data-course-id="{{ course.id }}"
-                        data-course-name="{{ course.courseName }}"
-                        data-department-codes="{% for dept in course.departments.all %}{{ dept.code }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-codes="{% for code in course.courseCodes.all %}{{ code.value }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-divisions="{% for div in course.divisions.all %}{{ div.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-keywords="{% for keyword in course.keywords.all %}{{ keyword.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                        data-course-description="{{ course.courseDescription }}">
+                        data-course-id="{{ course.id }}">
                         <div class="course-card-columns">
                             <div class="course-card-left">
                                 <p class="course-code">
@@ -72,272 +68,11 @@
         </div>
     </div>
 
-    
-
-
     <script>
-    const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent);
-
-    function tokenize(text) {
-        return text.toLowerCase()
-            .replace(/[^\w\s]/g, '')
-            .split(/\s+/)
-            .filter(word => word.length > 3);
-    }
-
-    function calculateTF(tokens) {
-        const tf = {};
-        tokens.forEach(token => {
-            tf[token] = (tf[token] || 0) + 1;
-        });
-        return tf;
-    }
-
-    function cosineSimilarity(tf1, tf2) {
-        let dotProduct = 0;
-        let norm1 = 0;
-        let norm2 = 0;
-        
-        for (const term in tf1) {
-            if (tf2[term]) dotProduct += tf1[term] * tf2[term];
-            norm1 += tf1[term] * tf1[term];
-        }
-        
-        for (const term in tf2) {
-            norm2 += tf2[term] * tf2[term];
-        }
-        
-        return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-    }
-
-    function normalizeCode(code) {
-        // Remove any non-alphanumeric characters
-        const cleaned = code.replace(/[^a-z0-9]/gi, '');
-        return cleaned;
-    }
-
-    function filterCourses(searchQuery, similarityThreshold) {
-        searchQuery = searchQuery.toLowerCase().trim();
-        const courseCards = document.querySelectorAll('.course-card');
-        
-        let similarity_search = searchQuery.length > 5;
-
-        courseCards.forEach(card => {
-            let matches = false;
-            
-            // Simple text matching
-            const courseName = card.dataset.courseName.toLowerCase();
-            const departmentCodes = card.dataset.departmentCodes.split(',');
-            const departmentNames = departmentCodes.map(code => 
-                CODE_TO_NAME[code.trim()] || ''
-            ).filter(name => name);
-            const courseCodes = card.dataset.courseCodes.split(',');
-            const courseDivisions = card.dataset.courseDivisions.split(',');
-            const courseKeywords = card.dataset.courseKeywords.split(',');
-            const courseID = card.dataset.courseId;
-            const halfFlag = Math.floor(courseID / 1000) % 10;
-            console.log(courseName, halfFlag);
-            
-            matches = courseName.includes(searchQuery) || 
-                    departmentCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
-                    departmentNames.some(name => name.toLowerCase().includes(searchQuery)) ||
-                    courseCodes.some(code => normalizeCode(code.toLowerCase()).includes(searchQuery)) ||
-                    courseCodes.some(code => code.toLowerCase().includes(searchQuery)) ||
-                    courseDivisions.some(division => division.toLowerCase().includes(searchQuery)) ||
-                    courseKeywords.some(keyword => keyword.toLowerCase().includes(searchQuery));
-            
-            
-            if (similarity_search) {
-                // Cosine similarity matching
-                const courseText = `${card.dataset.courseName} ${card.dataset.courseDescription}`;
-                
-                const queryTokens = tokenize(searchQuery);
-                const courseTokens = tokenize(courseText);
-                
-                
-                const queryTF = calculateTF(queryTokens);
-                const courseTF = calculateTF(courseTokens);
-                
-                const similarity = cosineSimilarity(queryTF, courseTF);
-                console.log(queryTokens, courseTokens, similarity);
-                matches = matches || similarity > similarityThreshold;
-            }
-
-            if(searchQuery.includes("half"))
-            {
-                if(searchQuery.length > 4) 
-                {
-                    matches = matches && halfFlag;
-                }
-                else
-                {
-                    matches = halfFlag;
-                }
-            }
-
-
-            card.style.display = matches ? 'block' : 'none'; 
-        });
-    }
-
-    /* Add this to your script section */
-    function handleCartClick(event, courseId) {
-        event.stopPropagation();  // Prevent event from bubbling up to course-card
-        toggleCart(courseId);
-    }
-
-    function toggleCartPanel() {
-        const panel = document.getElementById('cart-side-panel');
-        panel.classList.toggle('open');
-        updateCartDisplay();
-    }
-
-    function toggleCart(courseId) {
-        // Get existing cart or initialize empty array
-        let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-        
-        // Check if course is already in cart
-        let courseIndex = cart.indexOf(courseId)
-        event = event || window.event;
-        let button = event.target;
-    
-        if (courseIndex === -1) {
-            cart.push(courseId);
-            updateButtonState(courseId, true);
-        } else {
-            cart.splice(courseIndex, 1);
-            updateButtonState(courseId, false);
-        }
-    
-        // Save updated cart
-        localStorage.setItem('courseCart', JSON.stringify(cart));
-        updateCartDisplay();
-    }
-
-    function updateCartDisplay() {
-    // 1. Get DOM elements
-    const cartItems = document.getElementById('cart-items');
-    const cartCount = document.getElementById('cart-count');
-    const cartCountHeader = document.getElementById('cart-count-header');
-    
-    // 2. Get cart data from localStorage
-    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-
-    // 3. Clear existing content
-    cartItems.innerHTML = '';
-
-    if (cart.length === 0) {
-        cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
-        cartCount.textContent = '0';
-        cartCountHeader.textContent = '0';
-        return;
-    }
-    
-    // Fetch course details from server
-    fetch(`/cart-courses/?${cart.map(id => `ids[]=${id}`).join('&')}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-    })
-        .then(data => {
-            cartItems.innerHTML = '';
-            data.courses.forEach(course => {
-                const courseElement = document.createElement('div');
-                courseElement.className = 'cart-item';
-                courseElement.innerHTML = `
-                    <div class="cart-item-name">${course.name}</div>
-                    <button class="remove-from-cart" 
-                            onclick="toggleCart('${course.id}')">
-                            X
-                    </button>
-                `;
-                cartItems.appendChild(courseElement);
-            });
-            cartCount.textContent = cart.length;
-            cartCountHeader.textContent = cart.length;
-        });
-    }
-
-    function updateButtonState(courseId, inCart) {
-        document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
-            const icon = button.querySelector('i');
-            if (inCart) {
-                icon.className = 'fa-solid fa-check';
-                button.classList.add('in-cart');
-            } else {
-                icon.className = 'fa-solid fa-plus';
-                button.classList.remove('in-cart');
-            }
-        });
-    }
-
-    function togglePanel(courseId = null) {
-        const panel = document.getElementById('side-panel');
-        const panelContent = document.getElementById('panel-content');
-        const mainContent = document.querySelector('.main-content');
-        const courseContainer = document.querySelector('.course-container');
-
-        if (courseId) {
-            const clickedCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
-
-            fetch(`/details/${courseId}/`)  
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to load course details: ${response.status}`);
-                }
-                return response.text();
-            })
-                .then(html => {
-                    panelContent.innerHTML = html;
-                    requestAnimationFrame(() => {
-                        panel.classList.add('open');
-                        mainContent.classList.add('shifted');
-                        courseContainer.classList.add('shifted');
-
-                        setTimeout(() => {
-                            if (clickedCard) {
-                                clickedCard.scrollIntoView({ 
-                                    behavior: 'smooth', 
-                                    block: 'center'
-                                });
-                            }
-                        }, 100);
-                    });
-                });
-        } else {
-            // Closing panel
-            courseContainer.style.opacity = '0';
-            courseContainer.classList.add('hidden');
-            panel.classList.add('closing');
-
-            document.querySelectorAll('.course-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            
-            setTimeout(() => {
-                panel.classList.remove('open');
-                panel.classList.remove('closing');
-                mainContent.classList.remove('shifted');
-                courseContainer.classList.remove('shifted');
-                
-                // Fade content back in only after panel is closed and layout is adjusted
-                setTimeout(() => {
-                    courseContainer.classList.add('fade-in');
-                    courseContainer.classList.remove('hidden');
-                    courseContainer.style.opacity = '1';
-                    
-                    setTimeout(() => {
-                        courseContainer.classList.remove('fade-in');
-                    }, 300);
-                }, 200);
-            }, 600);
-        }
-    }
 
         // Initialize cart display when DOM content is loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+        //await initializeCourses();
         updateCartDisplay();
 
         document.querySelectorAll('.course-card').forEach(card => {

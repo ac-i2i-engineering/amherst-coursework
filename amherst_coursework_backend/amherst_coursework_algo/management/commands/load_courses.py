@@ -15,8 +15,10 @@ from amherst_coursework_algo.models import (
 from amherst_coursework_algo.config.course_dictionaries import (
     DEPARTMENT_NAME_TO_NUMBER,
     DEPARTMENT_NAME_TO_CODE,
+    MISMATCHED_DEPARTMENT_NAMES,
 )
 import json
+from datetime import datetime
 
 """A Django management command to load course data from a JSON file into the database.
 
@@ -74,6 +76,35 @@ Notes:
 
 
 class Command(BaseCommand):
+    def parse_ampm_time(time_str):
+        """
+        Parse a time string in AM/PM format into a Django time object.
+
+        Args:
+            time_str (str): A string representing time in 'HH:MM AM/PM' format (e.g. '9:00 AM')
+
+        Returns:
+            time: A Django time object if parsing is successful, None otherwise
+
+        Examples:
+            >>> parse_ampm_time('9:00 AM')
+            datetime.time(9, 0)
+            >>> parse_ampm_time('invalid')
+            None
+            >>> parse_ampm_time(None)
+            None
+        """
+        """Parse time string with AM/PM format"""
+        if not time_str or time_str == "null":
+            return None
+        try:
+            # Parse time like "9:00 AM" into Django time object
+            parsed_time = datetime.strptime(time_str, "%I:%M %p")
+            return parsed_time.time()
+        except ValueError as e:
+            print(f"Error parsing time: {time_str}")
+            return None
+
     help = "Load courses from JSON file"
 
     def add_arguments(self, parser):
@@ -110,214 +141,285 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         with open(options["json_file"]) as f:
-            courses_data = json.load(f)
+            departments_courses_data = json.load(f)
 
-        for course_data in courses_data:
-            try:
+        for department_list in departments_courses_data:
+            courses_data = departments_courses_data[department_list]
+            for course_data in courses_data:
+                try:
 
-                divisions = []
-                for division in course_data.get("divisions", []):
-                    division, _ = Division.objects.get_or_create(
-                        name=division,
-                    )
-                    divisions.append(division)
+                    divisions = []
+                    for division in course_data.get("divisions", []):
+                        division, _ = Division.objects.get_or_create(
+                            name=division,
+                        )
+                        divisions.append(division)
 
-                keywords = []
-                for keyword in course_data.get("keywords", []):
-                    keyword, _ = Keyword.objects.get_or_create(
-                        name=keyword,
-                    )
-                    keywords.append(keyword)
+                    keywords = []
+                    for keyword in course_data.get("keywords", []):
+                        keyword, _ = Keyword.objects.get_or_create(
+                            name=keyword,
+                        )
+                        keywords.append(keyword)
 
-                codes = []
-                if len(course_data.get("course_acronyms", [])) == 0:
-                    raise KeyError("No course codes found for course")
+                    codes = []
+                    if len(course_data.get("course_acronyms", [])) == 0:
+                        raise KeyError("No course codes found for course")
 
-                for code in course_data.get("course_acronyms", []):
-                    code, _ = CourseCode.objects.get_or_create(
-                        value=code,
-                    )
-                    codes.append(code)
+                    for code in course_data.get("course_acronyms", []):
+                        code, _ = CourseCode.objects.get_or_create(
+                            value=code,
+                        )
+                        codes.append(code)
 
-                departments = []
-                deptList = course_data.get("departments", {})
-                if len(deptList) == 0:
-                    raise KeyError("No departments found for course")
-                i = 0
-                for department, link in deptList.items():
-                    dept, _ = Department.objects.get_or_create(
-                        name=department,
-                        defaults={
-                            "code": DEPARTMENT_NAME_TO_CODE[department],
-                        },
-                    )
-                    departments.append(dept)
-                    i += 1
+                    departments = []
+                    deptList = course_data.get("departments", {})
+                    if len(deptList) == 0:
+                        deptList = {"Other": "https://www.amherst.edu/"}
+                        print(f"Department not found for {course_data['course_name']}")
+                        print(deptList)
+                    i = 0
+                    for department, link in deptList.items():
+                        try:
+                            if department not in DEPARTMENT_NAME_TO_CODE:
+                                department = MISMATCHED_DEPARTMENT_NAMES[department]
+                            dept, _ = Department.objects.get_or_create(
+                                name=department,
+                                defaults={
+                                    "code": code,
+                                },
+                            )
+                        except:
+                            self.stdout.write(
+                                self.style.ERROR(
+                                    f"Failed to create course: {department} is not a valid department"
+                                )
+                            )
+                            continue
+                        departments.append(dept)
+                        i += 1
 
-                recommended = [
-                    Course.objects.get_or_create(id=rec)[0]
-                    for rec in course_data.get("prerequisites", {}).get(
-                        "recommended", []
-                    )
-                ]
+                    recommended = [
+                        Course.objects.get_or_create(id=rec)[0]
+                        for rec in course_data.get("prerequisites", {}).get(
+                            "recommended", []
+                        )
+                    ]
 
-                placement_id = course_data.get("prerequisites", {}).get("placement")
-                placementCourse = None
-                if placement_id:
-                    placementCourse, _ = Course.objects.get_or_create(id=placement_id)
+                    placement_id = course_data.get("prerequisites", {}).get("placement")
+                    placementCourse = None
+                    if placement_id:
+                        placementCourse, _ = Course.objects.get_or_create(
+                            id=placement_id
+                        )
 
-                corequisites = [
-                    Course.objects.get_or_create(id=rec)[0]
-                    for rec in course_data.get("corequisites", {})
-                ]
+                    corequisites = [
+                        Course.objects.get_or_create(id=rec)[0]
+                        for rec in course_data.get("corequisites", {})
+                    ]
 
-                professors = []
-                profNames = course_data.get("profNames", [])
-                profLinks = course_data.get("profLinks", [])
-                for i in range(len(profNames)):
-                    professor, _ = Professor.objects.update_or_create(
-                        name=profNames[i], defaults={"link": profLinks[i]}
-                    )
-                    professors.append(professor)
+                    fallOfferings = []
+                    springOfferings = []
+                    janOfferings = []
 
-                fallOfferings = []
-                springOfferings = []
-                janOfferings = []
+                    offerings = course_data.get("offerings", {})
+                    for offering, link in offerings.items():
+                        if offering == "Not offered":
+                            continue
+                        year, _ = Year.objects.get_or_create(
+                            year=int(offering.split()[-1]),
+                            link=link,
+                        )
+                        term = offering.split()[0]
+                        if term == "Fall":
+                            fallOfferings.append(year)
+                        elif term == "Spring":
+                            springOfferings.append(year)
+                        elif term == "January":
+                            janOfferings.append(year)
+                        else:
+                            self.stdout.write(
+                                self.style.ERROR(
+                                    f"Failed to create course: {term} is not a valid term"
+                                )
+                            )
+                            continue
 
-                offerings = course_data.get("offerings", {})
-                for offering, link in offerings.items():
-                    year, _ = Year.objects.get_or_create(
-                        year=int(offering.split()[-1]),
-                        link=link,
-                    )
-                    term = offering.split()[0]
-                    if term == "Fall":
-                        fallOfferings.append(year)
-                    elif term == "Spring":
-                        springOfferings.append(year)
-                    elif term == "January":
-                        janOfferings.append(year)
-                    else:
+                    id = 4000000
+                    try:
+                        id += (
+                            DEPARTMENT_NAME_TO_NUMBER[departments[0].name] * 10000
+                        )  # the second 2 digits are the department number
+                    except KeyError:
                         self.stdout.write(
                             self.style.ERROR(
-                                f"Failed to create course: {term} is not a valid term"
+                                f"Failed to create course: {departments[0].name} is not a valid department"
                             )
                         )
                         continue
+                    if len(codes[0].value) == 9:
+                        id += 1000  # 4th digit is half course flag (0 for full, 1 for half)
+                    id += int(
+                        codes[0].value[5:8]
+                    )  # last 3 characters of course code are the course number
 
-                id = 4000000
-                try:
-                    id += (
-                        DEPARTMENT_NAME_TO_NUMBER[departments[0].name] * 10000
-                    )  # the second 2 digits are the department number
-                except KeyError:
-                    self.stdout.write(
-                        self.style.ERROR(
-                            f"Failed to create course: {departments[0].name} is not a valid department"
-                        )
-                    )
-                    continue
-                if len(codes[0].value) == 9:
-                    id += 1000  # 4th digit is half course flag (0 for full, 1 for half)
-                id += int(
-                    codes[0].value[5:8]
-                )  # last 3 characters of course code are the course number
-
-                # Create course
-                course, _ = Course.objects.update_or_create(
-                    id=id,
-                    defaults={
-                        "courseLink": course_data.get("course_url", ""),
-                        "courseName": course_data["course_name"],
-                        "credits": course_data.get("credits", 4),
-                        "courseDescription": course_data["description"],
-                        "courseMaterialsLink": course_data.get(
-                            "course_materials_links", [None]
-                        )[0]
-                        or "",
-                        "placement_course": placementCourse,
-                        "professor_override": course_data.get("prerequisites", {}).get(
-                            "professor_override", False
-                        ),
-                        "prereqDescription": course_data.get("prerequisites", {}).get(
-                            "text", ""
-                        ),
-                        "enrollmentText": course_data.get("overGuidelines", {}).get(
-                            "text", ""
-                        ),
-                        "prefForMajor": course_data.get("overGuidelines", {}).get(
-                            "preferenceForMajor", False
-                        ),
-                        "overallCap": course_data.get("overGuidelines", {}).get(
-                            "overallCap", 0
-                        ),
-                        "freshmanCap": course_data.get("overGuidelines", {}).get(
-                            "freshmanCap", 0
-                        ),
-                        "sophomoreCap": course_data.get("overGuidelines", {}).get(
-                            "sophomoreCap", 0
-                        ),
-                        "juniorCap": course_data.get("overGuidelines", {}).get(
-                            "juniorCap", 0
-                        ),
-                        "seniorCap": course_data.get("overGuidelines", {}).get(
-                            "seniorCap", 0
-                        ),
-                    },
-                )
-
-                course.courseCodes.set(codes)
-                course.departments.set(departments)
-                course.corequisites.set(corequisites)
-                course.professors.set(professors)
-                course.fallOfferings.set(fallOfferings)
-                course.springOfferings.set(springOfferings)
-                course.janOfferings.set(janOfferings)
-                course.divisions.set(divisions)
-                course.keywords.set(keywords)
-                course.recommended_courses.set(recommended)
-
-                for reqSet in course_data.get("prerequisites", {}).get("required", []):
-                    prereq_set = PrerequisiteSet.objects.create(
-                        prerequisite_for=course,
-                    )
-                    courses = [
-                        Course.objects.get_or_create(id=req)[0] for req in reqSet
-                    ]
-                    prereq_set.courses.set(courses)
-
-                course.save()
-
-                sections = []
-                for section_number, section_data in course_data.get(
-                    "sections", {}
-                ).items():
-                    sectionProfessor, _ = Professor.objects.get_or_create(
-                        name=section_data.get("profName", "")
-                    )
-                    section, _ = Section.objects.update_or_create(
-                        section_number=section_number,
-                        section_for=course,
+                    # Create course
+                    course, _ = Course.objects.update_or_create(
+                        id=id,
                         defaults={
-                            "days": section_data["daysOfWeek"],
-                            "start_time": parse_time(section_data["startTime"]),
-                            "end_time": parse_time(section_data["endTime"]),
-                            "location": section_data["location"],
-                            "professor": sectionProfessor,
+                            "courseLink": course_data.get("course_url", ""),
+                            "courseName": course_data["course_name"],
+                            "credits": course_data.get("credits", 4),
+                            "courseDescription": course_data["description"],
+                            "placement_course": placementCourse,
+                            "professor_override": course_data.get(
+                                "prerequisites", {}
+                            ).get("professor_override", False),
+                            "prereqDescription": course_data.get(
+                                "prerequisites", {}
+                            ).get("text", ""),
+                            "enrollmentText": course_data.get("overGuidelines", {}).get(
+                                "text", ""
+                            ),
+                            "prefForMajor": course_data.get("overGuidelines", {}).get(
+                                "preferenceForMajor", False
+                            ),
+                            "overallCap": course_data.get("overGuidelines", {}).get(
+                                "overallCap", 0
+                            ),
+                            "freshmanCap": course_data.get("overGuidelines", {}).get(
+                                "freshmanCap", 0
+                            ),
+                            "sophomoreCap": course_data.get("overGuidelines", {}).get(
+                                "sophomoreCap", 0
+                            ),
+                            "juniorCap": course_data.get("overGuidelines", {}).get(
+                                "juniorCap", 0
+                            ),
+                            "seniorCap": course_data.get("overGuidelines", {}).get(
+                                "seniorCap", 0
+                            ),
                         },
                     )
-                    sections.append(section)
 
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f'Successfully created course "{course.courseName}"'
-                    )
-                )
+                    course.courseCodes.set(codes)
+                    course.departments.set(departments)
+                    course.corequisites.set(corequisites)
+                    course.fallOfferings.set(fallOfferings)
+                    course.springOfferings.set(springOfferings)
+                    course.janOfferings.set(janOfferings)
+                    course.divisions.set(divisions)
+                    course.keywords.set(keywords)
+                    course.recommended_courses.set(recommended)
 
-            except Exception as e:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to create course: {str(e)} for {course_data}"
+                    for reqSet in course_data.get("prerequisites", {}).get(
+                        "required", []
+                    ):
+                        prereq_set = PrerequisiteSet.objects.create(
+                            prerequisite_for=course,
+                        )
+                        courses = [
+                            Course.objects.get_or_create(id=req)[0] for req in reqSet
+                        ]
+                        prereq_set.courses.set(courses)
+
+                    course.save()
+
+                    professors = []
+                    sections = []
+                    i = 0
+                    courseMaterialsLink = "https://www.amherst.edu/"
+                    for section_number, section_data in course_data.get(
+                        "section_information", {}
+                    ).items():
+                        if i == 0:
+                            courseMaterialsLink = section_data.get(
+                                "course_materials_links", "https://www.amherst.edu/"
+                            )
+                        sectionProfessor, _ = Professor.objects.get_or_create(
+                            name=(
+                                section_data.get("professor_name", "Unknown Professor")
+                                if section_data.get("professor_name")
+                                else "Unknown Professor"
+                            ),
+                            link=(
+                                section_data.get(
+                                    "professor_link", "https://www.amherst.edu/"
+                                )
+                                if section_data.get("professor_link")
+                                else "https://www.amherst.edu/"
+                            ),
+                        )
+                        section, _ = Section.objects.update_or_create(
+                            section_number=section_number,
+                            section_for=course,
+                            defaults={
+                                "monday_start_time": Command.parse_ampm_time(
+                                    section_data.get("mon_start_time")
+                                ),
+                                "monday_end_time": Command.parse_ampm_time(
+                                    section_data.get("mon_end_time")
+                                ),
+                                "tuesday_start_time": Command.parse_ampm_time(
+                                    section_data.get("tue_start_time")
+                                ),
+                                "tuesday_end_time": Command.parse_ampm_time(
+                                    section_data.get("tue_end_time")
+                                ),
+                                "wednesday_start_time": Command.parse_ampm_time(
+                                    section_data.get("wed_start_time")
+                                ),
+                                "wednesday_end_time": Command.parse_ampm_time(
+                                    section_data.get("wed_end_time")
+                                ),
+                                "thursday_start_time": Command.parse_ampm_time(
+                                    section_data.get("thu_start_time")
+                                ),
+                                "thursday_end_time": Command.parse_ampm_time(
+                                    section_data.get("thu_end_time")
+                                ),
+                                "friday_start_time": Command.parse_ampm_time(
+                                    section_data.get("fri_start_time")
+                                ),
+                                "friday_end_time": Command.parse_ampm_time(
+                                    section_data.get("fri_end_time")
+                                ),
+                                "saturday_start_time": Command.parse_ampm_time(
+                                    section_data.get("sat_start_time")
+                                ),
+                                "saturday_end_time": Command.parse_ampm_time(
+                                    section_data.get("sat_end_time")
+                                ),
+                                "sunday_start_time": Command.parse_ampm_time(
+                                    section_data.get("sun_start_time")
+                                ),
+                                "sunday_end_time": Command.parse_ampm_time(
+                                    section_data.get("sun_end_time")
+                                ),
+                                "professor": sectionProfessor,
+                                "location": section_data.get(
+                                    "course_location", "Unknown Location"
+                                ),
+                            },
+                        )
+                        sections.append(section)
+                        professors.append(sectionProfessor)
+                        i += 1
+
+                    course.professors.set(professors)
+                    course.courseMaterialsLink = courseMaterialsLink
+                    course.save()
+
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f'Successfully created course "{course.courseName}"'
+                        )
                     )
-                )
-                raise
+
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Failed to create course: {str(e)} for {course_data}"
+                        )
+                    )
+                    raise

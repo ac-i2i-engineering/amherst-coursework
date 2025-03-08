@@ -7,6 +7,9 @@ from amherst_coursework_algo.config.course_dictionaries import (
     DEPARTMENT_CODE_TO_NAME,
     DEPARTMENT_NAME_TO_CODE,
 )
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from typing import List
 
 
 def home(request):
@@ -35,3 +38,22 @@ def course_details(request, course_id):
         "amherst_coursework_algo/course_details_partial.html",
         {"course": course},
     )
+
+
+def get_course_by_id(request, course_id):
+    try:
+        course = Course.objects.get(id=course_id)
+        course_data = {
+            "id": course.id,
+            "name": course.courseName,
+            "description": course.courseDescription,
+            "departments": [
+                {"code": d.code, "name": d.name} for d in course.departments.all()
+            ],
+            "courseCodes": [c.value for c in course.courseCodes.all()],
+            "divisions": [d.name for d in course.divisions.all()],
+            "keywords": [k.name for k in course.keywords.all()],
+        }
+        return JsonResponse({"course": course_data})
+    except Course.DoesNotExist:
+        return JsonResponse({"error": "Course not found"}, status=404)

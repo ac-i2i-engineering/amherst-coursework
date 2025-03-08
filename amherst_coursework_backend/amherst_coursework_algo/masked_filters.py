@@ -45,6 +45,9 @@ def relevant_course_name(search_query: str, courses: list) -> list:
         A list of binary indicators (1 or 0) indicating whether each course name contains the search query.
     """
     search_query = search_query.lower()
+    # print(search_query)
+    # print([course.courseName.lower() for course in courses])
+    # print([1 if search_query in course.courseName.lower() else 0 for course in courses])
     return [1 if search_query in course.courseName.lower() else 0 for course in courses]
 
 
@@ -416,39 +419,69 @@ def filter(request):
             return JsonResponse(
                 {"status": "success", "indicators": [0] * len(course_ids)}
             )
+        
+        if len(search_query) > 20:
 
-        # Get all indicators using parallel execution
-        with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
-            futures = [
-                executor.submit(relevant_course_name, search_query, courses),
-                executor.submit(relevant_department_codes, search_query, courses),
-                executor.submit(relevant_department_names, search_query, courses),
-                executor.submit(relevant_course_codes, search_query, courses),
-                executor.submit(relevant_divisions, search_query, courses),
-                executor.submit(relevant_keywords, search_query, courses),
-                executor.submit(relevant_descriptions, search_query, courses),
-                executor.submit(relevant_professor_names, search_query, courses),
-                executor.submit(half_courses, search_query, courses),
-                executor.submit(
-                    similarity_filtering, search_query, courses, similarity_threshold
-                ),
-            ]
+            # Get all indicators using parallel execution
+            with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
+                futures = [
+                    executor.submit(relevant_course_name, search_query, courses),
+                    executor.submit(relevant_department_codes, search_query, courses),
+                    executor.submit(relevant_department_names, search_query, courses),
+                    executor.submit(relevant_course_codes, search_query, courses),
+                    executor.submit(relevant_divisions, search_query, courses),
+                    executor.submit(relevant_keywords, search_query, courses),
+                    executor.submit(relevant_descriptions, search_query, courses),
+                    executor.submit(relevant_professor_names, search_query, courses),
+                    executor.submit(half_courses, search_query, courses),
+                    executor.submit(
+                        similarity_filtering, search_query, courses, similarity_threshold
+                    ),
+                ]
 
-            # Get all results at once
-            all_results = [future.result() for future in futures]
+                # Get all results at once
+                all_results = [future.result() for future in futures]
 
-            [
-                name_indicators,
-                dept_code_indicators,
-                dept_name_indicators,
-                course_code_indicators,
-                division_indicators,
-                keyword_indicators,
-                description_indicators,
-                professor_indicators,
-                half_flag,
-                similarity_indicators,
-            ] = all_results
+                [
+                    name_indicators,
+                    dept_code_indicators,
+                    dept_name_indicators,
+                    course_code_indicators,
+                    division_indicators,
+                    keyword_indicators,
+                    description_indicators,
+                    professor_indicators,
+                    half_flag,
+                    similarity_indicators,
+                ] = all_results
+        else:
+            with ThreadPoolExecutor(max_workers=8) as executor:  # Increased workers
+                futures = [
+                    executor.submit(relevant_course_name, search_query, courses),
+                    executor.submit(relevant_department_codes, search_query, courses),
+                    executor.submit(relevant_department_names, search_query, courses),
+                    executor.submit(relevant_course_codes, search_query, courses),
+                    executor.submit(relevant_divisions, search_query, courses),
+                    executor.submit(relevant_keywords, search_query, courses),
+                    executor.submit(relevant_descriptions, search_query, courses),
+                    executor.submit(relevant_professor_names, search_query, courses),
+                    executor.submit(half_courses, search_query, courses),
+                ]
+
+                # Get all results at once
+                all_results = [future.result() for future in futures]
+
+                [
+                    name_indicators,
+                    dept_code_indicators,
+                    dept_name_indicators,
+                    course_code_indicators,
+                    division_indicators,
+                    keyword_indicators,
+                    description_indicators,
+                    professor_indicators,
+                    half_flag,
+                ] = all_results
 
         # Calculate final indicators maintaining order
         final_indicators = []
@@ -467,7 +500,7 @@ def filter(request):
             if "half" in search_query:
                 result = result and half_flag[idx]
 
-            if len(search_query) > 5:
+            if len(search_query) > 20:
                 result = result or similarity_indicators[idx]
 
             final_indicators.append(result)

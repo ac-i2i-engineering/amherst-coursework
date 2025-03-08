@@ -331,10 +331,11 @@ class Command(BaseCommand):
                     professors = []
                     sections = []
                     i = 0
+                    courseMaterialsLink = "https://www.amherst.edu/"
                     for section_number, section_data in course_data.get(
                         "section_information", {}
                     ).items():
-                        if not i : courseMaterialsLink = section_data.get("course_materials_links", [])
+                        if i == 0 : courseMaterialsLink = section_data.get("course_materials_links",  "https://www.amherst.edu/")
                         sectionProfessor, _ = Professor.objects.get_or_create(
                             name=section_data.get("professor_name", "Unknown Professor") if section_data.get("professor_name") else "Unknown Professor",
                             link=section_data.get("professor_link", "https://www.amherst.edu/") if section_data.get("professor_link") else "https://www.amherst.edu/",
@@ -363,6 +364,7 @@ class Command(BaseCommand):
                         )
                         sections.append(section)
                         professors.append(sectionProfessor)
+                        i+=1
                     
                     course.professors.set(professors)
                     course.courseMaterialsLink = courseMaterialsLink

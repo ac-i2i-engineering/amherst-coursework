@@ -15,7 +15,7 @@ function debounce(func, wait) {
     };
 }
 
-function handleSearch() {
+window.handleSearch = function() {
     const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
     
     // For empty queries, show all courses

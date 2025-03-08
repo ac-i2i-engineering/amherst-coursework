@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "amherst-coursework.onrender.com"]
 # Application definition
 
 INSTALLED_APPS = [
+    "amherst_coursework_algo.apps.AmherstCourseworkAlgoConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,12 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "amherst_coursework_algo",
-    "corsheaders",  # Add CORS headers app
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # Add CORS middleware at the top
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -53,25 +53,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-# CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "https://amherst-coursework.onrender.com",
-]
-
-# If your frontend and backend are on the same domain, you might need this
-CORS_ALLOW_CREDENTIALS = True
-
-# Security settings for production
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = "DENY"
 
 ROOT_URLCONF = "amherst_coursework_backend.urls"
 

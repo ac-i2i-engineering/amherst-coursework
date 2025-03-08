@@ -1,3 +1,4 @@
 Django
 sphinx
 sphinx-wagtail-theme
+python-dotenv

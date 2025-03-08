@@ -406,18 +406,12 @@ def filter(request):
         # Better error handling for course fetching
         if len(courses) == 0:
             courses_dict = {
-                str(course.id): course 
-                for course in Course.objects.filter(
-                    id__in=course_ids
-                ).prefetch_related(
-                    'departments',
-                    'professors',
-                    'courseCodes',
-                    'divisions',
-                    'keywords'
+                str(course.id): course
+                for course in Course.objects.filter(id__in=course_ids).prefetch_related(
+                    "departments", "professors", "courseCodes", "divisions", "keywords"
                 )
             }
-            
+
             # Maintain order from course_ids
             for course_id in course_ids:
                 course = courses_dict.get(str(course_id))

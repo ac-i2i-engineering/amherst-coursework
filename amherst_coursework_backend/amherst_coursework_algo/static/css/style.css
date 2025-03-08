@@ -244,7 +244,36 @@ p {
 .panel-details h2 {
     font-size: 20px;
     margin-bottom: 20px;
+    overflow: visible;
 }
+
+.sections-container {
+    max-height: none; /* Remove any max-height limitation */
+    overflow: visible; /* Ensure content isn't cut off */
+    padding-bottom: 20px; /* Add some padding at the bottom */
+}
+
+.section-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f8f5fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: visible; /* Ensure content isn't cut off */
+}
+
+.section-card:last-child {
+    margin-bottom: 50px; /* Add space after last section card */
+}
+
+.meeting-times {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    overflow: visible; /* Ensure content isn't cut off */
+}
+
+
 
 /* Cart Panel Specific */
 .cart-panel {

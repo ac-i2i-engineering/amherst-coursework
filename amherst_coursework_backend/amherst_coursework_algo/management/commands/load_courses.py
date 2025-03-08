@@ -18,6 +18,7 @@ from amherst_coursework_algo.config.course_dictionaries import (
     MISMATCHED_DEPARTMENT_NAMES,
 )
 import json
+from datetime import datetime 
 
 """A Django management command to load course data from a JSON file into the database.
 
@@ -74,7 +75,38 @@ Notes:
 """
 
 
+
+
 class Command(BaseCommand):
+    def parse_ampm_time(time_str):
+        """
+        Parse a time string in AM/PM format into a Django time object.
+
+        Args:
+            time_str (str): A string representing time in 'HH:MM AM/PM' format (e.g. '9:00 AM')
+
+        Returns:
+            time: A Django time object if parsing is successful, None otherwise
+            
+        Examples:
+            >>> parse_ampm_time('9:00 AM')
+            datetime.time(9, 0)
+            >>> parse_ampm_time('invalid')
+            None
+            >>> parse_ampm_time(None) 
+            None
+        """
+        """Parse time string with AM/PM format"""
+        if not time_str or time_str == "null":
+            return None
+        try:
+            # Parse time like "9:00 AM" into Django time object
+            parsed_time = datetime.strptime(time_str, '%I:%M %p')
+            return parsed_time.time()
+        except ValueError as e:
+            print(f"Error parsing time: {time_str}")
+            return None
+        
     help = "Load courses from JSON file"
 
     def add_arguments(self, parser):
@@ -188,14 +220,6 @@ class Command(BaseCommand):
                         for rec in course_data.get("corequisites", {})
                     ]
 
-                    professors = []
-                    profNames = course_data.get("profNames", [])
-                    profLinks = course_data.get("profLinks", [])
-                    for i in range(len(profNames)):
-                        professor, _ = Professor.objects.update_or_create(
-                            name=profNames[i], defaults={"link": profLinks[i]}
-                        )
-                        professors.append(professor)
 
                     fallOfferings = []
                     springOfferings = []
@@ -250,10 +274,6 @@ class Command(BaseCommand):
                             "courseName": course_data["course_name"],
                             "credits": course_data.get("credits", 4),
                             "courseDescription": course_data["description"],
-                            "courseMaterialsLink": course_data.get(
-                                "course_materials_links", [None]
-                            )[0]
-                            or "",
                             "placement_course": placementCourse,
                             "professor_override": course_data.get(
                                 "prerequisites", {}
@@ -288,7 +308,6 @@ class Command(BaseCommand):
                     course.courseCodes.set(codes)
                     course.departments.set(departments)
                     course.corequisites.set(corequisites)
-                    course.professors.set(professors)
                     course.fallOfferings.set(fallOfferings)
                     course.springOfferings.set(springOfferings)
                     course.janOfferings.set(janOfferings)
@@ -309,25 +328,45 @@ class Command(BaseCommand):
 
                     course.save()
 
+                    professors = []
                     sections = []
+                    i = 0
                     for section_number, section_data in course_data.get(
-                        "sections", {}
+                        "section_information", {}
                     ).items():
+                        if not i : courseMaterialsLink = section_data.get("course_materials_links", [])
                         sectionProfessor, _ = Professor.objects.get_or_create(
-                            name=section_data.get("professor_name", "")
+                            name=section_data.get("professor_name", "Unknown Professor") if section_data.get("professor_name") else "Unknown Professor",
+                            link=section_data.get("professor_link", "https://www.amherst.edu/") if section_data.get("professor_link") else "https://www.amherst.edu/",
                         )
                         section, _ = Section.objects.update_or_create(
                             section_number=section_number,
                             section_for=course,
                             defaults={
-                                "days": section_data["daysOfWeek"],
-                                "start_time": parse_time(section_data["startTime"]),
-                                "end_time": parse_time(section_data["endTime"]),
-                                "location": section_data["location"],
+                                "monday_start_time": Command.parse_ampm_time(section_data.get("mon_start_time")),
+                                "monday_end_time": Command.parse_ampm_time(section_data.get("mon_end_time")),
+                                "tuesday_start_time": Command.parse_ampm_time(section_data.get("tue_start_time")),
+                                "tuesday_end_time": Command.parse_ampm_time(section_data.get("tue_end_time")),
+                                "wednesday_start_time": Command.parse_ampm_time(section_data.get("wed_start_time")),
+                                "wednesday_end_time": Command.parse_ampm_time(section_data.get("wed_end_time")),
+                                "thursday_start_time": Command.parse_ampm_time(section_data.get("thu_start_time")),
+                                "thursday_end_time": Command.parse_ampm_time(section_data.get("thu_end_time")),
+                                "friday_start_time": Command.parse_ampm_time(section_data.get("fri_start_time")),
+                                "friday_end_time": Command.parse_ampm_time(section_data.get("fri_end_time")),
+                                "saturday_start_time": Command.parse_ampm_time(section_data.get("sat_start_time")),
+                                "saturday_end_time": Command.parse_ampm_time(section_data.get("sat_end_time")),
+                                "sunday_start_time": Command.parse_ampm_time(section_data.get("sun_start_time")),
+                                "sunday_end_time": Command.parse_ampm_time(section_data.get("sun_end_time")),
                                 "professor": sectionProfessor,
+                                "location": section_data.get("course_location", "Unknown Location"),
                             },
                         )
                         sections.append(section)
+                        professors.append(sectionProfessor)
+                    
+                    course.professors.set(professors)
+                    course.courseMaterialsLink = courseMaterialsLink
+                    course.save()
 
                     self.stdout.write(
                         self.style.SUCCESS(

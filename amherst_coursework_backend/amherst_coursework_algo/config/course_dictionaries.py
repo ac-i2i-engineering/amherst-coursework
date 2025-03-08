@@ -37,7 +37,7 @@ DEPARTMENT_NAME_TO_NUMBER = {
     "Psychology": 35,
     "Religion": 36,
     "Russian": 37,
-    "Sexuality Women's and Gender Studies": 38,
+    "Sexuality, Women's and Gender Studies": 38,
     "Spanish": 39,
     "Theater and Dance": 40,
 }

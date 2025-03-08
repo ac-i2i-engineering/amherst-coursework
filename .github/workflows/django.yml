@@ -41,6 +41,10 @@ jobs:
       run: |
         python manage.py makemigrations
         python manage.py migrate
+    - name: Collect Static Files
+      working-directory: ./amherst_coursework_backend
+      run: |
+        python manage.py collectstatic --noinput
     - name: Test Load Command
       working-directory: ./amherst_coursework_backend
       run: |

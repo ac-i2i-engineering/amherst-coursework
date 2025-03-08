@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 courses = []
 
+
 def normalize_code(code: str) -> str:
     """
     Remove any non-alphanumeric characters from the given code.

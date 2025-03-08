@@ -107,10 +107,11 @@
         // Update button states to match cart
         const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
         document.querySelectorAll('.cart-button').forEach(button => {
-            const courseId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+            const courseId = button.getAttribute('data-course-id');
+            //console.log('Checking cart for course:', courseId); // Debug output
             if (cart.includes(courseId)) {
-                button.textContent = 'Remove from Saved Schedule';
-                button.classList.add('in-cart');
+                console.log('Processing button for course:', courseId); // Debug output
+                updateButtonState(courseId, true);
             }
         });
     });

@@ -15,10 +15,26 @@ function debounce(func, wait) {
     };
 }
 
-// Create debounced version of search_filter
-const debouncedSearch = debounce((query, threshold) => {
-    search_filter(query, threshold);
-}, 400); // 400ms delay
+function handleSearch() {
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    // For empty queries, show all courses
+    if (!searchQuery) {
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.classList.remove('hidden');
+        });
+        return;
+    }
+    
+    // For very short queries (1-2 chars), consider showing a message
+    if (searchQuery.length < 2) {
+        alert('Please enter a more specific search term');
+        return;
+    }
+    
+    // Continue with backend search
+    search_filter(searchQuery, 0.3);
+}
 
 /* Add this to your script section */
 function handleCartClick(event, courseId) {
@@ -163,6 +179,9 @@ async function search_filter(searchQuery, similarityThreshold) {
     searchQuery = searchQuery.toLowerCase().trim();
     const courseCards = document.querySelectorAll('.course-card');
     
+    // Add loading indicator
+    document.getElementById('search-loading').style.display = 'inline-block';
+    
     // Get course IDs from data attributes
     const courseIds = Array.from(courseCards).map(card => card.dataset.courseId);
     
@@ -177,6 +196,9 @@ async function search_filter(searchQuery, similarityThreshold) {
             card.classList.add('hidden');
         }
     });
+    
+    // Hide loading indicator
+    document.getElementById('search-loading').style.display = 'none';
 }
 
 async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) {

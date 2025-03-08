@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'corsheaders'
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -155,21 +155,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Add logging configuration
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
         },
-        'whitenoise': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        "whitenoise": {
+            "handlers": ["console"],
+            "level": "DEBUG",
         },
     },
 }

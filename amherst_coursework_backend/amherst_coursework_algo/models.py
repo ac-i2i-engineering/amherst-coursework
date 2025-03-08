@@ -283,10 +283,17 @@ class Section(models.Model):
         Professor teaching this section
     """
 
-    section_number = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(99)],
-        help_text="Section number",
-        default=1,
+    section_number = models.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^(\d{1,2}|L)$',
+                message='Section number must be 1-2 digits or L',
+                code='invalid_section_number'
+            )
+        ],
+        help_text="Section number (digits or L for lab)",
+        max_length=2,
+        default="1"
     )
     section_for = models.ForeignKey(
         "Course",
@@ -294,7 +301,21 @@ class Section(models.Model):
         related_name="sections",
         default=None,
     )
-    monday_start_time = models.TimeField()
+
+    monday_start_time = models.TimeField(null=True)
+    monday_end_time = models.TimeField(null=True)
+    tuesday_start_time = models.TimeField(null=True)
+    tuesday_end_time = models.TimeField(null=True) 
+    wednesday_start_time = models.TimeField(null=True)
+    wednesday_end_time = models.TimeField(null=True)
+    thursday_start_time = models.TimeField(null=True)
+    thursday_end_time = models.TimeField(null=True)
+    friday_start_time = models.TimeField(null=True)
+    friday_end_time = models.TimeField(null=True)
+    saturday_start_time = models.TimeField(null=True)
+    saturday_end_time = models.TimeField(null=True)
+    sunday_start_time = models.TimeField(null=True)
+    sunday_end_time = models.TimeField(null=True)
 
     location = models.CharField(max_length=100, help_text="Building and room number")
     professor = models.ForeignKey(
@@ -311,7 +332,7 @@ class Section(models.Model):
 
     def __str__(self):
 
-        return f"{self.days} {self.start_time}-{self.end_time} in {self.location}"
+        return f"{self.section_number} for {self.section_for}"
 
     class Meta:
         verbose_name = "Section"

@@ -273,7 +273,7 @@ def half_courses(search_query: str, courses: list) -> list:
     """
     if "half" in search_query.lower():
         return [1 if str(course.id)[3] == "1" else 0 for course in courses]
-    return [0] * len(courses)
+    return [1] * len(courses)
 
 
 def similarity_filtering(

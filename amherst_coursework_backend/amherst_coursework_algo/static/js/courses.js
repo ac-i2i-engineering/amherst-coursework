@@ -91,30 +91,39 @@ function togglePanel(courseId = null) {
 
     if (courseId) {
         const clickedCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
+        
+        // Show loading state
+        panelContent.innerHTML = '<div class="loading">Loading...</div>';
+        panel.classList.add('open');
 
         fetch(`/details/${courseId}/`)  
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to load course details: ${response.status}`);
-            }
-            return response.text();
-        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load course details: ${response.status}`);
+                }
+                return response.text();
+            })
             .then(html => {
+                // Reset scroll position before loading new content
+                panel.scrollTop = 0;
+                panelContent.scrollTop = 0;
+                
+                // Update content and show panel
                 panelContent.innerHTML = html;
-                requestAnimationFrame(() => {
-                    panel.classList.add('open');
-                    mainContent.classList.add('shifted');
-                    courseContainer.classList.add('shifted');
+                mainContent.classList.add('shifted');
+                courseContainer.classList.add('shifted');
 
-                    setTimeout(() => {
-                        if (clickedCard) {
-                            clickedCard.scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'center'
-                            });
-                        }
-                    }, 100);
-                });
+                // Scroll to clicked card
+                if (clickedCard) {
+                    clickedCard.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                panelContent.innerHTML = '<div class="error">Failed to load course details</div>';
             });
     } else {
         // Closing panel
@@ -284,51 +293,200 @@ function getCookie(name) {
 }
 
 function updateCartDisplay() {
-// 1. Get DOM elements
-const cartItems = document.getElementById('cart-items');
-const cartCount = document.getElementById('cart-count');
-const cartCountHeader = document.getElementById('cart-count-header');
+    const cartIds = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    const cartCount = document.getElementById('cart-count');
+    const cartCountHeader = document.getElementById('cart-count-header');
+    const cartCoursesList = document.getElementById('cart-courses-list');
+    
+    // Update counts
+    cartCount.textContent = cartIds.length;
+    cartCountHeader.textContent = cartIds.length;
 
-// 2. Get cart data from localStorage
-const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    // Clear existing calendar blocks
+    document.querySelectorAll('.cart-calendar-container .course-block').forEach(block => {
+        block.remove();
+    });
+    
+    // Clear course list
+    if (cartCoursesList) {
+        cartCoursesList.innerHTML = '';
+    }
 
-// 3. Clear existing content
-cartItems.innerHTML = '';
+    if (cartIds.length > 0) {
+        // Create URLSearchParams object properly
+        const params = new URLSearchParams();
+        cartIds.forEach(id => params.append('ids[]', id));
 
-if (cart.length === 0) {
-    cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
-    cartCount.textContent = '0';
-    cartCountHeader.textContent = '0';
-    return;
+        fetch(`/cart-courses/?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                // Add simple list of courses
+                if (cartCoursesList) {
+                    const courseList = document.createElement('ul');
+                    courseList.className = 'cart-courses-simple-list';
+                    
+                    data.courses.forEach(course => {
+                        // Get the first section for professor info
+                        const firstSection = Object.values(course.section_information)[0] || {};
+                        
+                        // Format meeting days for display
+                        const meetingDays = [];
+                        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+                            if (firstSection[`${day}_start_time`]) {
+                                meetingDays.push(day.charAt(0).toUpperCase() + day.slice(1, 3));
+                            }
+                        });
+                        
+                        // Get a sample time to display
+                        const sampleTime = firstSection.mon_start_time || 
+                                           firstSection.tue_start_time || 
+                                           firstSection.wed_start_time || 
+                                           firstSection.thu_start_time || 
+                                           firstSection.fri_start_time || 'TBD';
+                        
+                        const courseItem = document.createElement('div');
+                        courseItem.innerHTML = `
+                            <div class="course-card cart-course-card">
+                                <div class="course-card-columns">
+                                    <div class="course-card-left">
+                                        <p class="course-code">
+                                            <span class="course-code">${course.course_acronyms}</span>
+                                        </p>
+                                    </div>
+                                    <div class="course-card-right">
+                                        <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
+                                        <h4 class="course-name">${course.name}</h4>
+                                    </div>
+                                    <button onclick="toggleCart('${course.id}')" class="remove-btn">×</button>
+                                </div>
+                            </div>
+                        `;
+                        courseList.appendChild(courseItem);
+                    });
+                    
+                    cartCoursesList.appendChild(courseList);
+                }
+                
+                // Continue with the existing calendar code
+                const timeSlotCourses = {};
+                
+                // Group courses by time slot
+                data.courses.forEach(course => {
+                    Object.values(course.section_information).forEach(section => {
+                        const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
+                        days.forEach(day => {
+                            const startTime = section[`${day}_start_time`];
+                            const endTime = section[`${day}_end_time`];
+                            
+                            if (startTime && endTime) {
+                                // Parse time format
+                                const startTimeParts = startTime.match(/(\d+):(\d+)\s*(AM|PM)/i);
+                                if (!startTimeParts) {
+                                    console.error(`Invalid time format: ${startTime}`);
+                                    return;
+                                }
+                                
+                                let startHour = parseInt(startTimeParts[1]);
+                                const startMinutes = parseInt(startTimeParts[2]);
+                                const period = startTimeParts[3].toUpperCase();
+                                
+                                // Convert to 24-hour format
+                                if (period === 'PM' && startHour < 12) {
+                                    startHour += 12;
+                                } else if (period === 'AM' && startHour === 12) {
+                                    startHour = 0;
+                                }
+                                
+                                // Create a key for this time slot
+                                const timeSlotKey = `${day}-${startHour}`;
+                                
+                                // Initialize array for this slot if needed
+                                if (!timeSlotCourses[timeSlotKey]) {
+                                    timeSlotCourses[timeSlotKey] = [];
+                                }
+                                
+                                // Calculate duration
+                                const start = new Date(`2000/01/01 ${startTime}`);
+                                const end = new Date(`2000/01/01 ${endTime}`);
+                                const duration = (end - start) / 1000 / 60; // duration in minutes
+                                
+                                // Store course data for this slot
+                                timeSlotCourses[timeSlotKey].push({
+                                    course,
+                                    section,
+                                    startHour,
+                                    startMinutes,
+                                    duration,
+                                    startTime,
+                                    endTime
+                                });
+                            }
+                        });
+                    });
+                });
+                
+                // Now render courses with appropriate widths
+                Object.entries(timeSlotCourses).forEach(([slotKey, coursesInSlot]) => {
+                    const [day, hour] = slotKey.split('-');
+                    
+                    // Get the time slot element
+                    const timeSlot = document.querySelector(
+                        `.cart-calendar-container .time-slot[data-hour="${hour}"][data-day="${day}"]`
+                    );
+                    
+                    if (!timeSlot) {
+                        console.error(`No time slot found for ${day} at hour ${hour}`);
+                        return;
+                    }
+                    
+                    // Calculate width and position for each course
+                    const courseCount = coursesInSlot.length;
+                    const width = 100 / courseCount;
+                    
+                    // Render each course with calculated width and position
+                    coursesInSlot.forEach((courseData, index) => {
+                        const { course, section, startMinutes, duration, startTime, endTime } = courseData;
+                        
+                        // Create course block
+                        const block = document.createElement('div');
+                        block.className = 'course-block';
+                        block.style.height = `${duration}px`;
+                        block.style.top = `${startMinutes}px`;
+                        
+                        // Set width and position for overlapping handling
+                        block.style.width = `${width}%`;
+                        block.style.left = `${index * width}%`;
+                        
+                        // Set different colors for each course
+                        const colors = ['#e1d7f1', '#d1e7f7', '#fde2d4', '#d4e5d4', '#f7d1e3'];
+                        block.style.backgroundColor = colors[index % colors.length];
+                        
+                        // Add course information
+                        block.innerHTML = `
+                            <div class="course-acronyms">
+                                ${course.course_acronyms.map(code => `<div>${code}</div>`).join('')}
+                            </div>
+                            <div class="course-time">${startTime} - ${endTime}</div>
+                            <div class="course-location">${section.course_location || 'TBA'}</div>
+                        `;
+                        
+                        timeSlot.appendChild(block);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error updating cart display:', error);
+            });
+    }
 }
 
-// Fetch course details from server
-fetch(`/cart-courses/?${cart.map(id => `ids[]=${id}`).join('&')}`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error('Error loading cart:', error);
-        cartItems.innerHTML = '<p>Error loading saved schedule</p>';
-    })
-    .then(data => {
-        cartItems.innerHTML = '';
-        data.courses.forEach(course => {
-            const courseElement = document.createElement('div');
-            courseElement.className = 'cart-item';
-            courseElement.innerHTML = `
-                <div class="cart-item-name">${course.name}</div>
-                <button class="remove-from-cart" 
-                        onclick="toggleCart('${course.id}')">
-                        X
-                </button>
-            `;
-            cartItems.appendChild(courseElement);
-        });
-        cartCount.textContent = cart.length;
-        cartCountHeader.textContent = cart.length;
+function resetCart() {
+    localStorage.removeItem('courseCart');
+    updateCartDisplay();
+    // Reset all button states
+    document.querySelectorAll('.cart-button').forEach(button => {
+        const icon = button.querySelector('i');
+        icon.className = 'fa-solid fa-plus';
+        button.classList.remove('in-cart');
     });
 }

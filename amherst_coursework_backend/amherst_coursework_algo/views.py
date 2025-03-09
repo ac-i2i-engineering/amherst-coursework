@@ -17,143 +17,202 @@ from typing import List
 
 
 def home(request):
-    courses = Course.objects.all()
-    
-    try:
-        json_path = os.path.join(
-            os.path.dirname(__file__),
-            'static',
-            'data',
-            'parsed_courses_second_deg.json'
-        )
-        with open(json_path, 'r') as f:
-            data = json.load(f)
+    courses = Course.objects.prefetch_related(
+        "courseCodes", "sections__professor"
+    ).all()
 
-        course_info_map = {}
-        for dept_courses in data.values():
-            for course_data in dept_courses:
-                professors = set()
-                time_slots = []
-                if 'section_information' in course_data:
-                    for section in course_data['section_information'].values():
-                        if section.get('professor_name'):
-                            # Add only the last name to the set
-                            professors.add(get_last_name(section['professor_name']))
-                        
-                        # Collect all time slots
-                        days = ['mon', 'tue', 'wed', 'thu', 'fri']
-                        for day in days:
-                            start = section.get(f'{day}_start_time')
-                            end = section.get(f'{day}_end_time')
-                            if start and end:
-                                time_slots.append((day, start, end))
-                
-                course_info_map[course_data['course_name']] = {
-                    'professor_name': ', '.join(professors) if professors else None,
-                    'meeting_times': format_meeting_times(time_slots) if time_slots else None
-                }
+    # Add professor and meeting time info to each course
+    for course in courses:
+        # Get professor names from sections
+        professors = set()
+        time_slots = []
 
-        # Add info to course objects
-        for course in courses:
-            if course.courseName in course_info_map:
-                info = course_info_map[course.courseName]
-                course.professor_name = info['professor_name']
-                course.meeting_times = info['meeting_times']
-            else:
-                course.professor_name = None
-                course.meeting_times = None
+        for section in course.sections.all():
+            if section.professor:
+                professors.add(section.professor.name.split()[-1])  # Get last name
 
-    except Exception as e:
-        print(f"Error loading course data: {e}")
-        for course in courses:
-            course.professor_name = None
-            course.meeting_times = None
+            # Collect meeting times
+            days = [
+                ("mon", section.monday_start_time, section.monday_end_time),
+                ("tue", section.tuesday_start_time, section.tuesday_end_time),
+                ("wed", section.wednesday_start_time, section.wednesday_end_time),
+                ("thu", section.thursday_start_time, section.thursday_end_time),
+                ("fri", section.friday_start_time, section.friday_end_time),
+            ]
 
-    return render(request, "amherst_coursework_algo/home.html", {
-        "courses": courses,
-        "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
-    })
+            for day_prefix, start_time, end_time in days:
+                if start_time and end_time:
+                    time_slots.append(
+                        (
+                            day_prefix,
+                            start_time.strftime("%I:%M %p"),
+                            end_time.strftime("%I:%M %p"),
+                        )
+                    )
+
+        course.professor_name = ", ".join(professors) if professors else None
+        course.meeting_times = format_meeting_times(time_slots) if time_slots else None
+
+    return render(
+        request,
+        "amherst_coursework_algo/home.html",
+        {
+            "courses": courses,
+            "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
+        },
+    )
+
+
+def format_meeting_times(time_slots):
+    # Group times by their start and end time
+    time_groups = {}
+    day_map = {"mon": "M", "tue": "T", "wed": "W", "thu": "Th", "fri": "F"}
+
+    # Define custom day order (Tuesday before Thursday)
+    day_order = {"M": 0, "T": 1, "W": 2, "Th": 3, "F": 4}
+
+    for day, start, end in time_slots:
+        time_key = f"{start}-{end}"
+        if time_key not in time_groups:
+            time_groups[time_key] = set()
+        time_groups[time_key].add(day_map[day])
+
+    # Format each group
+    formatted_times = []
+    for time_range, days in time_groups.items():
+        # Sort using custom day order
+        days = "".join(sorted(list(days), key=lambda x: day_order[x]))
+        start, end = time_range.split("-")
+
+        # Format the time properly
+        try:
+            start_time = datetime.strptime(start.strip(), "%I:%M %p")
+            end_time = datetime.strptime(end.strip(), "%I:%M %p")
+            formatted_start = start_time.strftime("%I:%M %p").lstrip("0")
+            formatted_end = end_time.strftime("%I:%M %p").lstrip("0")
+            formatted_times.append(f"{days} {formatted_start} - {formatted_end}")
+        except ValueError:
+            formatted_times.append(f"{days} {start.strip()} - {end.strip()}")
+
+    return " | ".join(formatted_times)
 
 
 def get_cart_courses(request):
     course_ids = request.GET.getlist("ids[]")
-    courses = Course.objects.filter(id__in=course_ids)
-    
-    # Load course schedule data from JSON
-    try:
-        json_path = os.path.join(
-            os.path.dirname(__file__),
-            'static',
-            'data',
-            'parsed_courses_second_deg.json'
-        )
-        with open(json_path, 'r') as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"Error loading course data: {e}")
-        return JsonResponse({"error": "Could not load course data"}, status=500)
+    courses = Course.objects.prefetch_related(
+        "courseCodes", "sections__professor"
+    ).filter(id__in=course_ids)
 
-    # Create a mapping of course names to their schedule data
-    course_schedule_map = {}
-    for dept_courses in data.values():
-        for course_data in dept_courses:
-            course_schedule_map[course_data['course_name']] = course_data
-
-    # Build response data including schedules
     cart_data = []
     for course in courses:
         course_info = {
             "id": course.id,
             "name": course.courseName,
             "course_acronyms": [code.value for code in course.courseCodes.all()],
+            "section_information": {},
         }
-        
-        # Add schedule information if available
-        if course.courseName in course_schedule_map:
-            schedule_data = course_schedule_map[course.courseName]
-            course_info.update({
-                "section_information": schedule_data.get('section_information', {}),
-                "course_acronyms": schedule_data.get('course_acronyms', [])
-            })
-        
+
+        for section in course.sections.all():
+            section_info = {
+                "professor_name": section.professor.name if section.professor else None,
+                "course_location": section.location,
+                "mon_start_time": (
+                    section.monday_start_time.strftime("%I:%M %p")
+                    if section.monday_start_time
+                    else None
+                ),
+                "mon_end_time": (
+                    section.monday_end_time.strftime("%I:%M %p")
+                    if section.monday_end_time
+                    else None
+                ),
+                "tue_start_time": (
+                    section.tuesday_start_time.strftime("%I:%M %p")
+                    if section.tuesday_start_time
+                    else None
+                ),
+                "tue_end_time": (
+                    section.tuesday_end_time.strftime("%I:%M %p")
+                    if section.tuesday_end_time
+                    else None
+                ),
+                "wed_start_time": (
+                    section.wednesday_start_time.strftime("%I:%M %p")
+                    if section.wednesday_start_time
+                    else None
+                ),
+                "wed_end_time": (
+                    section.wednesday_end_time.strftime("%I:%M %p")
+                    if section.wednesday_end_time
+                    else None
+                ),
+                "thu_start_time": (
+                    section.thursday_start_time.strftime("%I:%M %p")
+                    if section.thursday_start_time
+                    else None
+                ),
+                "thu_end_time": (
+                    section.thursday_end_time.strftime("%I:%M %p")
+                    if section.thursday_end_time
+                    else None
+                ),
+                "fri_start_time": (
+                    section.friday_start_time.strftime("%I:%M %p")
+                    if section.friday_start_time
+                    else None
+                ),
+                "fri_end_time": (
+                    section.friday_end_time.strftime("%I:%M %p")
+                    if section.friday_end_time
+                    else None
+                ),
+            }
+            course_info["section_information"][section.section_number] = section_info
+
         cart_data.append(course_info)
 
     return JsonResponse({"courses": cart_data})
 
 
 def course_details(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    
-    # Get course schedule data from JSON
-    try:
-        json_path = os.path.join(
-            os.path.dirname(__file__),
-            'static',
-            'data',
-            'parsed_courses_second_deg.json'
-        )
-        with open(json_path, 'r') as f:
-            data = json.load(f)
-            # Find the matching course in JSON data
-            course_data = None
-            for dept_courses in data.values():
-                for c in dept_courses:
-                    if c['course_name'] == course.courseName:
-                        course_data = c
-                        break
-                if course_data:
-                    break
-    except Exception as e:
-        print(f"Error loading course data: {e}")
-        course_data = None
+    course = get_object_or_404(
+        Course.objects.prefetch_related(
+            "courseCodes", "sections", "divisions", "departments", "keywords"
+        ),
+        id=course_id,
+    )
 
+    sections_data = {}
+    for section in course.sections.all():
+        sections_data[section.section_number] = {
+            "professor_name": section.professor.name if section.professor else None,
+            "professor_link": section.professor.link if section.professor else None,
+            "course_location": section.location,
+            # Add meeting times for each day
+            "mon_start_time": (
+                section.monday_start_time.strftime("%I:%M %p")
+                if section.monday_start_time
+                else None
+            ),
+            "mon_end_time": (
+                section.monday_end_time.strftime("%I:%M %p")
+                if section.monday_end_time
+                else None
+            ),
+            # ... repeat for other days ...
+        }
+
+    context = {
+        "course": course,
+        "sections": sections_data,
+    }
+
+    # Change this line to use course_details_partial.html instead
     return render(
         request,
         "amherst_coursework_algo/course_details_partial.html",
         {
             "course": course,
-            "courses": [course_data] if course_data else [],
-            "times": [f"{hour:02d}:00" for hour in range(8, 18)],
         },
     )
 

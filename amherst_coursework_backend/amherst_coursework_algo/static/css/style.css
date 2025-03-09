@@ -15,15 +15,16 @@
     padding: 20px;
 }
 
+/* Main Content Styles */
 .main-content {
     flex: 1;
-    transition: margin-right 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     margin-right: 0;
     width: 100%;
 }
 
 .main-content.shifted {
-    margin-right: calc(45% + 100px);
+    margin-right: calc(45% + 120px);
 }
 
 h1, h2 {
@@ -40,6 +41,7 @@ p {
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     padding: 20px;
+    transition: all 0.3s ease-in-out;
 }
 
 .course-container.fade-in {
@@ -53,12 +55,10 @@ p {
 }
 
 .course-container.shifted {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: 1fr;  /* Force single column */
     opacity: 1;
-}
-
-.course-container.shifted {
-    grid-template-columns: repeat(1, 1fr);
+    width: 100%;
+    margin-right: 45%;
 }
 
 .course-card {
@@ -104,7 +104,7 @@ p {
     font-size: 14px;
     font-weight: 600;
     font-style: italic;
-    line-height: 2;
+    line-height: 1.5;
     text-align: center;
 }
 
@@ -206,24 +206,24 @@ p {
     top: 0;
     right: -45%;
     height: 100vh;
-    width: 0;
-    padding: 40px;
+    max-height: 100vh;
+    width: 45%;
+    padding: 30px 40px 100px 40px;
     background: #fff;
     border-left: 1px solid #ddd;
     overflow-y: auto;
-    transition: width 0.3s ease;
     transition: all 0.3s ease-in-out;
-    transform: translateX(0);
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
     opacity: 0;
     visibility: hidden;
+    transform: translateX(100%);
 }
 
 .side-panel.open {
-    width: 45%;
     right: 0;
     opacity: 1;
     visibility: visible;
+    transform: translateX(0);
 }
 
 .side-panel.closing {
@@ -456,4 +456,118 @@ p {
     margin-top: 2rem;
     background: #f5f5f5;
     border-radius: 8px;
+}
+
+.cart-calendar-container {
+    margin-top: 20px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 45px repeat(5, 1fr);
+    gap: 1px;
+    background: #eee;
+    border: 1px solid #ddd;
+}
+
+.cart-calendar-container .corner-cell,
+.cart-calendar-container .day-header {
+    background: #f8f9fa;
+    padding: 5px;
+    text-align: center;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.cart-calendar-container .time-column {
+    background: #f8f9fa;
+    padding: 3px;
+    text-align: right;
+    font-size: 0.7em;
+    color: #666;
+}
+
+.cart-calendar-container .time-slot {
+    background: white;
+    border: 1px solid #eee;
+    height: 60px;
+    position: relative;
+    min-width: 80px;
+}
+
+.cart-calendar-container .course-block {
+    position: absolute;
+    background: #e1d7f1;
+    padding: 3px;
+    border-radius: 3px;
+    font-size: 0.6em;
+    z-index: 1;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Hover effect to improve readability */
+.cart-calendar-container .course-block:hover {
+    z-index: 10;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+/* Different colors for different courses */
+.cart-calendar-container .course-block:nth-of-type(1) {
+    background-color: #e1d7f1;
+}
+
+.cart-calendar-container .course-block:nth-of-type(2) {
+    background-color: #d1e7f7;
+}
+
+.cart-calendar-container .course-block:nth-of-type(3) {
+    background-color: #fde2d4;
+}
+
+.cart-calendar-container .course-block:nth-of-type(4) {
+    background-color: #f7d1e3;
+}
+
+/* Ensure text is readable even when blocks are narrow */
+.cart-calendar-container .course-block .course-acronyms {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart-calendar-container .course-block .course-time,
+.cart-calendar-container .course-block .course-location {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-text {
+    display: block;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    max-width: 90%;
+    font-size: 12px;
+    color: #894ead;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Even more cart styling */
+.cart-course-card {
+    margin-bottom: 20px;
+    border-radiux: 5%;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 0 20px;
+    font-size: 16px;
+    transition: color 0.2s ease;
 }

@@ -1,5 +1,6 @@
 {% extends "amherst_coursework_algo/base.html" %}
 {% load static %}
+{% load course_filters %}
 {% block content %}
 {% csrf_token %}
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
@@ -14,24 +15,22 @@
 
     <div id="cart-side-panel" class="side-panel cart-panel">
         <h3>Saved Schedule</h3>
-        <div id="cart-items"></div>
+        <div id="cart-courses-list"></div>
         <div id="cart-total">
             Total Courses: <span id="cart-count">0</span>
             <button onclick="resetCart()" class="reset-cart">Reset Cart</button>
         </div>
     
-        <!-- Add calendar here -->
+        <!-- Cart calendar -->
         <div class="cart-calendar-container">
             <!-- Headers -->
             <div class="corner-cell"></div>
-            <div class="day-header">Monday</div>
-            <div class="day-header">Tuesday</div>
-            <div class="day-header">Wednesday</div>
-            <div class="day-header">Thursday</div>
-            <div class="day-header">Friday</div>
-    
+            {% for day in "Monday,Tuesday,Wednesday,Thursday,Friday"|split:"," %}
+                <div class="day-header">{{ day }}</div>
+            {% endfor %}
+
             <!-- Time slots -->
-            {% for hour in "8,9,10,11,12,13,14,15,16,17"|split:"," %}
+            {% for hour in "8,9,10,11,12,13,14,15,16,17,18,19,20,21"|split:"," %}
                 <div class="time-column">
                     {% with hour_val=hour|add:"0" %}
                         {% if hour_val < 12 %}
@@ -43,9 +42,11 @@
                         {% endif %}
                     {% endwith %}
                 </div>
-                
+
                 {% for prefix in "mon,tue,wed,thu,fri"|split:"," %}
-                    <div class="time-slot" data-hour="{{ hour }}" data-day="{{ prefix }}"></div>
+                    <div class="time-slot" data-hour="{{ hour|add:'0' }}" data-day="{{ prefix }}">
+                        <!-- Course blocks will be populated by JavaScript -->
+                    </div>
                 {% endfor %}
             {% endfor %}
         </div>
@@ -79,27 +80,27 @@
 
                 {% for course in courses %}
                 <div class="course-card"
-                        data-course-id="{{ course.id }}">
-                        <div class="course-card-columns">
-                            <div class="course-card-left">
-                                <p class="course-code">
-                                    {% for code in course.courseCodes.all %}
-                                    <span class="course-code">{{ code.value }}</span>{% if not forloop.last %} {% endif %}
-                                    {% endfor %}
-                                </p>
+                    data-course-id="{{ course.id }}">
+                    <div class="course-card-columns">
+                        <div class="course-card-left">
+                            <p class="course-code">
+                                {% for code in course.courseCodes.all %}
+                                <span class="course-code">{{ code.value }}</span>{% if not forloop.last %} {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <div class="course-card-right">
+                            <div class="course-header">
+                                <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
+                                <button class="cart-button" onclick="handleCartClick(event, '{{ course.id }}')" data-course-id="{{course.id}}">
+                                    <i class="fa-solid fa-plus" style="color: #fff"></i>
+                                </button>
                             </div>
-                            <div class="course-card-right">
-                                <div class="course-header">
-                                    <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
-                                    <button class="cart-button" onclick="handleCartClick(event, '{{ course.id }}')" data-course-id="{{course.id}}">
-                                        <i class="fa-solid fa-plus" style="color: #fff"></i>
-                                    </button>
-                                </div>
-                                <h2 class="course-name">{{ course.courseName }}</h2>
-                                <p class="course-description">{{ course.courseDescription }}</p>
-                            </div>
+                            <h2 class="course-name">{{ course.courseName }}</h2>
+                            <p class="course-description">{{ course.courseDescription }}</p>
                         </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -107,7 +108,7 @@
 
     <script>
 
-        // Initialize cart display when DOM content is loaded
+    // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', async function() {
         //await initializeCourses();
         updateCartDisplay();

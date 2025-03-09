@@ -1,4 +1,6 @@
 {% extends "amherst_coursework_algo/base.html" %}
+{% load course_filters %}
+
 {% block content %}
 
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
@@ -13,7 +15,41 @@
     <div id="cart-side-panel" class="side-panel cart-panel">
         <h3>Saved Schedule</h3>
         <div id="cart-items"></div>
-        <div id="cart-total">Total Courses: <span id="cart-count">0</span></div>
+        <div id="cart-total">
+            Total Courses: <span id="cart-count">0</span>
+            <button onclick="resetCart()" class="reset-cart">Reset Cart</button>
+        </div>
+    
+        <!-- Add calendar here -->
+        <div class="cart-calendar-container">
+            <!-- Headers -->
+            <div class="corner-cell"></div>
+            <div class="day-header">Monday</div>
+            <div class="day-header">Tuesday</div>
+            <div class="day-header">Wednesday</div>
+            <div class="day-header">Thursday</div>
+            <div class="day-header">Friday</div>
+    
+            <!-- Time slots -->
+            {% for hour in "8,9,10,11,12,13,14,15,16,17"|split:"," %}
+                <div class="time-column">
+                    {% with hour_val=hour|add:"0" %}
+                        {% if hour_val < 12 %}
+                            {{ hour_val }}:00 AM
+                        {% elif hour_val == 12 %}
+                            12:00 PM
+                        {% else %}
+                            {{ hour_val|add:"-12" }}:00 PM
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                {% for prefix in "mon,tue,wed,thu,fri"|split:"," %}
+                    <div class="time-slot" data-hour="{{ hour }}" data-day="{{ prefix }}"></div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    
         <button class="close-panel" onclick="toggleCartPanel()">×</button>
     </div>
 
@@ -53,11 +89,7 @@
                             </div>
                             <div class="course-card-right">
                                 <div class="course-header">
-                                    <div class="course-divisions">
-                                        {% for div in course.divisions.all %}
-                                            <span class="division-tag" course-division="{{ div.name }}">{{ div.name }}</span>
-                                        {% endfor %}
-                                    </div>
+                                    <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
                                     <button class="cart-button" onclick="handleCartClick(event, '{{ course.id }}')" data-course-id="{{course.id}}">
                                         <i class="fa-solid fa-plus" style="color: #fff"></i>
                                     </button>
@@ -215,48 +247,154 @@
     }
 
     function updateCartDisplay() {
-    // 1. Get DOM elements
-    const cartItems = document.getElementById('cart-items');
-    const cartCount = document.getElementById('cart-count');
-    const cartCountHeader = document.getElementById('cart-count-header');
+        const cartItems = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartCountHeader = document.getElementById('cart-count-header');
+        const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
     
-    // 2. Get cart data from localStorage
-    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+        // Clear existing content and calendar
+        cartItems.innerHTML = '';
+        clearCalendar(); // Add this function
+    
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
+            cartCount.textContent = '0';
+            cartCountHeader.textContent = '0';
+            return;
+        }
+        
+        fetch(`/cart-courses/?${cart.map(id => `ids[]=${id}`).join('&')}`)
+            .then(response => response.json())
+            .then(data => {
+                cartItems.innerHTML = '';
+                
+                // Group courses by time slot
+                const timeSlotGroups = {};
+                
+                data.courses.forEach(course => {
+                    // Add course to list
+                    const courseElement = document.createElement('div');
+                    courseElement.className = 'cart-item';
+                    courseElement.innerHTML = `
+                        <div class="cart-item-name">${course.name}</div>
+                        <button class="remove-from-cart" 
+                                onclick="toggleCart('${course.id}')">
+                                X
+                        </button>
+                    `;
+                    cartItems.appendChild(courseElement);
 
-    // 3. Clear existing content
-    cartItems.innerHTML = '';
+                    // Process course schedule
+                    if (course.section_information) {
+                        Object.values(course.section_information).forEach(section => {
+                            const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
+                            days.forEach(day => {
+                                const startTime = section[`${day}_start_time`];
+                                const endTime = section[`${day}_end_time`];
+                                
+                                if (startTime && endTime) {
+                                    // Parse the time correctly considering AM/PM
+                                    const [startHour, startMinutes] = parseTime(startTime);
+                                    const key = `${day}-${startHour}`;
+                                    if (!timeSlotGroups[key]) {
+                                        timeSlotGroups[key] = [];
+                                    }
+                                    
+                                    timeSlotGroups[key].push({
+                                        course,
+                                        section,
+                                        startTime,
+                                        endTime,
+                                        startHour,
+                                        startMinutes
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
 
-    if (cart.length === 0) {
-        cartItems.innerHTML = '<p>Your saved schedule is empty</p>';
-        cartCount.textContent = '0';
-        cartCountHeader.textContent = '0';
-        return;
+                // Process each time slot group
+                Object.entries(timeSlotGroups).forEach(([key, courses]) => {
+                    const [day, hour] = key.split('-');
+                    const timeSlot = document.querySelector(
+                        `.cart-calendar-container .time-slot[data-hour="${hour}"][data-day="${day}"]`
+                    );
+
+                    if (timeSlot && courses.length > 0) {
+                        // Sort courses by start time
+                        courses.sort((a, b) => {
+                            return new Date(`2000/01/01 ${a.startTime}`) - new Date(`2000/01/01 ${b.startTime}`);
+                        });
+
+                        const slotWidth = timeSlot.offsetWidth;
+                        const courseWidth = slotWidth / courses.length;
+
+                        courses.forEach((courseData, index) => {
+                            const { course, section, startTime, endTime } = courseData;
+                            const courseBlock = document.createElement('div');
+                            courseBlock.className = 'course-block';
+                            courseBlock.innerHTML = `
+                                <div class="course-acronyms">${course.course_acronyms.join(', ')}</div>
+                                <div class="course-time">${startTime} - ${endTime}</div>
+                                <div class="course-location">${section.course_location || 'TBA'}</div>
+                            `;
+
+                            // Calculate dimensions and position
+                            const startMinutes = parseTimeToMinutes(startTime);
+                            const endMinutes = parseTimeToMinutes(endTime);
+                            const duration = endMinutes - startMinutes;
+
+                            courseBlock.style.height = `${duration}px`;
+                            courseBlock.style.width = `${courseWidth}px`;
+                            courseBlock.style.left = `${index * courseWidth}px`;
+
+                            timeSlot.appendChild(courseBlock);
+                        });
+                    }
+                });
+
+                cartCount.textContent = cart.length;
+                cartCountHeader.textContent = cart.length;
+            });
+    }
+
+    // Add this new function to parse times correctly
+    function parseTime(timeStr) {
+        const [time, period] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        
+        // Convert to 24-hour format
+        if (period === 'PM' && hours !== 12) {
+            hours += 12;
+        } else if (period === 'AM' && hours === 12) {
+            hours = 0;
+        }
+        
+        return [hours, minutes];
+    }
+
+    // Update the parseTimeToMinutes function to use the new parseTime function
+    function parseTimeToMinutes(timeStr) {
+        const [hours, minutes] = parseTime(timeStr);
+        return hours * 60 + minutes;
     }
     
-    // Fetch course details from server
-    fetch(`/cart-courses/?${cart.map(id => `ids[]=${id}`).join('&')}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-    })
-        .then(data => {
-            cartItems.innerHTML = '';
-            data.courses.forEach(course => {
-                const courseElement = document.createElement('div');
-                courseElement.className = 'cart-item';
-                courseElement.innerHTML = `
-                    <div class="cart-item-name">${course.name}</div>
-                    <button class="remove-from-cart" 
-                            onclick="toggleCart('${course.id}')">
-                            X
-                    </button>
-                `;
-                cartItems.appendChild(courseElement);
-            });
-            cartCount.textContent = cart.length;
-            cartCountHeader.textContent = cart.length;
+    // Add this clearCalendar function
+    function clearCalendar() {
+        document.querySelectorAll('.cart-calendar-container .time-slot').forEach(slot => {
+            slot.innerHTML = '';
+        });
+    }
+
+    function resetCart() {
+        localStorage.removeItem('courseCart');
+        updateCartDisplay();
+        // Reset all button states
+        document.querySelectorAll('.cart-button').forEach(button => {
+            const icon = button.querySelector('i');
+            icon.className = 'fa-solid fa-plus';
+            button.classList.remove('in-cart');
         });
     }
 
@@ -278,10 +416,10 @@
         const panelContent = document.getElementById('panel-content');
         const mainContent = document.querySelector('.main-content');
         const courseContainer = document.querySelector('.course-container');
-
+    
         if (courseId) {
             const clickedCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
-
+    
             fetch(`/details/${courseId}/`)  
             .then(response => {
                 if (!response.ok) {
@@ -290,12 +428,15 @@
                 return response.text();
             })
                 .then(html => {
+                    // Reset panel scroll position before loading new content
+                    panelContent.scrollTop = 0;
                     panelContent.innerHTML = html;
+                    
                     requestAnimationFrame(() => {
                         panel.classList.add('open');
                         mainContent.classList.add('shifted');
                         courseContainer.classList.add('shifted');
-
+    
                         setTimeout(() => {
                             if (clickedCard) {
                                 clickedCard.scrollIntoView({ 

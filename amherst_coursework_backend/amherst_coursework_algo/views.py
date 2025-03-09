@@ -11,44 +11,10 @@ from amherst_coursework_algo.config.course_dictionaries import (
     DEPARTMENT_CODE_TO_NAME,
     DEPARTMENT_NAME_TO_CODE,
 )
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from typing import List
 
-
-def format_meeting_times(time_slots):
-    # Group times by their start and end time
-    time_groups = {}
-    day_map = {'mon': 'M', 'tue': 'T', 'wed': 'W', 'thu': 'Th', 'fri': 'F'}
-    
-    # Define custom day order (Tuesday before Thursday)
-    day_order = {'M': 0, 'T': 1, 'W': 2, 'Th': 3, 'F': 4}
-    
-    for day, start, end in time_slots:
-        time_key = f"{start}-{end}"
-        if time_key not in time_groups:
-            time_groups[time_key] = set()
-        time_groups[time_key].add(day_map[day])
-    
-    # Format each group
-    formatted_times = []
-    for time_range, days in time_groups.items():
-        # Sort using custom day order
-        days = ''.join(sorted(list(days), key=lambda x: day_order[x]))
-        start, end = time_range.split('-')
-        
-        # Format the time properly
-        try:
-            start_time = datetime.strptime(start.strip(), '%I:%M %p')
-            end_time = datetime.strptime(end.strip(), '%I:%M %p')
-            formatted_start = start_time.strftime('%I:%M %p').lstrip('0')
-            formatted_end = end_time.strftime('%I:%M %p').lstrip('0')
-            formatted_times.append(f"{days} {formatted_start} - {formatted_end}")
-        except ValueError:
-            formatted_times.append(f"{days} {start.strip()} - {end.strip()}")
-    
-    return ' | '.join(formatted_times)
-
-def get_last_name(full_name):
-    """Extract last name from a full name"""
-    return full_name.split()[-1] if full_name else None
 
 def home(request):
     courses = Course.objects.all()
@@ -191,92 +157,21 @@ def course_details(request, course_id):
         },
     )
 
-def calendar_view(request):
-    """View for displaying the course calendar"""
-    # Generate times from 8:00 AM to 5:00 PM
-    times = [datetime.strptime(f"{hour}:00", "%H:%M").time() for hour in range(8, 18)]
-    
-    # Get course data from JSON
-    courses = []
-    with open('amherst_coursework_algo/static/data/parsed_courses_second_deg.json') as f:
-        data = json.load(f)
-        for department_courses in data.values():
-            courses.extend(department_courses)
-    
-    # Create events by day dictionary
-    events_by_day = {
-        'Monday': [],
-        'Tuesday': [],
-        'Wednesday': [],
-        'Thursday': [],
-        'Friday': []
-    }
-    
-    # Process each course and its sections
-    for course in courses:
-        for section_id, section in course['section_information'].items():
-            # Process each day's schedule
-            day_times = [
-                ('Monday', section.get('mon_start_time'), section.get('mon_end_time')),
-                ('Tuesday', section.get('tue_start_time'), section.get('tue_end_time')),
-                ('Wednesday', section.get('wed_start_time'), section.get('wed_end_time')),
-                ('Thursday', section.get('thu_start_time'), section.get('thu_end_time')),
-                ('Friday', section.get('fri_start_time'), section.get('fri_end_time'))
-            ]
-            
-            for day_name, start_time_str, end_time_str in day_times:
-                if start_time_str and end_time_str:
-                    # Convert time strings to datetime.time objects
-                    start_time = datetime.strptime(start_time_str, "%I:%M %p").time()
-                    end_time = datetime.strptime(end_time_str, "%I:%M %p").time()
-                    
-                    # Calculate position and height for the event
-                    top = (start_time.hour - 8) * 60 + (start_time.minute)  # Minutes from 8 AM
-                    height = ((end_time.hour - start_time.hour) * 60 + 
-                             (end_time.minute - start_time.minute))  # Duration in minutes
-                    
-                    event = {
-                        "title": course['course_name'],
-                        "location": section.get('course_location', 'TBA'),
-                        "start_time": start_time,
-                        "end_time": end_time,
-                        "top": top,
-                        "height": max(height, 30),  # Minimum height of 30 minutes
-                        "column": 0,
-                        "columns": 1,
-                        "course_codes": course.get('course_acronyms', [])
-                    }
-                    events_by_day[day_name].append(event)
-    
-    # Sort events and handle overlaps for each day
-    for day, events in events_by_day.items():
-        if events:
-            events.sort(key=lambda x: x['start_time'])
-            
-            # Handle overlapping events
-            current_group = []
-            max_columns = 1
-            
-            for event in events:
-                # Keep only events that overlap with current event
-                current_group = [e for e in current_group if (
-                    e['start_time'] < event['end_time'] and 
-                    event['start_time'] < e['end_time']
-                )]
-                
-                current_group.append(event)
-                
-                # Assign columns for current group
-                used_columns = set()
-                for e in current_group:
-                    column = 0
-                    while column in used_columns:
-                        column += 1
-                    e['column'] = column
-                    used_columns.add(column)
-                
-                max_columns = max(max_columns, len(current_group))
-            
-            # Update column count for all events in the day
-            for event in events:
-                event['columns'] = max_columns
+
+def get_course_by_id(request, course_id):
+    try:
+        course = Course.objects.get(id=course_id)
+        course_data = {
+            "id": course.id,
+            "name": course.courseName,
+            "description": course.courseDescription,
+            "departments": [
+                {"code": d.code, "name": d.name} for d in course.departments.all()
+            ],
+            "courseCodes": [c.value for c in course.courseCodes.all()],
+            "divisions": [d.name for d in course.divisions.all()],
+            "keywords": [k.name for k in course.keywords.all()],
+        }
+        return JsonResponse({"course": course_data})
+    except Course.DoesNotExist:
+        return JsonResponse({"error": "Course not found"}, status=404)

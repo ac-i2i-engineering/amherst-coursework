@@ -107,9 +107,42 @@
                 </div>
             {% endif %}
         {% endwith %}
+        
     </div>
-
-    
+    <div class="sections-container">
+        <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Course Sections:</h3>
+        {% for section in course.sections.all %}
+            <div class="section-card">
+                <h4>Section {{ section.section_number }} - {{ section.professor.name }}</h4>
+                <p><strong>Location:</strong> {{ section.location }}</p>
+                <div class="meeting-times">
+                    {% if section.monday_start_time %}
+                        <p>Monday: {{ section.monday_start_time|time:"g:i A" }} - {{ section.monday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                    {% if section.tuesday_start_time %}
+                        <p>Tuesday: {{ section.tuesday_start_time|time:"g:i A" }} - {{ section.tuesday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                    {% if section.wednesday_start_time %}
+                        <p>Wednesday: {{ section.wednesday_start_time|time:"g:i A" }} - {{ section.wednesday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                    {% if section.thursday_start_time %}
+                        <p>Thursday: {{ section.thursday_start_time|time:"g:i A" }} - {{ section.thursday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                    {% if section.friday_start_time %}
+                        <p>Friday: {{ section.friday_start_time|time:"g:i A" }} - {{ section.friday_end_time|time:"g:i A" }}</p>
+                    {% endif %}                  
+                    {% if section.saturday_start_time %}
+                        <p>Saturday: {{ section.saturday_start_time|time:"g:i A" }} - {{ section.saturday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                    {% if section.sunday_start_time %}
+                        <p>Sunday: {{ section.sunday_start_time|time:"g:i A" }} - {{ section.sunday_end_time|time:"g:i A" }}</p>
+                    {% endif %}
+                </div><!-- Close meeting-times -->
+            </div><!-- Close section-card -->
+        {% empty %}
+            <p>No sections available for this course.</p>
+        {% endfor %}
+    </div>
     <!-- Other course details -->
 </div>
 

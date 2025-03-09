@@ -246,7 +246,36 @@ p {
 .panel-details h2 {
     font-size: 20px;
     margin-bottom: 20px;
+    overflow: visible;
 }
+
+.sections-container {
+    max-height: none; /* Remove any max-height limitation */
+    overflow: visible; /* Ensure content isn't cut off */
+    padding-bottom: 20px; /* Add some padding at the bottom */
+}
+
+.section-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f8f5fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: visible; /* Ensure content isn't cut off */
+}
+
+.section-card:last-child {
+    margin-bottom: 50px; /* Add space after last section card */
+}
+
+.meeting-times {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    overflow: visible; /* Ensure content isn't cut off */
+}
+
+
 
 /* Cart Panel Specific */
 .cart-panel {
@@ -331,17 +360,40 @@ p {
 
 /* Search Components */
 .search-container {
+    display: flex;
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 500px;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 20px;
 }
 
 .search-input {
-    width: 100%;
+    flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
     font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #9556b0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #7b4491;
+}
+
+#search-loading {
+    margin-left: 10px;
+    color: #9556b0;
 }
 
 .search-input:focus {
@@ -395,73 +447,13 @@ p {
     display: none;
 }
 
-/* ABCXYZ */
-/* Add this to your existing styles */
-.cart-calendar-container {
-    margin-top: 20px;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 45px repeat(5, 1fr);
-    gap: 1px;
-    background: #eee;
-    border: 1px solid #ddd;
-}
-
-.cart-calendar-container .corner-cell,
-.cart-calendar-container .day-header {
-    background: #f8f9fa;
-    padding: 5px;
+.no-results-message {
     text-align: center;
-    font-size: 0.8em;
-    font-weight: bold;
-}
-
-.cart-calendar-container .time-column {
-    background: #f8f9fa;
-    padding: 3px;
-    text-align: right;
-    font-size: 0.7em;
+    padding: 2rem;
+    font-size: 1.2rem;
     color: #666;
-}
-
-.cart-calendar-container .time-slot {
-    background: white;
-    border: 1px solid #eee;
-    height: 60px;
-    position: relative;
-    min-width: 80px;
-}
-
-.cart-calendar-container .course-block {
-    position: absolute;
-    background: #e1d7f1;
-    padding: 3px;
-    border-radius: 3px;
-    font-size: 0.6em;
-    z-index: 1;
-    box-sizing: border-box;
-    overflow: hidden;
-    /* Remove left/right properties to allow custom positioning */
-}
-
-/* Add different colors for overlapping courses */
-.cart-calendar-container .course-block:nth-of-type(2n) {
-    background: #d1e7f7;
-}
-
-.cart-calendar-container .course-block:nth-of-type(3n) {
-    background: #fde2d4;
-}
-
-.info-text {
-    display: block;
-    align-items: center;
-    gap: 5px;
-    min-width: 0;
-    max-width: 90%;
-    font-size: 12px;
-    color: #894ead;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 100%;
+    margin-top: 2rem;
+    background: #f5f5f5;
+    border-radius: 8px;
 }

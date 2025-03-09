@@ -3,8 +3,8 @@ asgiref==3.8.1
 black==24.10.0
 click==8.1.7
 coverage==7.6.9
-Django==5.1.5
-imagesize==1.4.1
+Django==5.1.7
+django-cors-headers==4.7.0
 iniconfig==2.0.0
 packaging==24.2
 pathspec==0.12.1
@@ -23,3 +23,5 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
 sqlparse==0.5.3
+scikit-learn
+whitenoise

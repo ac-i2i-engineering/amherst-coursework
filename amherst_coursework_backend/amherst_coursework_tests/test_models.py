@@ -91,28 +91,32 @@ class SectionModelTest(TestCase):
         self.professor = Professor.objects.create(
             name="John Doe", link="https://faculty.amherst.edu/jdoe"
         )
-        self.course = Course.objects.create(id=5140111, courseName="Test Course")
+        self.course = Course.objects.create(
+            id=5140111, courseName="Intro to Computer Science"
+        )
 
     def test_section_creation(self):
         section = Section.objects.create(
-            section_number=1,
+            section_number="01",
             section_for=self.course,
-            days="MWF",
-            start_time=time(9, 0),
-            end_time=time(9, 50),
+            monday_start_time=time(9, 0),
+            monday_end_time=time(9, 50),
+            wednesday_start_time=time(9, 0),
+            wednesday_end_time=time(9, 50),
+            friday_start_time=time(9, 0),
+            friday_end_time=time(9, 50),
             location="MERR 131",
             professor=self.professor,
         )
-        self.assertEqual(str(section), "MWF 09:00:00-09:50:00 in MERR 131")
+        self.assertEqual(str(section), "01 for Intro to Computer Science")
 
-    def test_invalid_days(self):
+    def test_invalid_section_number(self):
         with self.assertRaises(ValidationError):
             Section.objects.create(
-                section_number=1,
+                section_number="1",  # Invalid format - needs 2 digits
                 section_for=self.course,
-                days="XYZ",  # Invalid days
-                start_time=time(9, 0),
-                end_time=time(9, 50),
+                monday_start_time=time(9, 0),
+                monday_end_time=time(9, 50),
                 location="MERR 131",
                 professor=self.professor,
             ).full_clean()
@@ -120,26 +124,24 @@ class SectionModelTest(TestCase):
     def test_invalid_time_order(self):
         with self.assertRaises(ValidationError):
             Section.objects.create(
-                section_number=1,
+                section_number="01",
                 section_for=self.course,
-                days="MWF",
-                start_time=time(10, 0),
-                end_time=time(9, 0),  # End before start
+                monday_start_time=time(10, 0),
+                monday_end_time=time(9, 0),  # End before start
                 location="MERR 131",
                 professor=self.professor,
             ).full_clean()
 
-    def test_duplicate_days(self):
-        with self.assertRaises(ValidationError):
-            Section.objects.create(
-                section_number=1,
-                section_for=self.course,
-                days="MMW",  # Duplicate M
-                start_time=time(9, 0),
-                end_time=time(10, 0),
-                location="MERR 131",
-                professor=self.professor,
-            ).full_clean()
+    def test_section_with_lab(self):
+        section = Section.objects.create(
+            section_number="01L",  # Valid lab section
+            section_for=self.course,
+            thursday_start_time=time(13, 0),
+            thursday_end_time=time(15, 50),
+            location="MERR 131",
+            professor=self.professor,
+        )
+        self.assertEqual(str(section), "01L for Intro to Computer Science")
 
 
 class YearModelTest(TestCase):

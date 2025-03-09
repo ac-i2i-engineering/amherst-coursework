@@ -110,8 +110,10 @@
 
     // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', async function() {
-        //await initializeCourses();
         updateCartDisplay();
+        setTimeout(() => {
+            findAndMarkAllCartConflicts();
+        }, 1000);
 
         document.querySelectorAll('.course-card').forEach(card => {
             card.addEventListener('click', function(event) {

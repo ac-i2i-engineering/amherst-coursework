@@ -1,5 +1,63 @@
 {% load course_filters %}
 
+{% block content %}
+
+<style>
+    .calendar-container {
+        display: grid;
+        grid-template-columns: 45px repeat(5, 1fr);
+        gap: 1px;
+        background: #eee;
+        border: 1px solid #ddd;
+        margin-bottom: 40px;
+        overflow-y: auto;
+    }
+
+.time-column {
+    background: #f8f9fa;
+    padding: 5px;
+    text-align: center;
+    font-size: 0.8em;
+    color: #666;
+    font-weight: normal;
+}
+
+.corner-cell, .day-header {
+    background: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.time-slot {
+    background: white;
+    border: 1px solid #eee;
+    height: 60px;
+    padding: 2px;
+    position: relative;
+    overflow: visible;
+}
+
+.calendar-container .course-acronyms {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+.course-block {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    background: #e1d7f1;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 0.6em;
+    z-index: 1;
+    overflow: hidden;
+}
+</style>
+
 <!-- course_details_partial.html -->
 <div class="panel-details">
     <h2>{{ course.courseName }}</h2>
@@ -89,3 +147,56 @@
     </div>
     <!-- Other course details -->
 </div>
+
+<div class="calendar-container">
+    <!-- Headers -->
+    <div class="corner-cell"></div>
+    {% for day in "Monday,Tuesday,Wednesday,Thursday,Friday"|split:"," %}
+        <div class="day-header">{{ day }}</div>
+    {% endfor %}
+
+    <!-- Time slots -->
+    {% for hour in "8,9,10,11,12,13,14,15,16,17"|split:"," %}
+        <div class="time-column">
+            {% with hour_val=hour|add:"0" %}
+                {% if hour_val < 12 %}
+                    {{ hour_val }}:00 AM
+                {% elif hour_val == 12 %}
+                    12:00 PM
+                {% else %}
+                    {{ hour_val|add:"-12" }}:00 PM
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        {% for prefix in "mon,tue,wed,thu,fri"|split:"," %}
+            <div class="time-slot">
+                {% for section in course.sections.all %}
+                    {% with start_time=section|get_day_start_time:prefix end_time=section|get_day_end_time:prefix %}
+                        {% if start_time and start_time.hour == hour|add:"0" %}
+                            {% with duration=section|calculate_duration:prefix %}
+                                <div class="course-block" 
+                                     style="height: {{ duration }}px;
+                                            top: {{ start_time.minute|multiply:1 }}px;">
+                                    <div class="course-acronyms">
+                                        {% for code in course.courseCodes.all %}
+                                            <div>{{ code.value }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="course-time">
+                                        {{ start_time|time:"g:i A" }} - {{ end_time|time:"g:i A" }}
+                                    </div>
+                                    <div class="course-location">
+                                        {{ section.location|default:"TBA" }}
+                                    </div>
+                                </div>
+                            {% endwith %}
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+{% endblock %}

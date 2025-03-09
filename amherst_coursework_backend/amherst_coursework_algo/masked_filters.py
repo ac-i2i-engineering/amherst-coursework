@@ -11,7 +11,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 
 courses = []
-
+MIN_CHAR_FOR_COS_SIM = 11
 
 def normalize_code(code: str) -> str:
     """
@@ -425,7 +425,7 @@ def filter(request):
                 {"status": "success", "indicators": [0] * len(course_ids)}
             )
 
-        if len(search_query) > 20:
+        if len(search_query) > MIN_CHAR_FOR_COS_SIM:
             print("similarity search activated")
             # Get all indicators using parallel execution
             with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
@@ -505,7 +505,7 @@ def filter(request):
                 | professor_indicators[idx]
             )
 
-            if len(search_query) > 20:
+            if len(search_query) > MIN_CHAR_FOR_COS_SIM:
                 result = result or similarity_indicators[idx]
 
             if "half" in search_query:

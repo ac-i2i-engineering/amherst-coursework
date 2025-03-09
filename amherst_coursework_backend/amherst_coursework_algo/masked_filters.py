@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 courses = []
 MIN_CHAR_FOR_COS_SIM = 11
 
+
 def normalize_code(code: str) -> str:
     """
     Remove any non-alphanumeric characters from the given code.

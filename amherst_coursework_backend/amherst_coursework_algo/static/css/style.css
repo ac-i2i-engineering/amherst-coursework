@@ -444,3 +444,14 @@ p {
 .cart-panel.open ~ .cart-toggle-button {
     display: none;
 }
+
+.no-results-message {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+    width: 100%;
+    margin-top: 2rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}

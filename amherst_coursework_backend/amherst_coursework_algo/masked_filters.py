@@ -10,6 +10,8 @@ from typing import List
 import json
 from concurrent.futures import ThreadPoolExecutor
 
+courses = []
+
 
 def normalize_code(code: str) -> str:
     """
@@ -270,10 +272,7 @@ def half_courses(search_query: str, courses: list) -> list:
         A list of binary indicators (1 or 0) indicating whether each course is a half course.
     """
     if "half" in search_query.lower():
-        return [
-            1 if len(str(course.id)) >= 4 and str(course.id)[-4] == "1" else 0
-            for course in courses
-        ]
+        return [1 if str(course.id)[3] == "1" else 0 for course in courses]
     return [1] * len(courses)
 
 
@@ -405,15 +404,21 @@ def filter(request):
             )
 
         # Better error handling for course fetching
-        courses = []
-        for course_id in course_ids:
-            try:
-                course = Course.objects.get(id=course_id)
-                courses.append(course)
-            except Course.DoesNotExist:
-                print("Error:" + str(course_id))
-                # Skip non-existent courses
-                continue
+        if len(courses) == 0:
+            courses_dict = {
+                str(course.id): course
+                for course in Course.objects.filter(id__in=course_ids).prefetch_related(
+                    "departments", "professors", "courseCodes", "divisions", "keywords"
+                )
+            }
+
+            # Maintain order from course_ids
+            for course_id in course_ids:
+                course = courses_dict.get(str(course_id))
+                if course:
+                    courses.append(course)
+                else:
+                    print(f"Error: Course {course_id} not found")
 
         if not courses:
             return JsonResponse(
@@ -421,7 +426,7 @@ def filter(request):
             )
 
         if len(search_query) > 20:
-
+            print("similarity search activated")
             # Get all indicators using parallel execution
             with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
                 futures = [
@@ -500,11 +505,14 @@ def filter(request):
                 | professor_indicators[idx]
             )
 
-            if "half" in search_query:
-                result = result and half_flag[idx]
-
             if len(search_query) > 20:
                 result = result or similarity_indicators[idx]
+
+            if "half" in search_query:
+                if search_query != "half":
+                    result = result and half_flag[idx]
+                else:
+                    result = half_flag[idx]
 
             final_indicators.append(result)
 

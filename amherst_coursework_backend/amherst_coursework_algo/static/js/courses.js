@@ -33,7 +33,7 @@ function handleSearch() {
     }
     
     // Continue with backend search
-    search_filter(searchQuery, 0.3);
+    search_filter(searchQuery, 0.1);
 }
 
 /* Add this to your script section */

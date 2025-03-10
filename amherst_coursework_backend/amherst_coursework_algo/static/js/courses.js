@@ -209,33 +209,6 @@ function highlightTimeConflicts() {
     });
 }
 
-function toggleCart(courseId) {
-    // Get existing cart or initialize empty array
-    let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    
-    // Check if course is already in cart
-    let courseIndex = cart.indexOf(courseId)
-    
-    if (event) {
-        event.stopPropagation();
-    }
-    
-    if (courseIndex === -1) {
-        cart.push(courseId);
-        updateButtonState(courseId, true);
-    } else {
-        cart.splice(courseIndex, 1);
-        updateButtonState(courseId, false);
-    }
-
-    // Save updated cart
-    localStorage.setItem('courseCart', JSON.stringify(cart));
-    updateCartDisplay();
-    
-    // Add this line to highlight conflicts when cart changes
-    setTimeout(findAndMarkAllCartConflicts, 500);
-}
-
 function updateButtonState(courseId, inCart) {
     document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
         const icon = button.querySelector('i');

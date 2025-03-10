@@ -63,20 +63,26 @@
             <h1>Amherst College Course Catalog</h1>
 
             <div class="search-container">
-                <input type="text" 
-                    id="searchInput"
-                    placeholder="Search courses..."
-                    class="search-input">
-                <button id="searchButton" class="search-button" onclick="handleSearch()">
-                    <i class="fa-solid fa-search"></i> Search
-                </button>
+                <form method="GET" action="{% url 'catalog:home' %}">
+                    <input type="text" 
+                        id="searchInput"
+                        name="search"
+                        placeholder="Search courses..."
+                        class="search-input"
+                        value="{{ search_query }}">
+                    <button type="submit" class="search-button">
+                        <i class="fa-solid fa-search"></i> Search
+                    </button>
+                </form>
                 <div id="search-loading" style="display: none;">
                     <i class="fa-solid fa-spinner fa-spin"></i> Searching...
                 </div>
             </div>
 
             <div class="course-container">
-                <div id="no-results-message" class="no-results-message" style="display: none;"></div>
+                {% if not courses %}
+                <p>No results found for "{{ search_query }}"</p>
+                {% endif %}
 
                 {% for course in courses %}
                 <div class="course-card"
@@ -135,7 +141,7 @@
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                handleSearch();
+                this.closest('form').submit();
             }
         });
 

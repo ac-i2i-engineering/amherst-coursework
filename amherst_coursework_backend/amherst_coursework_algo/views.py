@@ -17,21 +17,60 @@ from typing import List
 
 
 def home(request):
-    courses = Course.objects.prefetch_related(
+    # Get search query from GET parameters
+    search_query = request.GET.get("search", "").lower()
+
+    # Get all courses initially
+    all_courses = Course.objects.prefetch_related(
         "courseCodes", "sections__professor"
     ).all()
 
+    if search_query:
+        # Use masked_filters.filter logic
+        from .masked_filters import filter
+        from django.http import HttpRequest
+
+        # Create a mock request object with the necessary data
+        mock_request = type(
+            "MockRequest",
+            (),
+            {
+                "method": "POST",
+                "body": json.dumps(
+                    {
+                        "search_query": search_query,
+                        "course_ids": [str(course.id) for course in all_courses],
+                        "similarity_threshold": 0.1,
+                    }
+                ).encode("utf-8"),
+            },
+        )
+
+        # Get filter response
+        filter_response = filter(mock_request)
+        filter_data = json.loads(filter_response.content)
+
+        if filter_data.get("status") == "success":
+            # Create list of filtered courses maintaining order
+            courses = [
+                course
+                for course, indicator in zip(all_courses, filter_data["indicators"])
+                if indicator
+            ]
+        else:
+            courses = []
+    else:
+        courses = all_courses
+
     # Add professor and meeting time info to each course
     for course in courses:
-        # Get professor names from sections
         professors = set()
         time_slots = []
 
         for section in course.sections.all():
             if section.professor:
-                professors.add(section.professor.name.split()[-1])  # Get last name
+                professors.add(section.professor.name.split()[-1])
 
-            # Collect meeting times
             days = [
                 ("mon", section.monday_start_time, section.monday_end_time),
                 ("tue", section.tuesday_start_time, section.tuesday_end_time),
@@ -59,6 +98,7 @@ def home(request):
         {
             "courses": courses,
             "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
+            "search_query": search_query,  # Pass search query back to template
         },
     )
 

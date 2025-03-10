@@ -15,27 +15,6 @@ function debounce(func, wait) {
     };
 }
 
-function handleSearch() {
-    const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-    
-    // For empty queries, show all courses
-    if (!searchQuery) {
-        document.querySelectorAll('.course-card').forEach(card => {
-            card.classList.remove('hidden');
-        });
-        return;
-    }
-    
-    // For very short queries (1-2 chars), consider showing a message
-    if (searchQuery.length < 2) {
-        alert('Please enter a more specific search term');
-        return;
-    }
-    
-    // Continue with backend search
-    search_filter(searchQuery, 0.1);
-}
-
 /* Add this to your script section */
 function handleCartClick(event, courseId) {
     event.stopPropagation();  // Prevent event from bubbling up to course-card
@@ -230,33 +209,6 @@ function highlightTimeConflicts() {
     });
 }
 
-function toggleCart(courseId) {
-    // Get existing cart or initialize empty array
-    let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    
-    // Check if course is already in cart
-    let courseIndex = cart.indexOf(courseId)
-    
-    if (event) {
-        event.stopPropagation();
-    }
-    
-    if (courseIndex === -1) {
-        cart.push(courseId);
-        updateButtonState(courseId, true);
-    } else {
-        cart.splice(courseIndex, 1);
-        updateButtonState(courseId, false);
-    }
-
-    // Save updated cart
-    localStorage.setItem('courseCart', JSON.stringify(cart));
-    updateCartDisplay();
-    
-    // Add this line to highlight conflicts when cart changes
-    setTimeout(findAndMarkAllCartConflicts, 500);
-}
-
 function updateButtonState(courseId, inCart) {
     document.querySelectorAll(`.cart-button[data-course-id="${courseId}"]`).forEach(button => {
         const icon = button.querySelector('i');
@@ -368,98 +320,6 @@ async function getCourseById(courseId) {
     } catch (error) {
         console.error('Error fetching course:', error);
         return null;
-    }
-}
-
-async function search_filter(searchQuery, similarityThreshold) {
-    searchQuery = searchQuery.toLowerCase().trim();
-    const courseCards = document.querySelectorAll('.course-card');
-    const courseContainer = document.querySelector('.course-container'); 
-    
-    // Add loading indicator
-    document.getElementById('search-loading').style.display = 'inline-block';
-    
-    // Get course IDs from data attributes
-    const courseIds = Array.from(courseCards).map(card => card.dataset.courseId);
-    
-    // Get indicators from backend
-    const indicators = await filterCoursesByMask(searchQuery, courseIds, similarityThreshold);
-
-    courseCount = 0
-    // Update visibility based on indicators
-    courseCards.forEach((card, index) => {
-        if (indicators[index]) {
-            card.classList.remove('hidden');
-            courseCount += 1;
-        } else {
-            card.classList.add('hidden');
-        }
-    });
-
-    if (courseCount === 0) {
-        // Remove existing no-results message if it exists
-        const existingMessage = courseContainer.querySelector('.no-results-message');
-        if (existingMessage) {
-            existingMessage.remove();
-        }
-        
-        // Create and add new no-results message
-        const noResultsMessage = document.createElement('div');
-        noResultsMessage.className = 'no-results-message';
-        noResultsMessage.innerHTML = `No results available for "${searchQuery}"`;
-        courseContainer.appendChild(noResultsMessage);
-    } else {
-        // Remove no-results message if it exists
-        const noResultsMessage = courseContainer.querySelector('.no-results-message');
-        if (noResultsMessage) {
-            noResultsMessage.remove();
-        }
-    }
-    
-    // Hide loading indicator
-    document.getElementById('search-loading').style.display = 'none';
-}
-
-async function filterCoursesByMask(searchQuery, courseIds, similarityThreshold) {
-    try {
-        // Get CSRF token from cookie if not available in the form
-        let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-        
-        // If no CSRF token in form, try to get from cookie
-        if (!csrftoken) {
-            csrftoken = getCookie('csrftoken');
-        }
-        
-        const headers = {
-            'Content-Type': 'application/json',
-        };
-        
-        // Only add CSRF token if we found one
-        if (csrftoken) {
-            headers['X-CSRFToken'] = csrftoken;
-        }
-        
-        const response = await fetch('/api/masked_filter/', {
-            method: 'POST',
-            headers: headers,
-            credentials: 'include',  // Add this line to include cookies
-            body: JSON.stringify({
-                search_query: searchQuery,
-                course_ids: courseIds,
-                similarity_threshold: similarityThreshold
-            })
-        });
-        
-        const data = await response.json();
-        if (data.status === 'success') {
-            return data.indicators;
-        }
-        console.error('Error:', data.message);
-        return new Array(courseIds.length).fill(0);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        return new Array(courseIds.length).fill(0);
     }
 }
 

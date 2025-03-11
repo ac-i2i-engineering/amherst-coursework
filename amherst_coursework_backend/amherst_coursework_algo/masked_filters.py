@@ -10,6 +10,7 @@ from typing import List
 import json
 from concurrent.futures import ThreadPoolExecutor
 from django.db.models import Case, When, F, FloatField, Value
+from django.db.models import Q
 import nltk
 from nltk.corpus import stopwords
 
@@ -22,7 +23,7 @@ COURSE_CODE_WEIGHT = 90
 DIVISION_WEIGHT = 40
 KEYWORD_WEIGHT = 40
 DESCRIPTION_WEIGHT = 50
-PROFESSOR_WEIGHT = 100
+PROFESSOR_WEIGHT = 80
 HALF_COURSE_WEIGHT = 100  # not sure what weight to use here, want it to be strong enough so that it is not ignored, but not so strong that all other non half courses are ignored
 SIMILARITY_WEIGHT = 150
 
@@ -50,6 +51,7 @@ def normalize_code(code: str) -> str:
         The normalized code string containing only alphanumeric characters.
     """
     return "".join(c for c in code if c.isalnum())
+
 
 def query_course_similarity(query: str, course) -> float:
     """
@@ -189,8 +191,27 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
         for course in dept_matches:
             scores[course.id] += DEPARTMENT_NAME_WEIGHT
 
-        code_matches = filtered_courses.filter(courseCodes__value__icontains=term)
-        for course in code_matches:
+        code_matches = filtered_courses.filter(
+            Q(courseCodes__value__icontains=term)
+            | Q(
+                courseCodes__value__in=[
+                    code.value
+                    for course in filtered_courses.all()
+                    for code in course.courseCodes.all()
+                    if normalize_code(term).lower()
+                    in normalize_code(code.value).lower()
+                ]
+            )
+            | Q(
+                id__in=[
+                    course.id
+                    for course in filtered_courses
+                    for dept in course.departments.all()
+                    if dept.code.lower() in term.lower()
+                ]
+            )
+        )
+        for course in code_matches.distinct():
             scores[course.id] += COURSE_CODE_WEIGHT
 
         div_matches = filtered_courses.filter(divisions__name__icontains=term)

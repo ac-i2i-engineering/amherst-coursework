@@ -15,22 +15,22 @@ import nltk
 from nltk.corpus import stopwords
 
 courses = []
-MIN_CHAR_FOR_COS_SIM = 11
+MIN_CHAR_FOR_COS_SIM = 5
 
 DEPARTMENT_NAME_WEIGHT = 90
-COURSE_NAME_WEIGHT = 90
+COURSE_NAME_WEIGHT = 80
 COURSE_CODE_WEIGHT = 90
-DEPT_CODE_WEIGHT = 70
-DIVISION_WEIGHT = 40
-KEYWORD_WEIGHT = 40
-DESCRIPTION_WEIGHT = 50
-PROFESSOR_WEIGHT = 50
+DEPT_CODE_WEIGHT = 80
+DIVISION_WEIGHT = 30
+KEYWORD_WEIGHT = 30
+DESCRIPTION_WEIGHT = 40
+PROFESSOR_WEIGHT = 100
 HALF_COURSE_WEIGHT = 200  # not sure what weight to use here, want it to be strong enough so that it is not ignored, but not so strong that all other non half courses are ignored
 SIMILARITY_WEIGHT = 160
 
 SIMILARITY_THRESHOLD = 0.1
 
-SCORE_CUTOFF = 80
+SCORE_CUTOFF = 0.45
 
 try:
     stop_words = set(stopwords.words("english"))
@@ -172,7 +172,11 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
     search_terms = search_query.lower().split()
 
     # Start with all courses
-    filtered_courses = Course.objects.filter(id__in=[course.id for course in courses])
+    filtered_courses = Course.objects.filter(
+        id__in=[course.id for course in courses]
+    ).prefetch_related(
+        "courseCodes", "departments", "divisions", "keywords", "professors"
+    )
 
     # Initialize scores dictionary
     scores = {course.id: 0.0 for course in courses}
@@ -242,75 +246,85 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
             similarity_score = query_course_similarity(search_query, course)
             scores[course.id] += similarity_score * SIMILARITY_WEIGHT
 
-    # Create list of (course, score) tuples
-    # scored_courses = [
-    #     (course, scores[course.id]) for course in courses if scores[course.id] >= SCORE_CUTOFF
-    # ]
-
     # Create list of (course, score) tuples with debug information
     scored_courses = []
     for course in courses:
         score = scores[course.id]
         if score > 0:
-            print(f"\nCourse: {course.courseName} (ID: {course.id})")
-            for term in search_terms:
-                if term == "half":
-                    if str(course.id)[3] == "1":
-                        print(f"  Half course match: +{HALF_COURSE_WEIGHT}")
-                    continue
+            """Debug printing (keep commented during production, as it slows down search dramatically)"""
+            # print(f"\nCourse: {course.courseName} (ID: {course.id})")
+            # for term in search_terms:
+            #     if term == "half":
+            #         if str(course.id)[3] == "1":
+            #             print(f"  Half course match: +{HALF_COURSE_WEIGHT}")
+            #         continue
 
-                # Print individual match components
-                if filtered_courses.filter(
-                    id=course.id, courseName__icontains=term
-                ).exists():
-                    print(f"  Course name match ({term}): +{COURSE_NAME_WEIGHT}")
+            #     # Print individual match components
+            #     if filtered_courses.filter(
+            #         id=course.id, courseName__icontains=term
+            #     ).exists():
+            #         print(f"  Course name match ({term}): +{COURSE_NAME_WEIGHT}")
 
-                if filtered_courses.filter(
-                    id=course.id, departments__name__icontains=term
-                ).exists():
-                    print(
-                        f"  Department name match ({term}): +{DEPARTMENT_NAME_WEIGHT}"
-                    )
+            #     if filtered_courses.filter(
+            #         id=course.id, departments__name__icontains=term
+            #     ).exists():
+            #         print(
+            #             f"  Department name match ({term}): +{DEPARTMENT_NAME_WEIGHT}"
+            #         )
 
-                if filtered_courses.filter(
-                    id=course.id, courseCodes__value__icontains=term
-                ).exists():
-                    print(f"  Course code match ({term}): +{COURSE_CODE_WEIGHT}")
+            #     if filtered_courses.filter(
+            #         id=course.id, courseCodes__value__icontains=term
+            #     ).exists():
+            #         print(f"  Course code match ({term}): +{COURSE_CODE_WEIGHT}")
 
-                if filtered_courses.filter(
-                    id=course.id, divisions__name__icontains=term
-                ).exists():
-                    print(f"  Division match ({term}): +{DIVISION_WEIGHT}")
+            #     if filtered_courses.filter(
+            #         id=course.id,
+            #         departments__code__in=[
+            #             dept.code
+            #             for dept in course.departments.all()
+            #             if dept.code.lower() in term.lower()
+            #         ],
+            #     ).exists():
+            #         print(f"  Department code match ({term}): +{DEPT_CODE_WEIGHT}")
 
-                if filtered_courses.filter(
-                    id=course.id, keywords__name__icontains=term
-                ).exists():
-                    print(f"  Keyword match ({term}): +{KEYWORD_WEIGHT}")
+            #     if filtered_courses.filter(
+            #         id=course.id, divisions__name__icontains=term
+            #     ).exists():
+            #         print(f"  Division match ({term}): +{DIVISION_WEIGHT}")
 
-                if filtered_courses.filter(
-                    id=course.id, courseDescription__icontains=term
-                ).exists():
-                    print(f"  Description match ({term}): +{DESCRIPTION_WEIGHT}")
+            #     if filtered_courses.filter(
+            #         id=course.id, keywords__name__icontains=term
+            #     ).exists():
+            #         print(f"  Keyword match ({term}): +{KEYWORD_WEIGHT}")
 
-                if filtered_courses.filter(
-                    id=course.id, professors__name__icontains=term
-                ).exists():
-                    print(f"  Professor match ({term}): +{PROFESSOR_WEIGHT}")
+            #     if filtered_courses.filter(
+            #         id=course.id, courseDescription__icontains=term
+            #     ).exists():
+            #         print(f"  Description match ({term}): +{DESCRIPTION_WEIGHT}")
 
-            if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-                similarity_score = query_course_similarity(search_query, course)
-                if similarity_score > 0:
-                    print(
-                        f"  Similarity score: +{similarity_score * SIMILARITY_WEIGHT:.2f}"
-                    )
+            #     if filtered_courses.filter(
+            #         id=course.id, professors__name__icontains=term
+            #     ).exists():
+            #         print(f"  Professor match ({term}): +{PROFESSOR_WEIGHT}")
 
-            print(f"  Total score: {score:.2f}")
+            # if len(search_query) > MIN_CHAR_FOR_COS_SIM:
+            #     similarity_score = query_course_similarity(search_query, course)
+            #     print(
+            #             f"  Similarity score: +{similarity_score * SIMILARITY_WEIGHT:.2f}"
+            #         )
+
+            # print(f"  Total score: {score:.2f}")
             scored_courses.append((course, score))
 
     # Sort by score in descending order
     scored_courses.sort(key=lambda x: x[1], reverse=True)
 
-    # Sort by score in descending order
-    scored_courses.sort(key=lambda x: x[1], reverse=True)
+    highest_score = scored_courses[0][1] if scored_courses else 1
+    print(highest_score)
+    scored_courses = [
+        course
+        for course, score in scored_courses
+        if score / highest_score >= SCORE_CUTOFF
+    ]
 
-    return [course for course, _ in scored_courses]
+    return scored_courses

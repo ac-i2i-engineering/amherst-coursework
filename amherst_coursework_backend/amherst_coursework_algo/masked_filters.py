@@ -28,8 +28,6 @@ PROFESSOR_WEIGHT = 100
 HALF_COURSE_WEIGHT = 200  # not sure what weight to use here, want it to be strong enough so that it is not ignored, but not so strong that all other non half courses are ignored
 SIMILARITY_WEIGHT = 160
 
-SIMILARITY_THRESHOLD = 0.1
-
 SCORE_CUTOFF = 0.45
 
 try:

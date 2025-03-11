@@ -20,7 +20,7 @@ MIN_CHAR_FOR_COS_SIM = 5
 DEPARTMENT_NAME_WEIGHT = 90
 COURSE_NAME_WEIGHT = 80
 COURSE_CODE_WEIGHT = 90
-DEPT_CODE_WEIGHT = 80
+DEPARTMENT_CODE_WEIGHT = 80
 DIVISION_WEIGHT = 30
 KEYWORD_WEIGHT = 30
 DESCRIPTION_WEIGHT = 40
@@ -30,47 +30,62 @@ SIMILARITY_WEIGHT = 160
 
 SCORE_CUTOFF = 0.45
 
+# Initialize stopwords for English
 try:
     stop_words = set(stopwords.words("english"))
-except LookupError:
-    nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
+except LookupError as e:
+    try:
+        nltk.download("stopwords")
+        stop_words = set(stopwords.words("english"))
+    except Exception as download_error:
+        raise RuntimeError(
+            f"Failed to initialize stopwords: {str(e)}. Download attempt failed: {str(download_error)}"
+        )
 
 
-def normalize_code(code: str) -> str:
+def restore_dept_code(code: str) -> str:
     """
-    Remove any non-alphanumeric characters from the given code.
+    Extract department code from various formats.
+    Returns XXXXX for invalid patterns.
 
-    Parameters
-    ----------
-    code : str
-        The input code string to be normalized.
-
-    Returns
-    -------
-    str
-        The normalized code string containing only alphanumeric characters.
+    Examples:
+        'math' -> 'MATH'
+        'math1' -> 'MATH'
+        'mat' -> 'XXXXX'  # too short
+        'maths' -> 'XXXXX'  # too long
+        '123' -> 'XXXXX'  # only numbers
     """
-    return "".join(c for c in code if c.isalnum())
+    import re
+
+    # Get only letters from start of string
+    match = re.match(r"^([a-zA-Z]+)", code)
+    if not match:
+        return "XXXXX"
+
+    dept = match.group(1)
+    if len(dept) != 4:
+        return "XXXXX"
+
+    return dept.upper()
 
 
-def query_course_similarity(query: str, course) -> float:
+def restore_course_code(code: str) -> str:
     """
-    Compute similarity between query and course text.
-
-    Parameters
-    ----------
-    query : str
-        The search query string.
-    course : Course
-        The Course object whose text is to be compared.
-
-    Returns
-    -------
-    float
-        The similarity score between the query and the course text.
+    Restore a course code pattern by adding a hyphen.
+    Example: 'math1' -> 'MATH-1'
     """
-    course_text = " ".join(
+    import re
+
+    match = re.match(r"([a-zA-Z]+)(\d+)", code)
+    if not match:
+        return code
+
+    dept, number = match.groups()
+    return f"{dept.upper()}-{number}"
+
+
+def prepare_course_text(course) -> str:
+    return " ".join(
         [
             course.courseName or "",
             course.courseDescription or "",
@@ -79,9 +94,6 @@ def query_course_similarity(query: str, course) -> float:
             " ".join(keyword.name for keyword in course.keywords.all()),
         ]
     ).lower()
-
-    # Use existing compute_similarity_scores function
-    return compute_similarity_scores(query, [course_text])[0]
 
 
 def compute_similarity_scores(query: str, information: List[str]) -> List[float]:
@@ -198,29 +210,16 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
 
         code_matches = filtered_courses.filter(
             Q(courseCodes__value__icontains=term)
-            | Q(
-                courseCodes__value__in=[
-                    code.value
-                    for course in filtered_courses.all()
-                    for code in course.courseCodes.all()
-                    if normalize_code(term).lower()
-                    in normalize_code(code.value).lower()
-                ]
-            )
+            | Q(courseCodes__value__iregex=restore_course_code(term))
         )
         for course in code_matches.distinct():
             scores[course.id] += COURSE_CODE_WEIGHT
 
         dept_code_matches = filtered_courses.filter(
-            id__in=[
-                course.id
-                for course in filtered_courses
-                for dept in course.departments.all()
-                if dept.code.lower() in term.lower()
-            ]
+            departments__code__iexact=restore_dept_code(term)
         )
         for course in dept_code_matches:
-            scores[course.id] += DEPT_CODE_WEIGHT
+            scores[course.id] += DEPARTMENT_CODE_WEIGHT
 
         div_matches = filtered_courses.filter(divisions__name__icontains=term)
         for course in div_matches:
@@ -240,9 +239,10 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
 
     # Add similarity search for longer queries
     if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-        for course in filtered_courses:
-            similarity_score = query_course_similarity(search_query, course)
-            scores[course.id] += similarity_score * SIMILARITY_WEIGHT
+        course_texts = [prepare_course_text(course) for course in filtered_courses]
+        similarity_scores = compute_similarity_scores(search_query, course_texts)
+        for course, score in zip(filtered_courses, similarity_scores):
+            scores[course.id] += score * SIMILARITY_WEIGHT
 
     # Create list of (course, score) tuples with debug information
     scored_courses = []

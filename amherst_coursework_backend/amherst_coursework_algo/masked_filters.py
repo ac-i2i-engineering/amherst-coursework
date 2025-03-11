@@ -320,7 +320,6 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
     scored_courses.sort(key=lambda x: x[1], reverse=True)
 
     highest_score = scored_courses[0][1] if scored_courses else 1
-    print(highest_score)
     scored_courses = [
         course
         for course, score in scored_courses

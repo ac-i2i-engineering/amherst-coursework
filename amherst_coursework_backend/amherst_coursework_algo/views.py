@@ -17,7 +17,8 @@ from .masked_filters import filter
 
 def home(request):
     # Get search query from GET parameters
-    search_query = request.GET.get("search", "").lower()
+    search = request.GET.get("search", "")
+    search_query = search.lower()
 
     # Get all courses initially
     all_courses = Course.objects.prefetch_related(
@@ -66,7 +67,7 @@ def home(request):
         {
             "courses": courses,
             "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
-            "search_query": search_query,  # Pass search query back to template
+            "search_query": search,  # Pass search query back to template
         },
     )
 

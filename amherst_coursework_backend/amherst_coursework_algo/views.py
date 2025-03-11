@@ -11,9 +11,8 @@ from amherst_coursework_algo.config.course_dictionaries import (
     DEPARTMENT_CODE_TO_NAME,
     DEPARTMENT_NAME_TO_CODE,
 )
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
+from .masked_filters import filter
 
 
 def home(request):
@@ -26,39 +25,8 @@ def home(request):
     ).all()
 
     if search_query:
-        # Use masked_filters.filter logic
-        from .masked_filters import filter
-        from django.http import HttpRequest
-
-        # Create a mock request object with the necessary data
-        mock_request = type(
-            "MockRequest",
-            (),
-            {
-                "method": "POST",
-                "body": json.dumps(
-                    {
-                        "search_query": search_query,
-                        "course_ids": [str(course.id) for course in all_courses],
-                        "similarity_threshold": 0.1,
-                    }
-                ).encode("utf-8"),
-            },
-        )
-
         # Get filter response
-        filter_response = filter(mock_request)
-        filter_data = json.loads(filter_response.content)
-
-        if filter_data.get("status") == "success":
-            # Create list of filtered courses maintaining order
-            courses = [
-                course
-                for course, indicator in zip(all_courses, filter_data["indicators"])
-                if indicator
-            ]
-        else:
-            courses = []
+        courses = filter(search_query, all_courses)
     else:
         courses = all_courses
 

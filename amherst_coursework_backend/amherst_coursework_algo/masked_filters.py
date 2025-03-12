@@ -179,7 +179,7 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
     if not search_query:
         return [(course, 1.0) for course in courses]
 
-    search_terms = search_query.lower().split()
+    search_terms = clean_query(search_query)
 
     # Start with all courses
     filtered_courses = Course.objects.filter(
@@ -283,7 +283,7 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
             #             if dept.code.lower() in term.lower()
             #         ],
             #     ).exists():
-            #         print(f"  Department code match ({term}): +{DEPT_CODE_WEIGHT}")
+            #         print(f"  Department code match ({term}): +{DEPARTMENT_CODE_WEIGHT}")
 
             #     if filtered_courses.filter(
             #         id=course.id, divisions__name__icontains=term
@@ -304,12 +304,6 @@ def filter(search_query: str, courses: List[Course]) -> List[tuple[Course, float
             #         id=course.id, professors__name__icontains=term
             #     ).exists():
             #         print(f"  Professor match ({term}): +{PROFESSOR_WEIGHT}")
-
-            # if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-            #     similarity_score = query_course_similarity(search_query, course)
-            #     print(
-            #             f"  Similarity score: +{similarity_score * SIMILARITY_WEIGHT:.2f}"
-            #         )
 
             # print(f"  Total score: {score:.2f}")
             scored_courses.append((course, score))

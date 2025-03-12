@@ -9,317 +9,83 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
 import json
 from concurrent.futures import ThreadPoolExecutor
+from django.db.models import Case, When, F, FloatField, Value
+from django.db.models import Q
+import nltk
+from nltk.corpus import stopwords
 
 courses = []
-MIN_CHAR_FOR_COS_SIM = 11
+MIN_CHAR_FOR_COS_SIM = 5
 
+DEPARTMENT_NAME_WEIGHT = 90
+COURSE_NAME_WEIGHT = 80
+COURSE_CODE_WEIGHT = 90
+DEPARTMENT_CODE_WEIGHT = 80
+DIVISION_WEIGHT = 30
+KEYWORD_WEIGHT = 30
+DESCRIPTION_WEIGHT = 40
+PROFESSOR_WEIGHT = 100
+HALF_COURSE_WEIGHT = 200  # not sure what weight to use here, want it to be strong enough so that it is not ignored, but not so strong that all other non half courses are ignored
+SIMILARITY_WEIGHT = 160
 
-def normalize_code(code: str) -> str:
-    """
-    Remove any non-alphanumeric characters from the given code.
+SCORE_CUTOFF = 0.45
 
-    Parameters
-    ----------
-    code : str
-        The input code string to be normalized.
-
-    Returns
-    -------
-    str
-        The normalized code string containing only alphanumeric characters.
-    """
-    return "".join(c for c in code if c.isalnum())
-
-
-def relevant_course_name(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses whose names contain the search query.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against course names.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course name contains the search query.
-    """
-    search_query = search_query.lower()
-    # print(search_query)
-    # print([course.courseName.lower() for course in courses])
-    # print([1 if search_query in course.courseName.lower() else 0 for course in courses])
-    return [1 if search_query in course.courseName.lower() else 0 for course in courses]
-
-
-def relevant_department_codes(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses with matching department codes.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against department codes.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching department code.
-    """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in dept.code.lower() for dept in course.departments.all()
-            )
-            else 0
+# Initialize stopwords for English
+try:
+    stop_words = set(stopwords.words("english"))
+except LookupError as e:
+    try:
+        nltk.download("stopwords")
+        stop_words = set(stopwords.words("english"))
+    except Exception as download_error:
+        raise RuntimeError(
+            f"Failed to initialize stopwords: {str(e)}. Download attempt failed: {str(download_error)}"
         )
-        for course in courses
-    ]
 
 
-def relevant_department_names(search_query: str, courses: list) -> list:
+def restore_dept_code(code: str) -> str:
     """
-    Return binary indicators for courses with matching department names.
+    Extract department code from various formats.
+    Returns XXXXX for invalid patterns.
 
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against department names.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching department name.
+    Examples:
+        'math' -> 'MATH'
+        'math1' -> 'MATH'
+        'mat' -> 'XXXXX'  # too short
+        'maths' -> 'XXXXX'  # too long
+        '123' -> 'XXXXX'  # only numbers
     """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in dept.name.lower() for dept in course.departments.all()
-            )
-            else 0
-        )
-        for course in courses
-    ]
+    import re
+
+    # Get only letters from start of string
+    match = re.match(r"^([a-zA-Z]+)", code)
+    if not match:
+        return "XXXXX"
+
+    dept = match.group(1)
+    if len(dept) != 4:
+        return "XXXXX"
+
+    return dept.upper()
 
 
-def relevant_course_codes(search_query: str, courses: list) -> list:
+def restore_course_code(code: str) -> str:
     """
-    Return binary indicators for courses with matching course codes.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against course codes.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching course code.
+    Restore a course code pattern by adding a hyphen.
+    Example: 'math1' -> 'MATH-1'
     """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in code.value.lower()
-                or search_query in normalize_code(code.value.lower())
-                for code in course.courseCodes.all()
-            )
-            else 0
-        )
-        for course in courses
-    ]
+    import re
+
+    match = re.match(r"([a-zA-Z]+)(\d+)", code)
+    if not match:
+        return code
+
+    dept, number = match.groups()
+    return f"{dept.upper()}-{number}"
 
 
-def relevant_divisions(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses with matching divisions.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against division names.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching division.
-    """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in division.name.lower()
-                for division in course.divisions.all()
-            )
-            else 0
-        )
-        for course in courses
-    ]
-
-
-def relevant_keywords(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses with matching keywords.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against keywords.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching keyword.
-    """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in keyword.name.lower()
-                for keyword in course.keywords.all()
-            )
-            else 0
-        )
-        for course in courses
-    ]
-
-
-def relevant_descriptions(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses with matching descriptions.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against course descriptions.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course description contains the search query.
-    """
-    search_query = search_query.lower()
-    return [
-        1 if search_query in course.courseDescription.lower() else 0
-        for course in courses
-    ]
-
-
-def relevant_professor_names(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for courses with matching professor names.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to match against professor names.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course has a matching professor.
-    """
-    search_query = search_query.lower()
-    return [
-        (
-            1
-            if any(
-                search_query in professor.name.lower()
-                for professor in course.professors.all()
-            )
-            else 0
-        )
-        for course in courses
-    ]
-
-
-def half_courses(search_query: str, courses: list) -> list:
-    """
-    Return binary indicators for half courses if query contains 'half'.
-
-    Parameters
-    ----------
-    search_query : str
-        The search query string to check for the word 'half'.
-    courses : list
-        A list of Course objects to be filtered.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course is a half course.
-    """
-    if "half" in search_query.lower():
-        return [1 if str(course.id)[3] == "1" else 0 for course in courses]
-    return [1] * len(courses)
-
-
-def similarity_filtering(
-    query: str, courses: list, similarity_threshold: float
-) -> list:
-    """
-    Return binary indicators based on text similarity scores.
-
-    Parameters
-    ----------
-    query : str
-        The search query string to compare against course texts.
-    courses : list
-        A list of Course objects to be filtered.
-    similarity_threshold : float
-        The threshold above which a course is considered similar.
-
-    Returns
-    -------
-    list
-        A list of binary indicators (1 or 0) indicating whether each course text is similar to the query.
-    """
-    return [
-        1 if query_course_similarity(query, course) > similarity_threshold else 0
-        for course in courses
-    ]
-
-
-def query_course_similarity(query: str, course) -> float:
-    """
-    Compute similarity between query and course text.
-
-    Parameters
-    ----------
-    query : str
-        The search query string.
-    course : Course
-        The Course object whose text is to be compared.
-
-    Returns
-    -------
-    float
-        The similarity score between the query and the course text.
-    """
-    course_text = " ".join(
+def prepare_course_text(course) -> str:
+    return " ".join(
         [
             course.courseName or "",
             course.courseDescription or "",
@@ -328,9 +94,6 @@ def query_course_similarity(query: str, course) -> float:
             " ".join(keyword.name for keyword in course.keywords.all()),
         ]
     ).lower()
-
-    # Use existing compute_similarity_scores function
-    return compute_similarity_scores(query, [course_text])[0]
 
 
 def compute_similarity_scores(query: str, information: List[str]) -> List[float]:
@@ -387,140 +150,114 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
     return similarities[0]
 
 
-def filter(request):
+def clean_query(query: str) -> List[str]:
+    """
+    Clean the query string by removing special characters and splitting into words.
 
-    if request.method != "POST":
-        return JsonResponse({"error": "Only POST requests allowed"}, status=405)
+    Parameters
+    ----------
+    query : str
+        The input query string to be cleaned.
 
-    try:
-        # Parse request data
-        data = json.loads(request.body)
-        search_query = data.get("search_query", "").lower()
-        course_ids = data.get("course_ids", [])
-        similarity_threshold = data.get("similarity_threshold", 0.05)
+    Returns
+    -------
+    List[str]
+        A list of cleaned words extracted from the query string.
+    """
+    return [
+        word.lower()
+        for word in query.split()
+        if word.isalnum() and word.lower() not in stop_words
+    ]
 
-        if not search_query:
-            return JsonResponse(
-                {"status": "success", "indicators": [1] * len(course_ids)}
-            )
 
-        # Better error handling for course fetching
-        if len(courses) == 0:
-            courses_dict = {
-                str(course.id): course
-                for course in Course.objects.filter(id__in=course_ids).prefetch_related(
-                    "departments", "professors", "courseCodes", "divisions", "keywords"
-                )
-            }
+def filter(search_query: str, courses: List[Course]) -> List[Course]:
+    """
+    Filter courses based on search query using Django's built-in filters.
+    Returns courses with their relevance scores.
+    """
+    if not search_query:
+        return [(course, 1.0) for course in courses]
 
-            # Maintain order from course_ids
-            for course_id in course_ids:
-                course = courses_dict.get(str(course_id))
-                if course:
-                    courses.append(course)
-                else:
-                    print(f"Error: Course {course_id} not found")
+    search_terms = clean_query(search_query)
 
-        if not courses:
-            return JsonResponse(
-                {"status": "success", "indicators": [0] * len(course_ids)}
-            )
+    # Start with all courses
+    filtered_courses = Course.objects.filter(
+        id__in=[course.id for course in courses]
+    ).prefetch_related(
+        "courseCodes", "departments", "divisions", "keywords", "professors"
+    )
 
-        if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-            print("similarity search activated")
-            # Get all indicators using parallel execution
-            with ThreadPoolExecutor(max_workers=9) as executor:  # Increased workers
-                futures = [
-                    executor.submit(relevant_course_name, search_query, courses),
-                    executor.submit(relevant_department_codes, search_query, courses),
-                    executor.submit(relevant_department_names, search_query, courses),
-                    executor.submit(relevant_course_codes, search_query, courses),
-                    executor.submit(relevant_divisions, search_query, courses),
-                    executor.submit(relevant_keywords, search_query, courses),
-                    executor.submit(relevant_descriptions, search_query, courses),
-                    executor.submit(relevant_professor_names, search_query, courses),
-                    executor.submit(half_courses, search_query, courses),
-                    executor.submit(
-                        similarity_filtering,
-                        search_query,
-                        courses,
-                        similarity_threshold,
-                    ),
-                ]
+    # Initialize scores dictionary
+    scores = {course.id: 0.0 for course in courses}
 
-                # Get all results at once
-                all_results = [future.result() for future in futures]
+    for term in search_terms:
+        if term == "half":
+            # Special handling for half courses
+            half_courses = filtered_courses.filter(id__regex=r"^.{3}1")
+            for course in half_courses:
+                scores[course.id] += HALF_COURSE_WEIGHT
+            continue
 
-                [
-                    name_indicators,
-                    dept_code_indicators,
-                    dept_name_indicators,
-                    course_code_indicators,
-                    division_indicators,
-                    keyword_indicators,
-                    description_indicators,
-                    professor_indicators,
-                    half_flag,
-                    similarity_indicators,
-                ] = all_results
-        else:
-            with ThreadPoolExecutor(max_workers=8) as executor:  # Increased workers
-                futures = [
-                    executor.submit(relevant_course_name, search_query, courses),
-                    executor.submit(relevant_department_codes, search_query, courses),
-                    executor.submit(relevant_department_names, search_query, courses),
-                    executor.submit(relevant_course_codes, search_query, courses),
-                    executor.submit(relevant_divisions, search_query, courses),
-                    executor.submit(relevant_keywords, search_query, courses),
-                    executor.submit(relevant_descriptions, search_query, courses),
-                    executor.submit(relevant_professor_names, search_query, courses),
-                    executor.submit(half_courses, search_query, courses),
-                ]
+        # Calculate scores for each matching field
+        name_matches = filtered_courses.filter(courseName__icontains=term)
+        for course in name_matches:
+            scores[course.id] += COURSE_NAME_WEIGHT
 
-                # Get all results at once
-                all_results = [future.result() for future in futures]
+        dept_matches = filtered_courses.filter(departments__name__icontains=term)
+        for course in dept_matches:
+            scores[course.id] += DEPARTMENT_NAME_WEIGHT
 
-                [
-                    name_indicators,
-                    dept_code_indicators,
-                    dept_name_indicators,
-                    course_code_indicators,
-                    division_indicators,
-                    keyword_indicators,
-                    description_indicators,
-                    professor_indicators,
-                    half_flag,
-                ] = all_results
-
-        # Calculate final indicators maintaining order
-        final_indicators = []
-        for idx in range(len(courses)):
-            result = (
-                name_indicators[idx]
-                | dept_code_indicators[idx]
-                | dept_name_indicators[idx]
-                | course_code_indicators[idx]
-                | division_indicators[idx]
-                | keyword_indicators[idx]
-                | description_indicators[idx]
-                | professor_indicators[idx]
-            )
-
-            if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-                result = result or similarity_indicators[idx]
-
-            if "half" in search_query:
-                if search_query != "half":
-                    result = result and half_flag[idx]
-                else:
-                    result = half_flag[idx]
-
-            final_indicators.append(result)
-
-        return JsonResponse({"status": "success", "indicators": final_indicators})
-
-    except Exception as e:
-        return JsonResponse(
-            {"status": "error", "message": str(e), "indicators": [0] * len(course_ids)},
-            status=500,
+        code_matches = filtered_courses.filter(
+            Q(courseCodes__value__icontains=term)
+            | Q(courseCodes__value__iregex=restore_course_code(term))
         )
+        for course in code_matches.distinct():
+            scores[course.id] += COURSE_CODE_WEIGHT
+
+        dept_code_matches = filtered_courses.filter(
+            departments__code__iexact=restore_dept_code(term)
+        )
+        for course in dept_code_matches:
+            scores[course.id] += DEPARTMENT_CODE_WEIGHT
+
+        div_matches = filtered_courses.filter(divisions__name__icontains=term)
+        for course in div_matches:
+            scores[course.id] += DIVISION_WEIGHT
+
+        keyword_matches = filtered_courses.filter(keywords__name__icontains=term)
+        for course in keyword_matches:
+            scores[course.id] += KEYWORD_WEIGHT
+
+        desc_matches = filtered_courses.filter(courseDescription__icontains=term)
+        for course in desc_matches:
+            scores[course.id] += DESCRIPTION_WEIGHT
+
+        prof_matches = filtered_courses.filter(professors__name__icontains=term)
+        for course in prof_matches:
+            scores[course.id] += PROFESSOR_WEIGHT
+
+    # Add similarity search for longer queries
+    if len(search_query) > MIN_CHAR_FOR_COS_SIM:
+        course_texts = [prepare_course_text(course) for course in filtered_courses]
+        similarity_scores = compute_similarity_scores(search_query, course_texts)
+        for course, score in zip(filtered_courses, similarity_scores):
+            scores[course.id] += score * SIMILARITY_WEIGHT
+
+    scored_courses = []
+    for course in courses:
+        score = scores.get(course.id, 0)
+        if score > 0:
+            scored_courses.append((course, score))
+
+    # Sort by score in descending order
+    scored_courses.sort(key=lambda x: x[1], reverse=True)
+
+    highest_score = scored_courses[0][1] if scored_courses else 1
+    scored_courses = [
+        course
+        for course, score in scored_courses
+        if score / highest_score >= SCORE_CUTOFF
+    ]
+
+    return scored_courses

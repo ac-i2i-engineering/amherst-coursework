@@ -186,7 +186,8 @@ class Command(BaseCommand):
                             dept, _ = Department.objects.get_or_create(
                                 name=department,
                                 defaults={
-                                    "code": code,
+                                    "code": DEPARTMENT_NAME_TO_CODE[department],
+                                    "link": link,
                                 },
                             )
                         except:

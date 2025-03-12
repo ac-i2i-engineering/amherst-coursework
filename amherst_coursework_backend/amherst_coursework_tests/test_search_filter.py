@@ -1,234 +1,179 @@
-from django.test import TestCase, Client
+from django.test import TestCase
+from amherst_coursework_algo.masked_filters import (
+    restore_dept_code,
+    restore_course_code,
+    clean_query,
+    compute_similarity_scores,
+    filter,
+)
 from amherst_coursework_algo.models import (
     Course,
     Department,
-    CourseCode,
     Division,
-    Keyword,
     Professor,
+    Keyword,
+    CourseCode,
 )
-from amherst_coursework_algo.masked_filters import (
-    normalize_code,
-    relevant_course_name,
-    relevant_department_codes,
-    relevant_department_names,
-    relevant_course_codes,
-    relevant_divisions,
-    relevant_keywords,
-    relevant_descriptions,
-    relevant_professor_names,
-    half_courses,
-    compute_similarity_scores,
-)
-import json
 
 
-class TestMaskedFilters(TestCase):
-    def setUp(self):
-        # Create test departments
-        self.dept = Department.objects.create(name="Computer Science", code="COSC")
+class TestRestoreDeptCode(TestCase):
+    def test_valid_department_codes(self):
+        """Test valid department code patterns"""
+        self.assertEqual(restore_dept_code("math"), "MATH")
+        self.assertEqual(restore_dept_code("COSC"), "COSC")
+        self.assertEqual(restore_dept_code("math1"), "MATH")
+        self.assertEqual(restore_dept_code("STAT-231"), "STAT")
 
-        # Create test course with explicit id
-        self.course = Course.objects.create(
-            id=1000000,  # Add explicit id
-            courseName="Introduction to Programming",
-            courseDescription="Learn Python programming",
-        )
-        self.course.departments.add(self.dept)
+    def test_invalid_department_codes(self):
+        """Test invalid department code patterns"""
+        self.assertEqual(restore_dept_code("mat"), "XXXXX")  # too short
+        self.assertEqual(restore_dept_code("maths"), "XXXXX")  # too long
+        self.assertEqual(restore_dept_code("123"), "XXXXX")  # only numbers
+        self.assertEqual(restore_dept_code(""), "XXXXX")  # empty string
 
-        # Create course code
-        code = CourseCode.objects.create(value="COSC-111")
 
-        self.course.courseCodes.add(code)
+class TestRestoreCourseCode(TestCase):
+    def test_valid_course_codes(self):
+        """Test valid course code patterns"""
+        self.assertEqual(restore_course_code("math111"), "MATH-111")
+        self.assertEqual(restore_course_code("COSC111"), "COSC-111")
+        self.assertEqual(restore_course_code("stat231"), "STAT-231")
 
-        # Create division
-        self.division = Division.objects.create(name="Science")
-        self.course.divisions.add(self.division)
+    def test_invalid_course_codes(self):
+        """Test invalid course code patterns"""
+        self.assertEqual(restore_course_code("math"), "math")  # no numbers
+        self.assertEqual(restore_course_code("111"), "111")  # only numbers
+        self.assertEqual(restore_course_code(""), "")  # empty string
 
-        # Create keyword
-        self.keyword = Keyword.objects.create(name="Programming")
-        self.course.keywords.add(self.keyword)
 
-        # Create professor
-        self.professor = Professor.objects.create(name="John Doe")
-        self.course.professors.add(self.professor)
+class TestCleanQuery(TestCase):
+    def test_stop_words_removal(self):
+        """Test removal of stop words"""
+        query = "the introduction to computer science"
+        expected = ["introduction", "computer", "science"]
+        self.assertEqual(clean_query(query), expected)
 
-    def test_normalize_code(self):
-        """Test code normalization"""
-        self.assertEqual(normalize_code("COSC-111"), "COSC111")
-        self.assertEqual(normalize_code("MATH 111"), "MATH111")
+    def test_special_terms(self):
+        """Test handling of special terms"""
+        query = "half MATH111 the"
+        expected = ["half", "math111"]
+        self.assertEqual(clean_query(query), expected)
 
-    def test_relevant_course_name(self):
-        """Test course name matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_course_name("programming", courses), [1])
-        self.assertEqual(relevant_course_name("history", courses), [0])
 
-    def test_relevant_department_codes(self):
-        """Test department code matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_department_codes("cosc", courses), [1])
-        self.assertEqual(relevant_department_codes("math", courses), [0])
-
-    def test_relevant_department_names(self):
-        """Test department name matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_department_names("computer", courses), [1])
-        self.assertEqual(relevant_department_names("mathematics", courses), [0])
-
-    def test_relevant_course_codes(self):
-        """Test course code matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_course_codes("cosc111", courses), [1])
-        self.assertEqual(relevant_course_codes("math111", courses), [0])
-
-    def test_relevant_divisions(self):
-        """Test division matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_divisions("science", courses), [1])
-        self.assertEqual(relevant_divisions("humanities", courses), [0])
-
-    def test_relevant_keywords(self):
-        """Test keyword matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_keywords("programming", courses), [1])
-        self.assertEqual(relevant_keywords("database", courses), [0])
-
-    def test_relevant_descriptions(self):
-        """Test description matching"""
-        courses = [self.course]
-        self.assertEqual(relevant_descriptions("python", courses), [1])
-        self.assertEqual(relevant_descriptions("javascript", courses), [0])
-
-    def test_relevant_professor_names(self):
-        """Test professor name matching"""
-        # Test with existing course and professor
-        courses = [self.course]
-        self.assertEqual(relevant_professor_names("john", courses), [1])
-        self.assertEqual(relevant_professor_names("doe", courses), [1])
-        self.assertEqual(relevant_professor_names("smith", courses), [0])
-
-        # Test with multiple professors
-        second_professor = Professor.objects.create(name="Jane Smith")
-        self.course.professors.add(second_professor)
-
-        self.assertEqual(relevant_professor_names("jane", courses), [1])
-        self.assertEqual(relevant_professor_names("smith", courses), [1])
-        self.assertEqual(relevant_professor_names("williams", courses), [0])
-
-    def test_half_courses(self):
-        """Test half course filtering"""
-        courses = [self.course]
-        self.assertEqual(half_courses("half course", courses), [0])
-        self.assertEqual(half_courses("full course", courses), [1])
-
-    def test_compute_similarity_scores(self):
-        """Test similarity score computation"""
-        information = ["Introduction to Programming", "Advanced Algorithms"]
-        scores = compute_similarity_scores("programming introduction", information)
-
-        # Check if scores are floats between 0 and 1
-        for i, score in enumerate(scores):
-            self.assertTrue(
-                isinstance(score, float), f"Score at index {i} is not a float: {score}"
-            )
-            self.assertTrue(
-                0 <= score <= 1.00001,
-                f"Score at index {i} is not between 0 and 1: {score}",
-            )
-
-        # First document should have higher similarity
-        self.assertTrue(scores[0] > scores[1])
-
+class TestComputeSimilarityScores(TestCase):
     def test_empty_inputs(self):
-        """Test handling of empty inputs"""
-        courses = []
-        self.assertEqual(relevant_course_name("test", courses), [])
-        self.assertEqual(relevant_department_codes("test", courses), [])
-        self.assertEqual(compute_similarity_scores("", ["test"]), [0])
-        self.assertEqual(compute_similarity_scores("test", []), [])
+        """Test empty query and information"""
+        self.assertEqual(compute_similarity_scores("", []), [])
+        self.assertEqual(compute_similarity_scores("query", []), [])
+        self.assertEqual(compute_similarity_scores("", ["info"]), [0])
 
-    # def test_filter_combined(self):
-    #     """Test the filter function with all types of searches combined"""
+    def test_similarity_scores(self):
+        """Test similarity computation"""
+        query = "introduction to computer science"
+        information = [
+            "intro to computer science",
+            "advanced mathematics",
+            "computer programming basics",
+        ]
+        scores = compute_similarity_scores(query, information)
+        self.assertEqual(len(scores), len(information))
+        self.assertTrue(all(0 <= score <= 1 for score in scores))
+        # First item should have highest similarity
+        self.assertEqual(max(scores), scores[0])
 
-    #     # Create mock request data for each type of search we've already tested
-    #     test_queries = [
-    #         {
-    #             "name": "Course name search",
-    #             "query": "programming",
-    #             "should_match": True,
-    #         },
-    #         {"name": "Department code search", "query": "cosc", "should_match": True},
-    #         {
-    #             "name": "Department name search",
-    #             "query": "computer science",
-    #             "should_match": True,
-    #         },
-    #         {"name": "Course code search", "query": "cosc111", "should_match": True},
-    #         {"name": "Division search", "query": "science", "should_match": True},
-    #         {"name": "Keyword search", "query": "programming", "should_match": True},
-    #         {"name": "Description search", "query": "python", "should_match": True},
-    #         {
-    #             "name": "Non-matching search",
-    #             "query": "chemistry",
-    #             "should_match": False,
-    #         },
-    #         {
-    #             "name": "Professor name search",
-    #             "query": "john doe",
-    #             "should_match": True,
-    #         },
-    #     ]
 
-    #     client = Client()
+class TestFilter(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test data"""
+        # Create test departments
+        cls.math_dept = Department.objects.create(
+            name="Mathematics and Statistics", code="MATH"
+        )
+        cls.cs_dept = Department.objects.create(name="Computer Science", code="COSC")
 
-    #     for test_case in test_queries:
-    #         # Prepare request data
-    #         request_data = {
-    #             "search_query": test_case["query"],
-    #             "course_ids": [self.course.id],
-    #             "similarity_threshold": 0.1,
-    #         }
+        # Create test divisions
+        cls.division = Division.objects.create(name="Science")
 
-    #         # Make request to filter endpoint
-    #         response = client.post(
-    #             "/api/masked_filter/",
-    #             data=json.dumps(request_data),
-    #             content_type="application/json",
-    #         )
+        # Create test professors
+        cls.prof = Professor.objects.create(name="John Smith")
 
-    #         # Check response
-    #         if response.status_code != 200:
-    #             print(f"\nFailed test case details:")
-    #             print(f"Test case: {test_case['name']}")
-    #             print(f"Query: {test_case['query']}")
-    #             print(f"Response status: {response.status_code}")
-    #             print(f"Response content: {response.content.decode()}")
-    #             print("\nDatabase state at failure:")
-    #             course = Course.objects.get(id=1000000)
-    #             print(f"Course professors: {[p.name for p in course.professors.all()]}")
-    #             print(f"Course departments: {[d.name for d in course.departments.all()]}")
+        # Create test keywords
+        cls.keyword = Keyword.objects.create(name="algorithms")
 
-    #         data = json.loads(response.content)
-    #         self.assertIn(
-    #             "indicators", data, f"No indicators in response for {test_case['name']}"
-    #         )
+        # Create test courses
+        cls.course1 = Course.objects.create(
+            courseName="Introduction to Computer Science",
+            courseDescription="Basic programming concepts",
+            id=4170111,
+        )
 
-    #         print(data["indicators"])
+        code1 = CourseCode.objects.create(value="COSC-111")
 
-    #         # For matching queries, indicator should be 1; for non-matching, 0
-    #         expected_indicator = 1 if test_case["should_match"] else 0
-    #         self.assertEqual(
-    #             data["indicators"][0],
-    #             expected_indicator,
-    #             f"Failed {test_case['name']}: expected {expected_indicator} but got {data['indicators'][0]}",
-    #         )
+        cls.course1.departments.add(cls.cs_dept)
+        cls.course1.divisions.add(cls.division)
+        cls.course1.professors.add(cls.prof)
+        cls.course1.keywords.add(cls.keyword)
+        cls.course1.courseCodes.set([code1])
 
-    def tearDown(self):
-        """Clean up test data"""
-        Course.objects.all().delete()
-        Department.objects.all().delete()
-        CourseCode.objects.all().delete()
-        Division.objects.all().delete()
-        Keyword.objects.all().delete()
-        Professor.objects.all().delete()
+        cls.course2 = Course.objects.create(
+            courseName="Calculus I",
+            courseDescription="Introduction to calculus",
+            id=4250111,
+        )
+
+        code2 = CourseCode.objects.create(value="MATH-111")
+
+        cls.course2.departments.add(cls.math_dept)
+        cls.course2.courseCodes.set([code2])
+
+    def test_empty_query(self):
+        """Test empty search query"""
+        courses = Course.objects.all()
+        results = filter("", courses)
+        self.assertEqual(len(results), len(courses))
+
+    def test_department_search(self):
+        """Test searching by department"""
+        courses = Course.objects.all()
+        results = filter("mathematics", courses)
+        self.assertTrue(any(self.math_dept in c.departments.all() for c in results))
+
+    def test_course_code_search(self):
+        """Test searching by course code"""
+        courses = Course.objects.all()
+        results = filter("cosc111", courses)
+        self.assertTrue(
+            any(
+                code.value == "COSC-111"
+                for c in results
+                for code in c.courseCodes.all()
+            )
+        )
+
+    def test_professor_search(self):
+        """Test searching by professor name"""
+        courses = Course.objects.all()
+        results = filter("smith", courses)
+        self.assertTrue(any(self.prof in c.professors.all() for c in results))
+
+    def test_keyword_search(self):
+        """Test searching by keyword"""
+        courses = Course.objects.all()
+        results = filter("algorithms", courses)
+        self.assertTrue(any(self.keyword in c.keywords.all() for c in results))
+
+    def test_half_course_search(self):
+        """Test searching for half courses"""
+        courses = Course.objects.all()
+        results = filter("half", courses)
+        self.assertTrue(all(str(c.id)[3] == "1" for c in results))
+
+    def test_combined_search(self):
+        """Test searching with multiple terms"""
+        courses = Course.objects.all()
+        results = filter("computer science smith", courses)
+        # Should match course1 with high score due to multiple matches
+        self.assertTrue(self.course1 in results)
+        # Should be first due to highest score
+        self.assertEqual(results[0], self.course1)

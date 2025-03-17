@@ -14,105 +14,223 @@ from django.core.validators import RegexValidator
 
 class Course(models.Model):
     """
-    Course model representing an academic course at Amherst College with details about the course.
+    Course model representing an academic course at Amherst College.
 
     Parameters
     ----------
-    id : int
-        Unique 7-digit course identifier; primary key
-        The first digit represents the college and semester (e.g., 4 for Amherst College Fall and 5 for Amherst College Spring)
-        The second and third digits represent the department code (e.g., 00 for American Studies)
-        The fourth digit is a boolean flag for whether the course is half-credit (1) or full-credit (0)
-        The last three digits are the course number
-        Example: 4140112 represents 4-credit COSC-112 at Amherst College in the Fall semester
-    courseLink : URLField
-        URL link to the course page
-    courseName : str
-        The full name/title of the course
-    courseCodes : ManyToManyField
-        Related CourseCode objects (e.g., "COSC111")
-    courseDescription : TextField
-        Description of the course
-    courseMaterialsLink : URLField
-        URL link to course materials
-    keywords : ManyToManyField
-        Keywords associated with the course
-    divisions : ManyToManyField
-        Academic divisions the course belongs to
-    departments : ManyToManyField
-        Related Department objects for this course
+    id : IntegerField, primary key
+        Unique 7-digit course identifier
+        Format: XYYZCZZ where:
+        X: College/semester (4=Amherst Fall, 5=Amherst Spring)
+        YY: Department code (00-99)
+        Z: Credit flag (1=half-credit, 0=full-credit)
+        CZZ: Course number (000-999)
+        Example: 4140112 = Fall COSC-112
+
+    courseLink : URLField, optional
+        Direct URL to the course page on Amherst College's course catalog
+        Defaults to null if not provided
+
+    courseName : CharField
+        Full title of the course as it appears in the course catalog
+        Maximum length: 200 characters
+
+    courseCodes : ManyToManyField to CourseCode
+        Official course codes/numbers (e.g., "COSC-111", "MATH-271")
+        Multiple codes possible for cross-listed courses
+
+    courseDescription : TextField, optional
+        Detailed description of course content, objectives, and requirements
+        Can be blank
+
+    courseMaterialsLink : URLField, optional
+        URL to course materials, syllabus, or additional resources
+        Defaults to null if not provided
+
+    keywords : ManyToManyField to Keyword
+        Searchable keywords/tags associated with the course content
+
+    divisions : ManyToManyField to Division
+        Academic divisions the course belongs to (e.g., "Science", "Humanities")
+
+    departments : ManyToManyField to Department
+        Academic departments offering the course
+
     enrollmentText : TextField
-        Text describing enrollment details
-    prefForMajor : bool
-        Whether course has preference for majors
-    overallCap : int
-        Overall enrollment cap for the course
-    freshmanCap : int
-        Enrollment cap for freshmen
-    sophomoreCap : int
-        Enrollment cap for sophomores
-    juniorCap : int
-        Enrollment cap for juniors
-    seniorCap : int
-        Enrollment cap for seniors
-    credits : int
-        Number of course credits (2 or 4)
-    prereqDescription : TextField
-        Description of prerequisites
-    required_courses : ManyToManyField
-        Required prerequisite course sets
-    recommended_courses : ManyToManyField
-        Recommended prerequisite courses
-    professor_override : bool
-        Whether professor can override prerequisites
-    placement_course : int
-        Course ID for placement test course
-    corequisites : ManyToManyField
-        Related Course objects that are corequisites
-    professors : ManyToManyField
-        Related Professor objects teaching this course
-    sections : ManyToManyField
-        Related Section objects for meeting times/locations
-    fallOfferings : ManyToManyField
-        Years the course is offered in Fall semester
-    springOfferings : ManyToManyField
-        Years the course is offered in Spring semester
-    janOfferings : ManyToManyField
+        Instructions for course enrollment and registration
+        Defaults to "Contact the professor for enrollment details"
+
+    prefForMajor : BooleanField
+        Whether majors have enrollment priority
+        Defaults to False
+
+    overallCap : PositiveIntegerField
+        Maximum total enrollment limit
+        Defaults to 0 (no cap)
+
+    freshmanCap : PositiveIntegerField
+        Maximum number of freshmen allowed to enroll
+        Defaults to 0 (no cap)
+
+    sophomoreCap : PositiveIntegerField
+        Maximum number of sophomores allowed to enroll
+        Defaults to 0 (no cap)
+
+    juniorCap : PositiveIntegerField
+        Maximum number of juniors allowed to enroll
+        Defaults to 0 (no cap)
+
+    seniorCap : PositiveIntegerField
+        Maximum number of seniors allowed to enroll
+        Defaults to 0 (no cap)
+
+    credits : IntegerField
+        Number of credits awarded for completing the course
+        Choices: 2 or 4 credits
+        Defaults to 4
+
+    prereqDescription : TextField, optional
+        Text description of prerequisites and requirements
+        Can be blank
+
+    recommended_courses : ManyToManyField to Course
+        Courses recommended but not required as prerequisites
+        Self-referential relationship
+
+    professor_override : BooleanField
+        Whether professors can override prerequisite requirements
+        Defaults to False
+
+    placement_course : ForeignKey to Course, optional
+        Reference to a placement test or course required
+        Self-referential relationship
+
+    corequisites : ManyToManyField to Course
+        Courses that must be taken concurrently
+        Self-referential, symmetrical relationship
+
+    professors : ManyToManyField to Professor
+        Professors teaching the course
+
+    sections : ReverseRelation via Section
+        Course sections with meeting times and locations
+        One-to-many relationship from Section model
+
+    fallOfferings : ManyToManyField to Year
+        Years the course is offered in fall semester
+
+    springOfferings : ManyToManyField to Year
+        Years the course is offered in spring semester
+
+    janOfferings : ManyToManyField to Year
         Years the course is offered in January term
+
+    Methods
+    -------
+    __str__()
+        Returns the course name as a string
+
+    Examples
+    --------
+    >>> course = Course.objects.create(
+    ...     id=4140111,
+    ...     courseName="Introduction to Computer Science I",
+    ...     credits=4
+    ... )
+    >>> course.departments.add(Department.objects.get(code="COSC"))
+    >>> course.courseCodes.create(value="COSC-111")
     """
 
     id = models.IntegerField(
-        primary_key=True, validators=[MinValueValidator(0), MaxValueValidator(9999999)]
+        primary_key=True,
+        validators=[MinValueValidator(0), MaxValueValidator(9999999)],
+        help_text="Unique 7-digit course identifier. Format: XYYZCZZ where: X: College/semester (4=Amherst Fall, 5=Amherst Spring), YY: Department code (00-99), Z: Credit flag (1=half-credit, 0=full-credit), CZZ: Course number (000-999). Example: 4140112 = Fall COSC-112",
     )
-    courseLink = models.URLField(max_length=200, blank=True, null=True)
-    courseName = models.CharField(max_length=200)
-    courseCodes = models.ManyToManyField("CourseCode", related_name="courses")
-    courseDescription = models.TextField(blank=True)
-    courseMaterialsLink = models.URLField(max_length=200, blank=True, null=True)
-    keywords = models.ManyToManyField("Keyword", related_name="courses")
-    divisions = models.ManyToManyField("Division", related_name="courses")
-    departments = models.ManyToManyField("Department", related_name="courses")
+    courseLink = models.URLField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text="Direct URL to the course page on Amherst College's course catalog. Defaults to null if not provided.",
+    )
+    courseName = models.CharField(
+        max_length=200,
+        help_text="Full title of the course as it appears in the course catalog. Maximum length: 200 characters.",
+    )
+    courseCodes = models.ManyToManyField(
+        "CourseCode",
+        related_name="courses",
+        help_text="Official course codes/numbers (e.g., 'COSC-111', 'MATH-271'). Multiple codes possible for cross-listed courses.",
+    )
+    courseDescription = models.TextField(
+        blank=True,
+        help_text="Detailed description of course content, objectives, and requirements. Can be blank.",
+    )
+    courseMaterialsLink = models.URLField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text="URL to course materials, syllabus, or additional resources. Defaults to null if not provided.",
+    )
+    keywords = models.ManyToManyField(
+        "Keyword",
+        related_name="courses",
+        help_text="Searchable keywords/tags associated with the course content.",
+    )
+    divisions = models.ManyToManyField(
+        "Division",
+        related_name="courses",
+        help_text="Academic divisions the course belongs to (e.g., 'Science', 'Humanities').",
+    )
+    departments = models.ManyToManyField(
+        "Department",
+        related_name="courses",
+        help_text="Academic departments offering the course.",
+    )
     enrollmentText = models.TextField(
-        default="Contact the professor for enrollment details."
+        default="Contact the professor for enrollment details.",
+        help_text="Instructions for course enrollment and registration. Defaults to 'Contact the professor for enrollment details.'",
     )
-    prefForMajor = models.BooleanField(default=False)
-    overallCap = models.PositiveIntegerField(default=0)
-    freshmanCap = models.PositiveIntegerField(default=0)
-    sophomoreCap = models.PositiveIntegerField(default=0)
-    juniorCap = models.PositiveIntegerField(default=0)
-    seniorCap = models.PositiveIntegerField(default=0)
-
+    prefForMajor = models.BooleanField(
+        default=False,
+        help_text="Whether majors have enrollment priority. Defaults to False.",
+    )
+    overallCap = models.PositiveIntegerField(
+        default=0, help_text="Maximum total enrollment limit. Defaults to 0 (no cap)."
+    )
+    freshmanCap = models.PositiveIntegerField(
+        default=0,
+        help_text="Maximum number of freshmen allowed to enroll. Defaults to 0 (no cap).",
+    )
+    sophomoreCap = models.PositiveIntegerField(
+        default=0,
+        help_text="Maximum number of sophomores allowed to enroll. Defaults to 0 (no cap).",
+    )
+    juniorCap = models.PositiveIntegerField(
+        default=0,
+        help_text="Maximum number of juniors allowed to enroll. Defaults to 0 (no cap).",
+    )
+    seniorCap = models.PositiveIntegerField(
+        default=0,
+        help_text="Maximum number of seniors allowed to enroll. Defaults to 0 (no cap).",
+    )
     credits = models.IntegerField(
-        default=4, choices=[(2, "2 credits"), (4, "4 credits")]
+        default=4,
+        choices=[(2, "2 credits"), (4, "4 credits")],
+        help_text="Number of credits awarded for completing the course. Choices: 2 or 4 credits. Defaults to 4.",
     )
     prereqDescription = models.TextField(
-        blank=True, help_text="Text description of prerequisites"
+        blank=True,
+        help_text="Text description of prerequisites and requirements. Can be blank.",
     )
     recommended_courses = models.ManyToManyField(
-        "Course", blank=True, related_name="recommended_for"
+        "Course",
+        blank=True,
+        related_name="recommended_for",
+        help_text="Courses recommended but not required as prerequisites. Self-referential relationship.",
     )
     professor_override = models.BooleanField(
-        default=False, help_text="Can professor override prerequisites?"
+        default=False,
+        help_text="Whether professors can override prerequisite requirements. Defaults to False.",
     )
     placement_course = models.ForeignKey(
         "self",
@@ -120,19 +238,38 @@ class Course(models.Model):
         null=True,
         blank=True,
         related_name="placement_for",
+        help_text="Reference to a placement test or course required. Self-referential relationship.",
     )
-    corequisites = models.ManyToManyField("self", blank=True, symmetrical=True)
-    professors = models.ManyToManyField("Professor", related_name="courses")
+    corequisites = models.ManyToManyField(
+        "self",
+        blank=True,
+        symmetrical=True,
+        help_text="Courses that must be taken concurrently. Self-referential, symmetrical relationship.",
+    )
+    professors = models.ManyToManyField(
+        "Professor", related_name="courses", help_text="Professors teaching the course."
+    )
     fallOfferings = models.ManyToManyField(
-        "Year", related_name="fOfferings", blank=True
+        "Year",
+        related_name="fOfferings",
+        blank=True,
+        help_text="Years the course is offered in fall semester.",
     )
     springOfferings = models.ManyToManyField(
-        "Year", related_name="sOfferings", blank=True
+        "Year",
+        related_name="sOfferings",
+        blank=True,
+        help_text="Years the course is offered in spring semester.",
     )
-    janOfferings = models.ManyToManyField("Year", related_name="jOfferings", blank=True)
+    janOfferings = models.ManyToManyField(
+        "Year",
+        related_name="jOfferings",
+        blank=True,
+        help_text="Years the course is offered in January term.",
+    )
 
     def clean(self):
-        """Validate that year caps don't exceed overall cap"""
+        """Validates that year-specific enrollment caps don't exceed overall cap"""
         super().clean()
 
         if self.overallCap > 0:  # Only validate if overall cap is set
@@ -161,12 +298,15 @@ class CourseCode(models.Model):
 
     Parameters
     ----------
-    value : str
+    value : CharField
         The 8-9 character course code (e.g., "COSC-111", "CHEM-165L")
+        Must follow department code + hyphen + number format + (optional) letter suffix
     """
 
     value = models.CharField(
-        max_length=9, validators=[MinLengthValidator(8), MaxLengthValidator(9)]
+        max_length=9,
+        validators=[MinLengthValidator(8), MaxLengthValidator(9)],
+        help_text="The 8-9 character course code (e.g., 'COSC-111', 'CHEM-165L'). Must follow department code + hyphen + number format.",
     )
 
     def __str__(self):
@@ -183,19 +323,26 @@ class Department(models.Model):
 
     Parameters
     ----------
-    name : str
+    name : CharField
         The full name of the department (e.g., "Computer Science", "Biology")
-    code : str
+    code : CharField
         The 4-letter department code (e.g., "COSC", "BCBP")
     link : URLField
         The link to the department page on amherst.edu
     """
 
-    name = models.CharField(max_length=100)
-    code = models.CharField(
-        max_length=4, validators=[MinLengthValidator(4), MaxLengthValidator(4)]
+    name = models.CharField(
+        max_length=100,
+        help_text="The full name of the department (e.g., 'Computer Science', 'Biology')",
     )
-    link = models.URLField(max_length=200)
+    code = models.CharField(
+        max_length=4,
+        validators=[MinLengthValidator(4), MaxLengthValidator(4)],
+        help_text="The 4-letter department code (e.g., 'COSC', 'BCBP')",
+    )
+    link = models.URLField(
+        max_length=200, help_text="The link to the department page on amherst.edu"
+    )
 
     def __str__(self):
         return self.name
@@ -222,8 +369,12 @@ class PrerequisiteSet(models.Model):
         on_delete=models.CASCADE,
         related_name="required_courses",
         default=None,
+        help_text="Course this set of prerequisites is for",
     )
-    courses = models.ManyToManyField("Course")
+    courses = models.ManyToManyField(
+        "Course",
+        help_text="One set of courses that can be completed to satisfy prerequisites",
+    )
 
     def __str__(self):
         return ", ".join(
@@ -241,7 +392,7 @@ class Professor(models.Model):
 
     Parameters
     ----------
-    name : str
+    name : CharField
         Full name of the professor
     link : URLField
         URL to professor's page on amherst.edu
@@ -263,12 +414,12 @@ class Professor(models.Model):
 
 class Section(models.Model):
     """
-    Section model representing a specific course meeting time.
+    Section model representing a specific course section with location, professor, and meeting time.
 
     Parameters
     ----------
-    section_number: str
-        The section number (digits or L for lab)
+    section_number: CharField
+        The section number (digits with optional letter suffix)
     section_for : ForeignKey
         Course this section is for
     monday_start_time : TimeField
@@ -299,7 +450,7 @@ class Section(models.Model):
         Start time for Sunday meeting
     sunday_end_time : TimeField
         End time for Sunday meeting
-    location : str
+    location : CharField
         Building and room number
     professor : ForeignKey
         Professor teaching this section
@@ -324,20 +475,48 @@ class Section(models.Model):
         default=None,
     )
 
-    monday_start_time = models.TimeField(null=True)
-    monday_end_time = models.TimeField(null=True)
-    tuesday_start_time = models.TimeField(null=True)
-    tuesday_end_time = models.TimeField(null=True)
-    wednesday_start_time = models.TimeField(null=True)
-    wednesday_end_time = models.TimeField(null=True)
-    thursday_start_time = models.TimeField(null=True)
-    thursday_end_time = models.TimeField(null=True)
-    friday_start_time = models.TimeField(null=True)
-    friday_end_time = models.TimeField(null=True)
-    saturday_start_time = models.TimeField(null=True)
-    saturday_end_time = models.TimeField(null=True)
-    sunday_start_time = models.TimeField(null=True)
-    sunday_end_time = models.TimeField(null=True)
+    monday_start_time = models.TimeField(
+        null=True, help_text="Start time for Monday meeting"
+    )
+    monday_end_time = models.TimeField(
+        null=True, help_text="End time for Monday meeting"
+    )
+    tuesday_start_time = models.TimeField(
+        null=True, help_text="Start time for Tuesday meeting"
+    )
+    tuesday_end_time = models.TimeField(
+        null=True, help_text="End time for Tuesday meeting"
+    )
+    wednesday_start_time = models.TimeField(
+        null=True, help_text="Start time for Wednesday meeting"
+    )
+    wednesday_end_time = models.TimeField(
+        null=True, help_text="End time for Wednesday meeting"
+    )
+    thursday_start_time = models.TimeField(
+        null=True, help_text="Start time for Thursday meeting"
+    )
+    thursday_end_time = models.TimeField(
+        null=True, help_text="End time for Thursday meeting"
+    )
+    friday_start_time = models.TimeField(
+        null=True, help_text="Start time for Friday meeting"
+    )
+    friday_end_time = models.TimeField(
+        null=True, help_text="End time for Friday meeting"
+    )
+    saturday_start_time = models.TimeField(
+        null=True, help_text="Start time for Saturday meeting"
+    )
+    saturday_end_time = models.TimeField(
+        null=True, help_text="End time for Saturday meeting"
+    )
+    sunday_start_time = models.TimeField(
+        null=True, help_text="Start time for Sunday meeting"
+    )
+    sunday_end_time = models.TimeField(
+        null=True, help_text="End time for Sunday meeting"
+    )
 
     location = models.CharField(max_length=100, help_text="Building and room number")
     professor = models.ForeignKey(
@@ -384,16 +563,18 @@ class Year(models.Model):
 
     Parameters
     ----------
-    id : int
+    id : IntegerField
         Unique identifier for the academic year/link combo
-    year : int
+    year : IntegerField
         Academic year (e.g., 2021)
     link : URLField
         URL link to course catalog
     """
 
     id = models.AutoField(primary_key=True)
-    year = models.IntegerField(validators=[MinValueValidator(1900)])
+    year = models.IntegerField(
+        validators=[MinValueValidator(1900)], help_text="Academic year (e.g., 2021)"
+    )
     link = models.URLField(
         max_length=200, help_text="Link to course catalog", null=True
     )
@@ -413,14 +594,14 @@ class Keyword(models.Model):
 
     Parameters
     ----------
-    name : str
+    name: CharField
         The keyword value
     """
 
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return self.value
+        return self.name
 
     class Meta:
         verbose_name = "Keyword"
@@ -434,11 +615,14 @@ class Division(models.Model):
 
     Parameters
     ----------
-    name : str
+    name : CharField
         The full name of the division (e.g., "Science & Mathematics", "Social Sciences")
     """
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        help_text="The full name of the division (e.g., 'Science & Mathematics', 'Social Sciences')",
+    )
 
     def __str__(self):
         return self.name

@@ -1,34 +1,91 @@
+"""
+Course filtering and ranking module with configurable search weights.
+
+This module provides functionality for filtering and ranking courses based on 
+search queries, using a weighted scoring system for different match types.
+
+Constants
+---------
+This module uses several constants to control the filtering and ranking behavior:
+
+Scoring Weights:
+    - DEPARTMENT_NAME_WEIGHT : Weight for department name matches
+    - COURSE_NAME_WEIGHT : Weight for course name matches
+    - COURSE_CODE_WEIGHT : Weight for course code matches
+    - DEPARTMENT_CODE_WEIGHT : Weight for department code matches
+    - DIVISION_WEIGHT : Weight for division matches
+    - KEYWORD_WEIGHT : Weight for keyword matches
+    - DESCRIPTION_WEIGHT : Weight for description matches
+    - PROFESSOR_WEIGHT : Weight for professor name matches
+    - HALF_COURSE_WEIGHT : Weight for half-credit courses
+    - SIMILARITY_WEIGHT : Weight for cosine similarity scores
+
+Configuration:
+    - SCORE_CUTOFF : Minimum score threshold for results
+    - MIN_CHAR_FOR_COS_SIM : Minimum query length for similarity search
+
+Functions
+---------
+The module provides the following main functions:
+
+- restore_dept_code : Normalizes department codes
+- restore_course_code : Formats course codes
+- prepare_course_text : Prepares course text for similarity search
+- compute_similarity_scores : Calculates similarity between texts
+- clean_query : Processes and tokenizes search queries
+- filter : Main filtering and ranking function
+"""
+
 from .models import Course
-from django.http import JsonResponse, Http404
-from amherst_coursework_algo.config.course_dictionaries import (
-    DEPARTMENT_CODE_TO_NAME,
-    DEPARTMENT_NAME_TO_CODE,
-)
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
-import json
-from concurrent.futures import ThreadPoolExecutor
-from django.db.models import Case, When, F, FloatField, Value
 from django.db.models import Q
 import nltk
 from nltk.corpus import stopwords
 
 courses = []
-MIN_CHAR_FOR_COS_SIM = 5
 
+# =============================================================================
+# Constants
+# =============================================================================
+
+MIN_CHAR_FOR_COS_SIM = 5
+"""Minimum characters required in search query before applying cosine similarity matching"""
+
+# Scoring Weights
 DEPARTMENT_NAME_WEIGHT = 90
+"""Weight applied to matches found in department names (e.g., 'Computer Science')"""
+
 COURSE_NAME_WEIGHT = 80
+"""Weight applied to matches found in course titles"""
+
 COURSE_CODE_WEIGHT = 90
+"""Weight applied to matches in course codes (e.g., 'COSC-111')"""
+
 DEPARTMENT_CODE_WEIGHT = 80
+"""Weight applied to matches in department codes (e.g., 'COSC')"""
+
 DIVISION_WEIGHT = 30
+"""Weight applied to matches in academic division names (e.g., 'Science')"""
+
 KEYWORD_WEIGHT = 30
+"""Weight applied to matches in course keywords/tags"""
+
 DESCRIPTION_WEIGHT = 40
+"""Weight applied to matches found in course descriptions"""
+
 PROFESSOR_WEIGHT = 100
-HALF_COURSE_WEIGHT = 200  # not sure what weight to use here, want it to be strong enough so that it is not ignored, but not so strong that all other non half courses are ignored
+"""Weight applied to matches in professor names"""
+
+HALF_COURSE_WEIGHT = 200
+"""Additional weight applied when 'half' appears in query and course is half-credit"""
+
 SIMILARITY_WEIGHT = 160
+"""Multiplier applied to cosine similarity scores for text matching"""
 
 SCORE_CUTOFF = 0.45
+"""Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
 
 # Initialize stopwords for English
 try:
@@ -43,17 +100,36 @@ except LookupError as e:
         )
 
 
+# =============================================================================
+# Functions
+# =============================================================================
+
 def restore_dept_code(code: str) -> str:
     """
-    Extract department code from various formats.
-    Returns XXXXX for invalid patterns.
+    Extract and normalize department code from various formats.
 
-    Examples:
-        'math' -> 'MATH'
-        'math1' -> 'MATH'
-        'mat' -> 'XXXXX'  # too short
-        'maths' -> 'XXXXX'  # too long
-        '123' -> 'XXXXX'  # only numbers
+    Parameters
+    ----------
+    code : str
+        Input string containing potential department code
+
+    Returns
+    -------
+    str
+        Normalized 4-letter department code or 'XXXXX' if invalid
+
+    Examples
+    --------
+    >>> restore_dept_code('math')
+    'MATH'
+    >>> restore_dept_code('math1')
+    'MATH'
+    >>> restore_dept_code('mat')
+    'XXXXX'
+    >>> restore_dept_code('maths')
+    'XXXXX'
+    >>> restore_dept_code('123')
+    'XXXXX'
     """
     import re
 
@@ -71,8 +147,24 @@ def restore_dept_code(code: str) -> str:
 
 def restore_course_code(code: str) -> str:
     """
-    Restore a course code pattern by adding a hyphen.
-    Example: 'math1' -> 'MATH-1'
+    Restore a course code pattern by adding a hyphen between department and number.
+
+    Parameters
+    ----------
+    code : str
+        Input string containing potential course code
+
+    Returns
+    -------
+    str
+        Formatted course code with hyphen or original string if invalid format
+
+    Examples
+    --------
+    >>> restore_course_code('math111')
+    'MATH-111'
+    >>> restore_course_code('invalid')
+    'invalid'
     """
     import re
 
@@ -85,6 +177,24 @@ def restore_course_code(code: str) -> str:
 
 
 def prepare_course_text(course) -> str:
+    """
+    Prepare a concatenated text representation of course information for similarity search.
+
+    Parameters
+    ----------
+    course : Course
+        Course object containing related information
+
+    Returns
+    -------
+    str
+        Space-separated string containing course name, description, departments,
+        professors, and keywords in lowercase
+
+    Notes
+    -----
+    Handles null values by using empty strings as fallbacks
+    """
     return " ".join(
         [
             course.courseName or "",
@@ -100,37 +210,31 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
     """
     Compute cosine similarity scores between a query and a list of information.
 
-    This function calculates the similarity between a given query string and
-    a list of information using the TF-IDF vectorization technique and cosine similarity.
-    It assigns a score between 0 and 1 to each title, where higher values indicate
-    greater similarity.
-
     Parameters
     ----------
     query : str
-        The input query string to compare against the list of information.
-    information : list of str
-        A list of event information to compare with the query.
+        The input query string to compare against the information
+    information : List[str]
+        List of text strings to compare with the query
 
     Returns
     -------
-    list of float
-        A list of similarity scores, where each score corresponds to the
-        similarity between the query and a title in `information`.
+    List[float]
+        List of similarity scores between 0 and 1, where higher values indicate
+        greater similarity
 
     Notes
     -----
-    - The function removes English stop words before computing similarity.
-    - If `query` or `information` is empty, the function returns a list of zeros.
+    - Uses TF-IDF vectorization and cosine similarity
+    - Removes English stop words before computation
+    - Returns list of zeros if query or information is empty
+    - DOES NOT compare semantic similarity of text, only lexical similarity
 
     Examples
     --------
-    >>> information = ["AI in Healthcare", "Machine Learning Workshop", "Deep Learning Seminar"]
-    >>> compute_similarity_scores("Healthcare AI", information)
-    [0.72, 0.15, 0.10]  # Example output, actual values may vary
-
-    >>> compute_similarity_scores("", information)
-    [0.0, 0.0, 0.0]
+    >>> info = ["AI in Healthcare", "Machine Learning Workshop"]
+    >>> compute_similarity_scores("Healthcare AI", info)
+    [0.72, 0]  # Example scores, actual values may vary
     """
     if not query or not information:
         return [0] * len(information)
@@ -152,17 +256,22 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
 
 def clean_query(query: str) -> List[str]:
     """
-    Clean the query string by removing special characters and splitting into words.
+    Clean and tokenize a search query string.
 
     Parameters
     ----------
     query : str
-        The input query string to be cleaned.
+        Raw input query string
 
     Returns
     -------
     List[str]
-        A list of cleaned words extracted from the query string.
+        List of cleaned, lowercase words with stop words and non-alphanumeric
+        characters removed
+
+    Notes
+    -----
+    Uses NLTK's English stop words list for filtering
     """
     return [
         word.lower()
@@ -173,8 +282,41 @@ def clean_query(query: str) -> List[str]:
 
 def filter(search_query: str, courses: List[Course]) -> List[Course]:
     """
-    Filter courses based on search query using Django's built-in filters.
-    Returns courses with their relevance scores.
+    Filter and rank courses based on search query relevance.
+
+    Parameters
+    ----------
+    search_query : str
+        User's search query string
+    courses : List[Course]
+        List of Course objects to filter
+
+    Returns
+    -------
+    List[Course]
+        Filtered and ranked list of courses that match the search criteria
+
+    Notes
+    -----
+    Global scoring weights defined at module level:
+    - DEPARTMENT_NAME_WEIGHT : Weight for department name matches
+    - COURSE_NAME_WEIGHT : Weight for course name matches
+    - COURSE_CODE_WEIGHT : Weight for course code matches
+    - DEPARTMENT_CODE_WEIGHT : Weight for department code matches
+    - DIVISION_WEIGHT : Weight for division matches
+    - KEYWORD_WEIGHT : Weight for keyword matches
+    - DESCRIPTION_WEIGHT : Weight for description matches
+    - PROFESSOR_WEIGHT : Weight for professor name matches
+    - HALF_COURSE_WEIGHT : Weight for half-credit courses
+    - SIMILARITY_WEIGHT : Weight for cosine similarity scores
+
+    Global configuration:
+    - SCORE_CUTOFF : Courses below this fraction of the highest score are filtered out
+    - MIN_CHAR_FOR_COS_SIM : Minimum query length for cosine similarity search
+
+    Special handling for:
+    - "half" keyword to filter half-credit courses
+    - Longer queries (>5 chars) use cosine similarity
     """
     if not search_query:
         return [(course, 1.0) for course in courses]

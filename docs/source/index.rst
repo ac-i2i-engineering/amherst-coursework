@@ -48,6 +48,7 @@ Contents
     :caption: Contents:
 
     models
+    filters
 
 Additional Resources
 ====================

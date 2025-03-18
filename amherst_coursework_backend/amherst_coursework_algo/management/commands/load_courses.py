@@ -1,3 +1,79 @@
+"""
+Load course data from JSON into database.
+
+This Django management command reads course data from a JSON file and creates/updates
+database records for courses and their related entities.
+
+
+
+JSON Schema
+-----------
+The JSON file should follow this schema:
+
+.. code-block:: javascript
+
+    {
+        "Department Name": [
+            {
+                "course_name": str,          // Full title of the course
+                "description": str,          // Course description text
+                "course_acronyms": [str],    // Course codes (e.g. ["COSC-111"])
+                "departments": {             // Department names mapped to URLs
+                    str: str                 // e.g. {"Computer Science": "https://..."}
+                },
+
+                // Optional fields
+                "course_url": str,          // URL to course page
+                "divisions": [str],         // Academic division names
+                "keywords": [str],          // Course topic keywords
+                "offerings": {              // Term offerings mapped to URLs
+                    str: str                 // e.g. {"Spring 2024": "https://..."}
+                },
+                "section_information": {     // Section data keyed by section number
+                    str: {                   // Contains professor, time, location info
+                        "professor_name": str,
+                        "professor_link": str,
+                        "course_location": str,
+                        "mon_start_time": str,
+                        "mon_end_time": str,
+                        // ... similar for tue/wed/thu/fri/sat/sun
+                    }
+                },
+                "prerequisites": {           // Prerequisite course information
+                    "text": str,            // Text description
+                    "required": [[int]],     // Lists of required course IDs
+                    "recommended": [int],    // List of recommended course IDs
+                    "placement": int,        // Placement course ID
+                    "professor_override": bool // Allow professor override
+                },
+                "corequisites": [int]       // IDs of corequisite courses
+            }
+        ]
+    }
+
+Notes
+-----
+- Uses atomic transactions for database consistency
+- Course ID format: 4DDTCCC where:
+    - 4: Amherst College identifier
+    - DD: Department number (00-99) 
+    - T: Credit type (0=full, 1=half)
+    - CCC: Course number
+- Logs success/failure messages
+
+Examples
+--------
+>>> python manage.py load_courses test.json
+
+See Also
+--------
+amherst_coursework_algo.models : Database models used
+
+
+Functions
+---------
+"""
+
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_time
 from django.db import transaction
@@ -20,81 +96,30 @@ from amherst_coursework_algo.config.course_dictionaries import (
 import json
 from datetime import datetime
 
-"""A Django management command to load course data from a JSON file into the database.
-
-This command reads course data from a specified JSON file and creates/updates corresponding
-database records for courses and their related entities (departments, professors, sections, etc.).
-
-Usage:
-    python manage.py load_courses <path_to_json_file>
-
-Args:
-    json_file (str): Path to the JSON file containing course data. The JSON should contain an array
-                     of course objects with fields matching the Course model structure.
-
-Example:
-    python manage.py load_courses courses.json
-
-JSON Format Requirements:
-    - Each course object must have:
-        - course_name (str): Name of the course 
-        - description (str): Course description
-    - Optional fields include:
-        - course_url (str): URL to course page
-        - course_materials_links (list): List of course materials URLs
-        - course_acronyms (list): List of course codes 
-        - departments (dict): Department names mapped to dept URLs
-        - prerequisites (dict): Course prerequisites information
-            - text (str): Text description of prerequisites
-            - required (list): List of required course ID sets
-            - recommended (list): List of recommended course IDs
-            - placement (int): ID of placement test course
-            - professor_override (bool): Whether prof can override prereqs
-        - corequisites (list): List of corequisite course IDs
-        - profNames (list): List of professor names
-        - profLinks (list): List of professor links
-        - credits (int): Number of credits (default 4)
-        - divisions (list): Academic divisions
-        - keywords (list): Course keywords/tags
-        - offerings (dict): Course offerings with links by term
-        - sections (dict): Section information
-        - overGuidelines (dict): Enrollment guidelines
-            - text (str): Enrollment text
-            - preferenceForMajor (bool): Preference for majors
-            - overallCap (int): Overall enrollment cap
-            - freshmanCap (int): Freshman cap
-            - sophomoreCap (int): Sophomore cap
-            - juniorCap (int): Junior cap
-            - seniorCap (int): Senior cap
-
-Notes:
-    - Uses Django's atomic transaction to ensure database consistency
-    - Will create new records or update existing ones based on primary keys 
-    - Course IDs are automatically generated based on department and course number
-    - Logs success/failure messages for each course processed
-"""
-
-
 class Command(BaseCommand):
     def parse_ampm_time(time_str):
         """
         Parse a time string in AM/PM format into a Django time object.
 
-        Args:
-            time_str (str): A string representing time in 'HH:MM AM/PM' format (e.g. '9:00 AM')
+        Parameters
+        ----------
+        time_str : str
+            A string representing time in 'HH:MM AM/PM' format (e.g. '9:00 AM')
 
-        Returns:
-            time: A Django time object if parsing is successful, None otherwise
+        Returns
+        -------
+        time or None
+            A Django time object if parsing is successful, None otherwise
 
-        Examples:
-            >>> parse_ampm_time('9:00 AM')
-            datetime.time(9, 0)
-            >>> parse_ampm_time('invalid')
-            None
-            >>> parse_ampm_time(None)
-            None
+        Examples
+        --------
+        >>> parse_ampm_time('9:00 AM')
+        datetime.time(9, 0)
+        >>> parse_ampm_time('invalid')
+        None
+        >>> parse_ampm_time(None)
+        None
         """
-        """Parse time string with AM/PM format"""
         if not time_str or time_str == "null":
             return None
         try:
@@ -110,35 +135,43 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("json_file", type=str, help="Path to JSON file")
 
-    """
-        Process and load course data from a JSON file into the database.
-        This method handles the creation and updating of course-related records in the database,
-        including departments, course codes, prerequisites, professors, and course offerings.
-        Args:
-            *args: Variable length argument list.
-            **options: Arbitrary keyword arguments. Must contain 'json_file' key with path to JSON data.
-        Returns:
-            None
-        Raises:
-            ValueError: If course ID is invalid (not between 1000000 and 9999999).
-            Exception: If any error occurs during course creation/update process.
-        The method performs the following operations:
-        1. Reads course data from JSON file
-        2. For each course:
-            - Creates course ID
-            - Creates/updates department records
-            - Creates/updates course codes
-            - Processes prerequisites (recommended, required, and placement courses)
-            - Creates/updates professor records
-            - Processes course offerings (fall, spring, and January terms)
-            - Creates/updates the main course record
-            - Creates/updates over-enrollment guidelines
-            - Creates/updates course sections
-        Success/failure messages are written to stdout using Django's management command styling.
-        """
-
     @transaction.atomic
     def handle(self, *args, **options):
+        """Process JSON course data and load into database.
+
+        Parameters
+        ----------
+        args : tuple
+            Variable length argument list
+        options : dict
+            Must contain 'json_file' key with path to JSON data
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If course ID is invalid (not 1000000-9999999)
+        Exception
+            If error occurs during database operations
+
+            
+        Operation Flow
+        --------------
+        1. Reads JSON file
+        2. For each course:
+            * Creates course ID
+            * Creates/updates departments
+            * Creates/updates course codes
+            * Processes prerequisites
+            * Creates/updates professors
+            * Processes offerings
+            * Creates/updates course record
+            * Creates/updates enrollment caps
+            * Creates/updates sections
+        """
 
         with open(options["json_file"]) as f:
             departments_courses_data = json.load(f)

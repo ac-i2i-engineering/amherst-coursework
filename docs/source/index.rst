@@ -49,6 +49,7 @@ Contents
 
     models
     filters
+    load_courses
 
 Additional Resources
 ====================

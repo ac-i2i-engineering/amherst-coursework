@@ -1,7 +1,7 @@
 """
 Course filtering and ranking module with configurable search weights.
 
-This module provides functionality for filtering and ranking courses based on 
+This module provides functionality for filtering and ranking courses based on
 search queries, using a weighted scoring system for different match types.
 
 Constants

@@ -56,7 +56,7 @@ Notes
 - Uses atomic transactions for database consistency
 - Course ID format: 4DDTCCC where:
     - 4: Amherst College identifier
-    - DD: Department number (00-99) 
+    - DD: Department number (00-99)
     - T: Credit type (0=full, 1=half)
     - CCC: Course number
 - Logs success/failure messages

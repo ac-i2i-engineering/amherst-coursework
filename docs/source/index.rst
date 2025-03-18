@@ -1,9 +1,9 @@
-.. Mammoth Course Compass documentation master file, created by
+.. Amherst Coursework documentation master file, created by
    sphinx-quickstart on Tue Oct 29 20:08:27 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Mammoth Course  Compass's Documentation!
+Welcome to Amherst Coursework's Documentation!
 ====================================================
 
 This project is made possible through i2i (Ideas 2 Innovation) initiative, a student-led venture accelerator, at Amherst College.
@@ -11,7 +11,7 @@ This project is made possible through i2i (Ideas 2 Innovation) initiative, a stu
 Overview
 ========
 
-Mammoth Course Compass aims to provide an anonymous way for Amherst students to review courses and professors, and simultaneously read reviews to inform course scheduling decisions.
+Amherst Coursework is a web application that provides Amherst College students and faculty with an intuitive, advanced interface for course search.
 
 Getting Started
 ===============
@@ -44,12 +44,12 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
-   course_model
-   course_rating_model
-
+    models
+    filters
+    load_courses
 
 Additional Resources
 ====================

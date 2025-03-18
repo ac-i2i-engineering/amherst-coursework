@@ -96,6 +96,7 @@ from amherst_coursework_algo.config.course_dictionaries import (
 import json
 from datetime import datetime
 
+
 class Command(BaseCommand):
     def parse_ampm_time(time_str):
         """
@@ -157,7 +158,7 @@ class Command(BaseCommand):
         Exception
             If error occurs during database operations
 
-            
+
         Operation Flow
         --------------
         1. Reads JSON file

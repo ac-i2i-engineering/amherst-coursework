@@ -104,6 +104,7 @@ except LookupError as e:
 # Functions
 # =============================================================================
 
+
 def restore_dept_code(code: str) -> str:
     """
     Extract and normalize department code from various formats.

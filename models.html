@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="no-js" lang="python" data-content_root="./">
+<head>
+    <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>Models &mdash; Amherst Coursework 0.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
+      <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=901ed8ac" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
+            <link rel="next" title="Filters" href="filters.html" />
+            <link rel="prev" title="Welcome to Amherst Coursework&#39;s Documentation!" href="index.html" />
+    </head>
+<body>
+    <script type="text/javascript" src="_static/dist/blocking.js"></script>
+    <header class="container-fluid bg-primary">
+        <a class="btn btn-sm btn-light skip-to-content-link" href="#main">Skip to content</a>
+        <div class="container-fluid">
+            <div class="navbar navbar-expand-lg navbar-dark font-weight-bold">
+                
+                <button class="navbar-toggler btn btn-primary d-lg-none" type="button" data-toggle="collapse" data-target="#collapseSidebar" aria-expanded="false" aria-controls="collapseExample">
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="sr-only">menu</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-12 col-lg-3 sidebar-container">
+                <div id="collapseSidebar" class="collapse sticky-top d-lg-block pt-5 pr-lg-4">
+<div id="searchbox" class="searchbox mb-6 px-1" role="search">
+    <form id="search-form" action="search.html" autocomplete="off" method="get" role="search">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text border-right-0 bg-white py-3 pl-3 pr-2"><span class="fas fa-search"></span></div>
+            </div>
+            <input class="form-control py-3 pr-3 pl-1 h-100 border-left-0" type="search" name="q" placeholder="Search documentation" aria-label="Search documentation" id="searchinput" />
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div><div class="site-toc">
+    <nav class="toc mt-3" aria-label="Main menu">
+        <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_courses.html">Load Courses</a></li>
+</ul>
+
+    </nav>
+    <template data-toggle-item-template>
+        <button class="btn btn-sm btn-link toctree-expand" type="button">
+            <span class="sr-only">Toggle menu contents</span>
+        </button>
+    </template>
+</div>
+                    <div class="d-lg-none border-bottom">
+                        
+                    </div>
+                </div>
+            </aside>
+            <div class="col-12 col-lg-9 pt-5">
+                <header class="row align-items-baseline">
+                    <div class="col">
+                        <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 p-0 bg-transparent">
+        <li class="breadcrumb-item"><a href="index.html">Docs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Models</li>
+    </ol>
+</nav>
+                    </div>
+                    <div class="col-sm-12 col-lg-auto mt-3 mt-lg-3">
+                        <noscript>
+                            <p>JavaScript is required to toggle light/dark mode..</p>
+                        </noscript>
+                        <button id="wagtail-theme" class="btn btn-sm btn-light text-decoration-none" type="button">
+                            <span class="dark-only"><i class="fas fa-sun"></i> Light mode</span>
+                            <span class="light-only"><i class="fas fa-moon"></i> Dark mode</span>
+                        </button>
+    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/amherst-coursework/" rel="nofollow">
+        <span class="btn-icon"><span class="fab fa-github"></span></span>
+        <span class="btn-text">GitHub</span>
+    </a>
+                        
+                    </div>
+                </header>
+                <div class="row" >
+                    <div class="col-12">
+                        <hr class="w-100 my-4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
+                        <main role="main" id="main">
+    <section id="models">
+<h1>Models<a class="headerlink" href="#models" title="Link to this heading">¶</a></h1>
+<section id="course-model">
+<h2>Course Model<a class="headerlink" href="#course-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Course</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Course"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Course model representing an academic course at Amherst College.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>IntegerField</em><em>, </em><em>primary key</em>) -- Unique 7-digit course identifier
+Format: XYYZCZZ where:
+X: College/semester (4=Amherst Fall, 5=Amherst Spring)
+YY: Department code (00-99)
+Z: Credit flag (1=half-credit, 0=full-credit)
+CZZ: Course number (000-999)
+Example: 4140112 = Fall COSC-112</p></li>
+<li><p><strong>courseLink</strong> (<em>URLField</em><em>, </em><em>optional</em>) -- Direct URL to the course page on Amherst College's course catalog
+Defaults to null if not provided</p></li>
+<li><p><strong>courseName</strong> (<em>CharField</em>) -- Full title of the course as it appears in the course catalog
+Maximum length: 200 characters</p></li>
+<li><p><strong>courseCodes</strong> (<em>ManyToManyField to CourseCode</em>) -- Official course codes/numbers (e.g., &quot;COSC-111&quot;, &quot;MATH-271&quot;)
+Multiple codes possible for cross-listed courses</p></li>
+<li><p><strong>courseDescription</strong> (<em>TextField</em><em>, </em><em>optional</em>) -- Detailed description of course content, objectives, and requirements
+Can be blank</p></li>
+<li><p><strong>courseMaterialsLink</strong> (<em>URLField</em><em>, </em><em>optional</em>) -- URL to course materials, syllabus, or additional resources
+Defaults to null if not provided</p></li>
+<li><p><strong>keywords</strong> (<em>ManyToManyField to Keyword</em>) -- Searchable keywords/tags associated with the course content</p></li>
+<li><p><strong>divisions</strong> (<em>ManyToManyField to Division</em>) -- Academic divisions the course belongs to (e.g., &quot;Science&quot;, &quot;Humanities&quot;)</p></li>
+<li><p><strong>departments</strong> (<em>ManyToManyField to Department</em>) -- Academic departments offering the course</p></li>
+<li><p><strong>enrollmentText</strong> (<em>TextField</em>) -- Instructions for course enrollment and registration
+Defaults to &quot;Contact the professor for enrollment details&quot;</p></li>
+<li><p><strong>prefForMajor</strong> (<em>BooleanField</em>) -- Whether majors have enrollment priority
+Defaults to False</p></li>
+<li><p><strong>overallCap</strong> (<em>PositiveIntegerField</em>) -- Maximum total enrollment limit
+Defaults to 0 (no cap)</p></li>
+<li><p><strong>freshmanCap</strong> (<em>PositiveIntegerField</em>) -- Maximum number of freshmen allowed to enroll
+Defaults to 0 (no cap)</p></li>
+<li><p><strong>sophomoreCap</strong> (<em>PositiveIntegerField</em>) -- Maximum number of sophomores allowed to enroll
+Defaults to 0 (no cap)</p></li>
+<li><p><strong>juniorCap</strong> (<em>PositiveIntegerField</em>) -- Maximum number of juniors allowed to enroll
+Defaults to 0 (no cap)</p></li>
+<li><p><strong>seniorCap</strong> (<em>PositiveIntegerField</em>) -- Maximum number of seniors allowed to enroll
+Defaults to 0 (no cap)</p></li>
+<li><p><strong>credits</strong> (<em>IntegerField</em>) -- Number of credits awarded for completing the course
+Choices: 2 or 4 credits
+Defaults to 4</p></li>
+<li><p><strong>prereqDescription</strong> (<em>TextField</em><em>, </em><em>optional</em>) -- Text description of prerequisites and requirements
+Can be blank</p></li>
+<li><p><strong>recommended_courses</strong> (<em>ManyToManyField to Course</em>) -- Courses recommended but not required as prerequisites
+Self-referential relationship</p></li>
+<li><p><strong>professor_override</strong> (<em>BooleanField</em>) -- Whether professors can override prerequisite requirements
+Defaults to False</p></li>
+<li><p><strong>placement_course</strong> (<em>ForeignKey to Course</em><em>, </em><em>optional</em>) -- Reference to a placement test or course required
+Self-referential relationship</p></li>
+<li><p><strong>corequisites</strong> (<em>ManyToManyField to Course</em>) -- Courses that must be taken concurrently
+Self-referential, symmetrical relationship</p></li>
+<li><p><strong>professors</strong> (<em>ManyToManyField to Professor</em>) -- Professors teaching the course</p></li>
+<li><p><strong>sections</strong> (<em>ReverseRelation via Section</em>) -- Course sections with meeting times and locations
+One-to-many relationship from Section model</p></li>
+<li><p><strong>fallOfferings</strong> (<em>ManyToManyField to Year</em>) -- Years the course is offered in fall semester</p></li>
+<li><p><strong>springOfferings</strong> (<em>ManyToManyField to Year</em>) -- Years the course is offered in spring semester</p></li>
+<li><p><strong>janOfferings</strong> (<em>ManyToManyField to Year</em>) -- Years the course is offered in January term</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Course.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Returns the course name as a string</p>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">course</span> <span class="o">=</span> <span class="n">Course</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="mi">4140111</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">courseName</span><span class="o">=</span><span class="s2">&quot;Introduction to Computer Science I&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">credits</span><span class="o">=</span><span class="mi">4</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">course</span><span class="o">.</span><span class="n">departments</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Department</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="s2">&quot;COSC&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">course</span><span class="o">.</span><span class="n">courseCodes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;COSC-111&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Course.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Validates that year-specific enrollment caps don't exceed overall cap</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="coursecode-model">
+<h2>CourseCode Model<a class="headerlink" href="#coursecode-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">CourseCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#CourseCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>CourseCode model representing course codes/abbreviations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>CharField</em>) -- The 8-9 character course code (e.g., &quot;COSC-111&quot;, &quot;CHEM-165L&quot;)
+Must follow department code + hyphen + number format + (optional) letter suffix</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="department-model">
+<h2>Department Model<a class="headerlink" href="#department-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Department</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Department"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Department model representing academic departments at Amherst College.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>CharField</em>) -- The full name of the department (e.g., &quot;Computer Science&quot;, &quot;Biology&quot;)</p></li>
+<li><p><strong>code</strong> (<em>CharField</em>) -- The 4-letter department code (e.g., &quot;COSC&quot;, &quot;BCBP&quot;)</p></li>
+<li><p><strong>link</strong> (<em>URLField</em>) -- The link to the department page on amherst.edu</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="prerequisiteset-model">
+<h2>PrerequisiteSet Model<a class="headerlink" href="#prerequisiteset-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">PrerequisiteSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#PrerequisiteSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>PrerequisiteSet model representing a set of prerequisites for a course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prerequisite_for</strong> (<em>ForeignKey</em>) -- Course this set of prerequisites is for</p></li>
+<li><p><strong>courses</strong> (<em>ManyToManyField</em>) -- One set of courses that can be completed to satisfy prerequisites</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="professor-model">
+<h2>Professor Model<a class="headerlink" href="#professor-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Professor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Professor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Professor model representing course instructors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>CharField</em>) -- Full name of the professor</p></li>
+<li><p><strong>link</strong> (<em>URLField</em>) -- URL to professor's page on amherst.edu</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="section-model">
+<h2>Section Model<a class="headerlink" href="#section-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Section"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Section model representing a specific course section with location, professor, and meeting time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>section_number</strong> (<em>CharField</em>) -- The section number (digits with optional letter suffix)</p></li>
+<li><p><strong>section_for</strong> (<em>ForeignKey</em>) -- Course this section is for</p></li>
+<li><p><strong>monday_start_time</strong> (<em>TimeField</em>) -- Start time for Monday meeting</p></li>
+<li><p><strong>monday_end_time</strong> (<em>TimeField</em>) -- End time for Monday meeting</p></li>
+<li><p><strong>tuesday_start_time</strong> (<em>TimeField</em>) -- Start time for Tuesday meeting</p></li>
+<li><p><strong>tuesday_end_time</strong> (<em>TimeField</em>) -- End time for Tuesday meeting</p></li>
+<li><p><strong>wednesday_start_time</strong> (<em>TimeField</em>) -- Start time for Wednesday meeting</p></li>
+<li><p><strong>wednesday_end_time</strong> (<em>TimeField</em>) -- End time for Wednesday meeting</p></li>
+<li><p><strong>thursday_start_time</strong> (<em>TimeField</em>) -- Start time for Thursday meeting</p></li>
+<li><p><strong>thursday_end_time</strong> (<em>TimeField</em>) -- End time for Thursday meeting</p></li>
+<li><p><strong>friday_start_time</strong> (<em>TimeField</em>) -- Start time for Friday meeting</p></li>
+<li><p><strong>friday_end_time</strong> (<em>TimeField</em>) -- End time for Friday meeting</p></li>
+<li><p><strong>saturday_start_time</strong> (<em>TimeField</em>) -- Start time for Saturday meeting</p></li>
+<li><p><strong>saturday_end_time</strong> (<em>TimeField</em>) -- End time for Saturday meeting</p></li>
+<li><p><strong>sunday_start_time</strong> (<em>TimeField</em>) -- Start time for Sunday meeting</p></li>
+<li><p><strong>sunday_end_time</strong> (<em>TimeField</em>) -- End time for Sunday meeting</p></li>
+<li><p><strong>location</strong> (<em>CharField</em>) -- Building and room number</p></li>
+<li><p><strong>professor</strong> (<em>ForeignKey</em>) -- Professor teaching this section</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Section.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Hook for doing any extra model-wide validation after clean() has been
+called on every field by self.clean_fields. Any ValidationError raised
+by this method will not be associated with a particular field; it will
+have a special-case association with the field defined by NON_FIELD_ERRORS.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="year-model">
+<h2>Year Model<a class="headerlink" href="#year-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Year"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Year model representing the academic year (specfic to each course).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>IntegerField</em>) -- Unique identifier for the academic year/link combo</p></li>
+<li><p><strong>year</strong> (<em>IntegerField</em>) -- Academic year (e.g., 2021)</p></li>
+<li><p><strong>link</strong> (<em>URLField</em>) -- URL link to course catalog</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="keyword-model">
+<h2>Keyword Model<a class="headerlink" href="#keyword-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Keyword model representing keywords associated with courses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>CharField</em>) -- The keyword value</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="division-model">
+<h2>Division Model<a class="headerlink" href="#division-model" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.models.</span></span><span class="sig-name descname"><span class="pre">Division</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/models.html#Division"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Division model representing academic divisions at Amherst College.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>CharField</em>) -- The full name of the division (e.g., &quot;Science &amp; Mathematics&quot;, &quot;Social Sciences&quot;)</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+</main>
+                        <nav aria-label="Page navigation" class="py-4 my-5 clearfix font-weight-bold border-top">
+    <a class="float-left" href="index.html" title="Previous">
+        <span aria-hidden="true">←&nbsp;</span>Welcome to Amherst Coursework's Documentation!
+    </a>
+    <a class="float-right" href="filters.html" title="Next">
+        Filters <span aria-hidden="true">&nbsp;→</span>
+    </a>
+</nav>
+                    </div>
+                    
+                    <nav class="col-12 col-lg-3 pb-4">
+                        <div class="sticky-top toc page-toc" aria-labelledby="page-toc-heading">
+                            <p class="font-weight-bold" id="page-toc-heading">Page contents</p>
+                            <ul>
+<li><a class="reference internal" href="#">Models</a><ul>
+<li><a class="reference internal" href="#course-model">Course Model</a></li>
+<li><a class="reference internal" href="#coursecode-model">CourseCode Model</a></li>
+<li><a class="reference internal" href="#department-model">Department Model</a></li>
+<li><a class="reference internal" href="#prerequisiteset-model">PrerequisiteSet Model</a></li>
+<li><a class="reference internal" href="#professor-model">Professor Model</a></li>
+<li><a class="reference internal" href="#section-model">Section Model</a></li>
+<li><a class="reference internal" href="#year-model">Year Model</a></li>
+<li><a class="reference internal" href="#keyword-model">Keyword Model</a></li>
+<li><a class="reference internal" href="#division-model">Division Model</a></li>
+</ul>
+</li>
+</ul>
+
+                        </div>
+                    </nav>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid bg-primary text-light">
+        <div class="container">
+            <div class="row">
+        <div class="col p-4">
+            
+                <nav aria-label="Footer">
+                    <ul class="nav justify-content-center mb-2">
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/features/">Features</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/about-wagtail/"> About Wagtail</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/services/"> Services</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/blog/"> Blog</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/packages/"> Packages</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/developers/"> Developers</a></li>
+                        
+                    </ul>
+                </nav>
+            
+            <div class="text-center">
+                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li
+            </div>
+            <div class="text-center text-white-50 font-italic mt-3">
+                <small>
+                    Created using
+                    <a class="text-white" href="https://github.com/wagtail/sphinx_wagtail_theme" rel="nofollow" target="_blank">
+                        Sphinx Wagtail Theme 6.5.0
+                    </a>
+                    and
+                    <a class="text-white" href="https://www.sphinx-doc.org/" rel="nofollow" target="_blank">
+                        Sphinx 8.2.3
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+        </div>
+    </footer>
+        <script src="_static/documentation_options.js?v=3dc53093"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script type="text/javascript" src="_static/dist/theme.js"></script>
+        <script type="text/javascript" src="_static/dist/vendor.js"></script>
+        <script type="text/javascript" src="_static/searchtools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() { Search.loadIndex("searchindex.js"); });
+        </script>
+        <script type="text/javascript" id="searchindexloader"></script>
+    </body>
+</html>

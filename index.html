@@ -6,16 +6,16 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-        <title>Welcome to Mammoth Course Compass&#39;s Documentation! &mdash; Amherst Coursework 0.0.0 documentation</title>
+        <title>Welcome to Amherst Coursework&#39;s Documentation! &mdash; Amherst Coursework 0.0.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
       <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=02fa4ee0" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=901ed8ac" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
             <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
-            <link rel="next" title="Course Model" href="course_model.html" />
+            <link rel="next" title="Models" href="models.html" />
     </head>
 <body>
     <script type="text/javascript" src="_static/dist/blocking.js"></script>
@@ -50,8 +50,9 @@
     <nav class="toc mt-3" aria-label="Main menu">
         <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="course_model.html">Course Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="course_rating_model.html">Course Rating Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_courses.html">Load Courses</a></li>
 </ul>
 
     </nav>
@@ -72,7 +73,7 @@
                         <nav aria-label="breadcrumb">
     <ol class="breadcrumb m-0 p-0 bg-transparent">
         <li class="breadcrumb-item"><a href="#">Docs</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Welcome to Mammoth Course  Compass's Documentation!</li>
+        <li class="breadcrumb-item active" aria-current="page">Welcome to Amherst Coursework's Documentation!</li>
     </ol>
 </nav>
                     </div>
@@ -99,13 +100,13 @@
                 <div class="row">
                     <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
                         <main role="main" id="main">
-    <section id="welcome-to-mammoth-course-compass-s-documentation">
-<h1>Welcome to Mammoth Course  Compass's Documentation!<a class="headerlink" href="#welcome-to-mammoth-course-compass-s-documentation" title="Link to this heading">¶</a></h1>
+    <section id="welcome-to-amherst-coursework-s-documentation">
+<h1>Welcome to Amherst Coursework's Documentation!<a class="headerlink" href="#welcome-to-amherst-coursework-s-documentation" title="Link to this heading">¶</a></h1>
 <p>This project is made possible through i2i (Ideas 2 Innovation) initiative, a student-led venture accelerator, at Amherst College.</p>
 </section>
 <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
-<p>Mammoth Course Compass aims to provide an anonymous way for Amherst students to review courses and professors, and simultaneously read reviews to inform course scheduling decisions.</p>
+<p>Amherst Coursework is a web application that provides Amherst College students and faculty with an intuitive, advanced interface for course search.</p>
 </section>
 <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
@@ -133,8 +134,28 @@ python<span class="w"> </span>manage.py<span class="w"> </span>runserver
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="course_model.html">Course Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="course_rating_model.html">Course Rating Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html#course-model">Course Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#coursecode-model">CourseCode Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#department-model">Department Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#prerequisiteset-model">PrerequisiteSet Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#professor-model">Professor Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#section-model">Section Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#year-model">Year Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#keyword-model">Keyword Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#division-model">Division Model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="load_courses.html">Load Courses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_courses.html#json-schema">JSON Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_courses.html#functions">Functions</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -145,8 +166,8 @@ python<span class="w"> </span>manage.py<span class="w"> </span>runserver
 
 </main>
                         <nav aria-label="Page navigation" class="py-4 my-5 clearfix font-weight-bold border-top">
-    <a class="float-right" href="course_model.html" title="Next">
-        Course Model <span aria-hidden="true">&nbsp;→</span>
+    <a class="float-right" href="models.html" title="Next">
+        Models <span aria-hidden="true">&nbsp;→</span>
     </a>
 </nav>
                     </div>
@@ -155,7 +176,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>runserver
                         <div class="sticky-top toc page-toc" aria-labelledby="page-toc-heading">
                             <p class="font-weight-bold" id="page-toc-heading">Page contents</p>
                             <ul>
-<li><a class="reference internal" href="#">Welcome to Mammoth Course  Compass's Documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to Amherst Coursework's Documentation!</a></li>
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#getting-started">Getting Started</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>

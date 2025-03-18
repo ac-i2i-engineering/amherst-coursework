@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html class="no-js" lang="python" data-content_root="./">
+<head>
+    <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>Load Courses &mdash; Amherst Coursework 0.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
+      <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=901ed8ac" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
+            <link rel="prev" title="Filters" href="filters.html" />
+    </head>
+<body>
+    <script type="text/javascript" src="_static/dist/blocking.js"></script>
+    <header class="container-fluid bg-primary">
+        <a class="btn btn-sm btn-light skip-to-content-link" href="#main">Skip to content</a>
+        <div class="container-fluid">
+            <div class="navbar navbar-expand-lg navbar-dark font-weight-bold">
+                
+                <button class="navbar-toggler btn btn-primary d-lg-none" type="button" data-toggle="collapse" data-target="#collapseSidebar" aria-expanded="false" aria-controls="collapseExample">
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="sr-only">menu</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-12 col-lg-3 sidebar-container">
+                <div id="collapseSidebar" class="collapse sticky-top d-lg-block pt-5 pr-lg-4">
+<div id="searchbox" class="searchbox mb-6 px-1" role="search">
+    <form id="search-form" action="search.html" autocomplete="off" method="get" role="search">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text border-right-0 bg-white py-3 pl-3 pr-2"><span class="fas fa-search"></span></div>
+            </div>
+            <input class="form-control py-3 pr-3 pl-1 h-100 border-left-0" type="search" name="q" placeholder="Search documentation" aria-label="Search documentation" id="searchinput" />
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div><div class="site-toc">
+    <nav class="toc mt-3" aria-label="Main menu">
+        <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Load Courses</a></li>
+</ul>
+
+    </nav>
+    <template data-toggle-item-template>
+        <button class="btn btn-sm btn-link toctree-expand" type="button">
+            <span class="sr-only">Toggle menu contents</span>
+        </button>
+    </template>
+</div>
+                    <div class="d-lg-none border-bottom">
+                        
+                    </div>
+                </div>
+            </aside>
+            <div class="col-12 col-lg-9 pt-5">
+                <header class="row align-items-baseline">
+                    <div class="col">
+                        <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 p-0 bg-transparent">
+        <li class="breadcrumb-item"><a href="index.html">Docs</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Load Courses</li>
+    </ol>
+</nav>
+                    </div>
+                    <div class="col-sm-12 col-lg-auto mt-3 mt-lg-3">
+                        <noscript>
+                            <p>JavaScript is required to toggle light/dark mode..</p>
+                        </noscript>
+                        <button id="wagtail-theme" class="btn btn-sm btn-light text-decoration-none" type="button">
+                            <span class="dark-only"><i class="fas fa-sun"></i> Light mode</span>
+                            <span class="light-only"><i class="fas fa-moon"></i> Dark mode</span>
+                        </button>
+    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/amherst-coursework/" rel="nofollow">
+        <span class="btn-icon"><span class="fab fa-github"></span></span>
+        <span class="btn-text">GitHub</span>
+    </a>
+                        
+                    </div>
+                </header>
+                <div class="row" >
+                    <div class="col-12">
+                        <hr class="w-100 my-4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
+                        <main role="main" id="main">
+    <section id="load-courses">
+<h1>Load Courses<a class="headerlink" href="#load-courses" title="Link to this heading">¶</a></h1>
+<p>Load course data from JSON into database.</p>
+<p>This Django management command reads course data from a JSON file and creates/updates
+database records for courses and their related entities.</p>
+<section id="json-schema">
+<h2>JSON Schema<a class="headerlink" href="#json-schema" title="Link to this heading">¶</a></h2>
+<p>The JSON file should follow this schema:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;Department Name&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;course_name&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">          </span><span class="c1">// Full title of the course</span>
+<span class="w">            </span><span class="s2">&quot;description&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">          </span><span class="c1">// Course description text</span>
+<span class="w">            </span><span class="s2">&quot;course_acronyms&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">str</span><span class="p">],</span><span class="w">    </span><span class="c1">// Course codes (e.g. [&quot;COSC-111&quot;])</span>
+<span class="w">            </span><span class="s2">&quot;departments&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w">             </span><span class="c1">// Department names mapped to URLs</span>
+<span class="w">                </span><span class="nx">str</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w">                 </span><span class="c1">// e.g. {&quot;Computer Science&quot;: &quot;https://...&quot;}</span>
+<span class="w">            </span><span class="p">},</span>
+
+<span class="w">            </span><span class="c1">// Optional fields</span>
+<span class="w">            </span><span class="s2">&quot;course_url&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">          </span><span class="c1">// URL to course page</span>
+<span class="w">            </span><span class="s2">&quot;divisions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">str</span><span class="p">],</span><span class="w">         </span><span class="c1">// Academic division names</span>
+<span class="w">            </span><span class="s2">&quot;keywords&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">str</span><span class="p">],</span><span class="w">          </span><span class="c1">// Course topic keywords</span>
+<span class="w">            </span><span class="s2">&quot;offerings&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w">              </span><span class="c1">// Term offerings mapped to URLs</span>
+<span class="w">                </span><span class="nx">str</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w">                 </span><span class="c1">// e.g. {&quot;Spring 2024&quot;: &quot;https://...&quot;}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;section_information&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w">     </span><span class="c1">// Section data keyed by section number</span>
+<span class="w">                </span><span class="nx">str</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w">                   </span><span class="c1">// Contains professor, time, location info</span>
+<span class="w">                    </span><span class="s2">&quot;professor_name&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;professor_link&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;course_location&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;mon_start_time&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;mon_end_time&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">                    </span><span class="c1">// ... similar for tue/wed/thu/fri/sat/sun</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;prerequisites&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// Prerequisite course information</span>
+<span class="w">                </span><span class="s2">&quot;text&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">            </span><span class="c1">// Text description</span>
+<span class="w">                </span><span class="s2">&quot;required&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[[</span><span class="kr">int</span><span class="p">]],</span><span class="w">     </span><span class="c1">// Lists of required course IDs</span>
+<span class="w">                </span><span class="s2">&quot;recommended&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="kr">int</span><span class="p">],</span><span class="w">    </span><span class="c1">// List of recommended course IDs</span>
+<span class="w">                </span><span class="s2">&quot;placement&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span><span class="w">        </span><span class="c1">// Placement course ID</span>
+<span class="w">                </span><span class="s2">&quot;professor_override&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">bool</span><span class="w"> </span><span class="c1">// Allow professor override</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="s2">&quot;corequisites&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="kr">int</span><span class="p">]</span><span class="w">       </span><span class="c1">// IDs of corequisite courses</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses atomic transactions for database consistency</p></li>
+<li><dl class="simple">
+<dt>Course ID format: 4DDTCCC where:</dt><dd><ul>
+<li><p>4: Amherst College identifier</p></li>
+<li><p>DD: Department number (00-99)</p></li>
+<li><p>T: Credit type (0=full, 1=half)</p></li>
+<li><p>CCC: Course number</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Logs success/failure messages</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">load_courses</span> <span class="n">test</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">amherst_coursework_algo.models</span></code></dt><dd><p>Database models used</p>
+</dd>
+</dl>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">amherst_coursework_algo.management.commands.load_courses.</span></span><span class="sig-name descname"><span class="pre">Command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stderr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command.add_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Entry point for subclassed commands to add custom arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Process JSON course data and load into database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>tuple</em>) -- Variable length argument list</p></li>
+<li><p><strong>options</strong> (<em>dict</em>) -- Must contain 'json_file' key with path to JSON data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> -- If course ID is invalid (not 1000000-9999999)</p></li>
+<li><p><strong>Exception</strong> -- If error occurs during database operations</p></li>
+</ul>
+</dd>
+</dl>
+<section id="operation-flow">
+<h2>Operation Flow<a class="headerlink" href="#operation-flow" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Reads JSON file</p></li>
+<li><dl class="simple">
+<dt>For each course:</dt><dd><ul class="simple">
+<li><p>Creates course ID</p></li>
+<li><p>Creates/updates departments</p></li>
+<li><p>Creates/updates course codes</p></li>
+<li><p>Processes prerequisites</p></li>
+<li><p>Creates/updates professors</p></li>
+<li><p>Processes offerings</p></li>
+<li><p>Creates/updates course record</p></li>
+<li><p>Creates/updates enrollment caps</p></li>
+<li><p>Creates/updates sections</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">parse_ampm_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command.parse_ampm_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Parse a time string in AM/PM format into a Django time object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time_str</strong> (<em>str</em>) -- A string representing time in 'HH:MM AM/PM' format (e.g. '9:00 AM')</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Django time object if parsing is successful, None otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>time or None</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_ampm_time</span><span class="p">(</span><span class="s1">&#39;9:00 AM&#39;</span><span class="p">)</span>
+<span class="go">datetime.time(9, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parse_ampm_time</span><span class="p">(</span><span class="s1">&#39;invalid&#39;</span><span class="p">)</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parse_ampm_time</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+</main>
+                        <nav aria-label="Page navigation" class="py-4 my-5 clearfix font-weight-bold border-top">
+    <a class="float-left" href="filters.html" title="Previous">
+        <span aria-hidden="true">←&nbsp;</span>Filters
+    </a>
+</nav>
+                    </div>
+                    
+                    <nav class="col-12 col-lg-3 pb-4">
+                        <div class="sticky-top toc page-toc" aria-labelledby="page-toc-heading">
+                            <p class="font-weight-bold" id="page-toc-heading">Page contents</p>
+                            <ul>
+<li><a class="reference internal" href="#">Load Courses</a><ul>
+<li><a class="reference internal" href="#json-schema">JSON Schema</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+                        </div>
+                    </nav>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid bg-primary text-light">
+        <div class="container">
+            <div class="row">
+        <div class="col p-4">
+            
+                <nav aria-label="Footer">
+                    <ul class="nav justify-content-center mb-2">
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/features/">Features</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/about-wagtail/"> About Wagtail</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/services/"> Services</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/blog/"> Blog</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/packages/"> Packages</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/developers/"> Developers</a></li>
+                        
+                    </ul>
+                </nav>
+            
+            <div class="text-center">
+                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li
+            </div>
+            <div class="text-center text-white-50 font-italic mt-3">
+                <small>
+                    Created using
+                    <a class="text-white" href="https://github.com/wagtail/sphinx_wagtail_theme" rel="nofollow" target="_blank">
+                        Sphinx Wagtail Theme 6.5.0
+                    </a>
+                    and
+                    <a class="text-white" href="https://www.sphinx-doc.org/" rel="nofollow" target="_blank">
+                        Sphinx 8.2.3
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+        </div>
+    </footer>
+        <script src="_static/documentation_options.js?v=3dc53093"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script type="text/javascript" src="_static/dist/theme.js"></script>
+        <script type="text/javascript" src="_static/dist/vendor.js"></script>
+        <script type="text/javascript" src="_static/searchtools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() { Search.loadIndex("searchindex.js"); });
+        </script>
+        <script type="text/javascript" id="searchindexloader"></script>
+    </body>
+</html>

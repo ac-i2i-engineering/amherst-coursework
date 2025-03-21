@@ -16,9 +16,26 @@ function debounce(func, wait) {
 }
 
 /* Add this to your script section */
-function handleCartClick(event, courseId) {
+function handleCartClick(event, courseId, sectionId) {
     event.stopPropagation();  // Prevent event from bubbling up to course-card
-    toggleCart(courseId);
+    
+    let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    let cartItem = cart.find(item => item.courseId === courseId );
+    
+    if (!cartItem) {
+        cart.push({
+            courseId: courseId,
+            sectionId: sectionId
+        });
+        updateButtonState(courseId, true);
+    } else {
+        cart = cart.filter(item => item.courseId !== courseId);
+        updateButtonState(courseId, false);
+    }
+    
+    localStorage.setItem('courseCart', JSON.stringify(cart));
+    updateCartDisplay();
+    findAndMarkAllCartConflicts();
 }
 
 function toggleCartPanel() {
@@ -29,147 +46,131 @@ function toggleCartPanel() {
 
 // Find courses with same meeting time and apply styling
 function findAndMarkAllCartConflicts() {    
-    // Get all courses in cart
-    const cartIds = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
     
-    // Always clear all existing conflict styling first
+    // Clear existing conflict styling
     document.querySelectorAll('.course-card').forEach(card => {
         card.classList.remove('time-conflict');
         card.style.border = '';
         card.style.backgroundColor = '';
-        
         const existingBadge = card.querySelector('.conflict-badge');
         if (existingBadge) existingBadge.remove();
     });
     
-    // If cart is empty, we're done (all styling cleared)
-    if (cartIds.length === 0) {
-        localStorage.removeItem('courseTimeConflicts'); // Clear stored conflicts
+    if (cart.length === 0) {
+        localStorage.removeItem('courseTimeConflicts');
         return;
     }
     
-    // Initialize courseConflicts object to store all conflicts
-    const courseConflicts = {};
+    const params = new URLSearchParams();
+    params.append('cart', JSON.stringify(cart));
     
-    // Process each cart course
-    cartIds.forEach(cartCourseId => {
-        // Find the course card
-        const cartCard = document.querySelector(`.course-card[data-course-id="${cartCourseId}"]`);
-        if (!cartCard) {
-            return; // Skip this iteration
-        }
-        
-        // Get the course name for better messages
-        const cartCourseName = cartCard.querySelector('.course-name')?.textContent || 'Unknown Course';
-        
-        // Get the meeting time info
-        const cartInfoText = cartCard.querySelector('.info-text')?.textContent;
-        if (!cartInfoText) {
-            return;
-        }
-        
-        // Extract meeting times
-        const cartMeetingTime = cartInfoText.split('|')[1]?.trim();
-        if (!cartMeetingTime) {
-            return;
-        }
-        
-        // Track conflicts for this cart course
-        const conflictsForThisCourse = [];
-        
-        // Find all non-cart courses with matching meeting times
-        document.querySelectorAll('.course-card').forEach(card => {
-            const courseId = card.dataset.courseId;
-            // Skip if this course is in cart
-            if (cartIds.includes(courseId)) return;
+    fetch(`/cart-courses/?${params}`)
+        .then(response => response.json())
+        .then(data => {
+            const courseConflicts = {};
             
-            const infoText = card.querySelector('.info-text')?.textContent;
-            if (!infoText) return;
-            
-            const meetingTime = infoText.split('|')[1]?.trim();
-            
-            // Simple direct string comparison of meeting times
-            if (meetingTime && meetingTime === cartMeetingTime) {
-                const courseName = card.querySelector('.course-name')?.textContent || 'Unknown';
+            data.courses.forEach(cartCourse => {
+                const cartSection = Object.values(cartCourse.section_information)[0];
+                const cartCourseId = cartCourse.id;
+                const cartCourseName = cartCourse.name;
                 
-                // Add to our tracking array
-                conflictsForThisCourse.push({
-                    id: courseId,
-                    name: courseName
+                // Get meeting times for cart section
+                const cartMeetingTimes = [];
+                ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+                    if (cartSection[`${day}_start_time`] && cartSection[`${day}_end_time`]) {
+                        cartMeetingTimes.push({
+                            day,
+                            start: new Date(`2000/01/01 ${cartSection[`${day}_start_time`]}`),
+                            end: new Date(`2000/01/01 ${cartSection[`${day}_end_time`]}`)
+                        });
+                    }
                 });
-                
-                // Apply styling
-                card.classList.add('time-conflict');
-                card.style.border = '2px solid #ff817a';
-                card.style.backgroundColor = 'rgba(255,0,0,0.07)';
-                
-                // Add a badge
-                const badge = document.createElement('div');
-                badge.className = 'conflict-badge';
-                badge.textContent = '⚠️ CONFLICT';
-                badge.style.position = 'absolute';
-                badge.style.top = '18px';
-                badge.style.right = '50px';
-                badge.style.backgroundColor = '#ff0000';
-                badge.style.color = 'white';
-                badge.style.padding = '3px 6px';
-                badge.style.borderRadius = '3px';
-                badge.style.fontSize = '12px';
-                badge.style.fontWeight = 'bold';
-                badge.style.zIndex = '100';
-                badge.title = `Conflicts with ${cartCourseName}`;
-                
-                // Set position relative if needed
-                if (getComputedStyle(card).position === 'static') {
-                    card.style.position = 'relative';
-                }
-                
-                card.appendChild(badge);
-            }
+
+                // Check visible course cards for conflicts
+                document.querySelectorAll('.course-card').forEach(card => {
+                    const courseId = card.dataset.courseId;
+                    if (cart.some(item => item.courseId === courseId)) return;
+
+                    const sectionModal = document.createElement('div');
+                    sectionModal.style.display = 'none';
+                    document.body.appendChild(sectionModal);
+
+                    fetch(`/api/course/${courseId}/sections/`)
+                        .then(response => response.json())
+                        .then(sections => {
+                            let hasConflict = false;
+                            
+                            sections.forEach(section => {
+                                ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
+                                    const shortDay = day.substring(0, 3);
+                                    if (section[`${day}_start_time`] && section[`${day}_end_time`]) {
+                                        const start = new Date(`2000/01/01 ${section[`${day}_start_time`]}`);
+                                        const end = new Date(`2000/01/01 ${section[`${day}_end_time`]}`);
+                                        
+                                        cartMeetingTimes.forEach(cartTime => {
+                                            if (cartTime.day === shortDay && 
+                                                !(end <= cartTime.start || start >= cartTime.end)) {
+                                                hasConflict = true;
+                                            }
+                                        });
+                                    }
+                                });
+                            });
+
+                            if (hasConflict) {
+                                const courseName = card.querySelector('.course-name')?.textContent || 'Unknown';
+                                
+                                if (!courseConflicts[cartCourseId]) {
+                                    courseConflicts[cartCourseId] = [];
+                                }
+                                courseConflicts[cartCourseId].push({
+                                    id: courseId,
+                                    name: courseName
+                                });
+
+                                card.classList.add('time-conflict');
+                                card.style.border = '2px solid #ff817a';
+                                card.style.backgroundColor = 'rgba(255,0,0,0.07)';
+
+                                const badge = document.createElement('div');
+                                badge.className = 'conflict-badge';
+                                badge.textContent = '⚠️ CONFLICT';
+                                badge.style.position = 'absolute';
+                                badge.style.top = '18px';
+                                badge.style.right = '50px';
+                                badge.style.backgroundColor = '#ff0000';
+                                badge.style.color = 'white';
+                                badge.style.padding = '3px 6px';
+                                badge.style.borderRadius = '3px';
+                                badge.style.fontSize = '12px';
+                                badge.style.fontWeight = 'bold';
+                                badge.style.zIndex = '100';
+                                badge.title = `Conflicts with ${cartCourseName}`;
+
+                                if (getComputedStyle(card).position === 'static') {
+                                    card.style.position = 'relative';
+                                }
+                                
+                                card.appendChild(badge);
+                            }
+                        });
+                });
+            });
+
+            localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
+        })
+        .catch(error => {
+            console.error('Error checking conflicts:', error);
         });
-        
-        // Store conflicts for this cart course
-        courseConflicts[cartCourseId] = conflictsForThisCourse.map(c => c.id);
-    });
-    
-    // Store all conflicts
-    localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
-}
-
-// Update your toggleCart function to use findAndMarkAllCartConflicts
-function toggleCart(courseId) {
-    // Get existing cart or initialize empty array
-    let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    
-    // Check if course is already in cart
-    let courseIndex = cart.indexOf(courseId);
-    
-    if (event) {
-        event.stopPropagation();
-    }
-    
-    if (courseIndex === -1) {
-        cart.push(courseId);
-        updateButtonState(courseId, true);
-    } else {
-        cart.splice(courseIndex, 1);
-        updateButtonState(courseId, false);
-    }
-
-    // Save updated cart
-    localStorage.setItem('courseCart', JSON.stringify(cart));
-    updateCartDisplay();
-    
-    // Update this line to check all cart courses
-    setTimeout(findAndMarkAllCartConflicts, 500);
 }
 
 // Update your conflict highlighting function to use the stored conflicts
 function highlightTimeConflicts() {
     findAndMarkAllCartConflicts();
 
-    // Get courses in cart
-    const cartIds = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    // Get courses in cart with new format
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
     
     // Reset all course cards first
     document.querySelectorAll('.course-card').forEach(card => {
@@ -180,7 +181,7 @@ function highlightTimeConflicts() {
         if (existingBadge) existingBadge.remove();
     });
     
-    if (cartIds.length === 0) return;
+    if (cart.length === 0) return;
     
     // Get stored conflicts
     const courseConflicts = JSON.parse(localStorage.getItem('courseTimeConflicts') || '{}');
@@ -189,16 +190,16 @@ function highlightTimeConflicts() {
     document.querySelectorAll('.course-card').forEach(card => {
         const courseId = card.dataset.courseId;
         
-        // Skip courses already in cart
-        if (cartIds.includes(courseId)) return;
+        // Skip courses already in cart using new format
+        if (cart.some(item => item.courseId === courseId)) return;
         
         // Check if any cart course conflicts with this course
         let hasConflict = false;
         
-        cartIds.forEach(cartCourseId => {
+        cart.forEach(cartItem => {
             // Check if this cart course has conflicts with the current card
-            if (courseConflicts[cartCourseId] && 
-                courseConflicts[cartCourseId].includes(courseId)) {
+            if (courseConflicts[cartItem.courseId] && 
+                courseConflicts[cartItem.courseId].includes(courseId)) {
                 hasConflict = true;
             }
         });
@@ -340,14 +341,14 @@ function getCookie(name) {
 }
 
 function updateCartDisplay() {
-    const cartIds = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
     const cartCount = document.getElementById('cart-count');
     const cartCountHeader = document.getElementById('cart-count-header');
     const cartCoursesList = document.getElementById('cart-courses-list');
     
     // Update counts
-    cartCount.textContent = cartIds.length;
-    cartCountHeader.textContent = cartIds.length;
+    cartCount.textContent = cart.length;
+    cartCountHeader.textContent = cart.length;
 
     // Clear existing calendar blocks
     document.querySelectorAll('.cart-calendar-container .course-block').forEach(block => {
@@ -359,10 +360,10 @@ function updateCartDisplay() {
         cartCoursesList.innerHTML = '';
     }
 
-    if (cartIds.length > 0) {
+    if (cart.length > 0) {
         // Create URLSearchParams object properly
         const params = new URLSearchParams();
-        cartIds.forEach(id => params.append('ids[]', id));
+        params.append('cart', JSON.stringify(cart));
 
         fetch(`/cart-courses/?${params}`)
             .then(response => response.json())
@@ -406,7 +407,7 @@ function updateCartDisplay() {
                                         <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
                                         <h4 class="course-name">${course.name}</h4>
                                     </div>
-                                    <button onclick="toggleCart('${course.id}')" class="remove-btn">×</button>
+                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.values(course.section_information)[0].id}')" class="remove-btn">×</button>
                                 </div>
                             </div>
                         `;
@@ -551,4 +552,54 @@ function resetCart() {
         const existingBadge = card.querySelector('.conflict-badge');
         if (existingBadge) existingBadge.remove();
     });
+}
+
+function showSectionModal(event, courseId, courseName) {
+    event.stopPropagation();
+    const modal = document.getElementById('section-modal');
+    const sectionList = document.getElementById('section-list');
+    
+    // Fetch sections for this course
+    fetch(`/api/course/${courseId}/sections/`)
+        .then(response => response.json())
+        .then(sections => {
+            sectionList.innerHTML = ''; // Clear existing sections
+            
+            sections.forEach(section => {
+                const sectionElement = document.createElement('div');
+                sectionElement.className = 'section-item';
+                sectionElement.innerHTML = `
+                    Section ${section.section_number}<br>
+                    Professor: ${section.professor_name}<br>
+                    Location: ${section.location}<br>
+                    Time: ${formatMeetingTimes(section)}
+                `;
+                sectionElement.onclick = () => {
+                    handleCartClick(event, courseId, section.id);
+                    modal.style.display = 'none';
+                };
+                sectionList.appendChild(sectionElement);
+            });
+        });
+    
+    modal.style.display = 'block';
+}
+
+function formatMeetingTimes(section) {
+    const days = [
+        {day: 'monday', short: 'Mon'},
+        {day: 'tuesday', short: 'Tue'},
+        {day: 'wednesday', short: 'Wed'},
+        {day: 'thursday', short: 'Thu'},
+        {day: 'friday', short: 'Fri'}
+    ];
+    
+    let times = [];
+    days.forEach(({day, short}) => {
+        if (section[`${day}_start_time`] && section[`${day}_end_time`]) {
+            times.push(`${short} ${section[`${day}_start_time`]}-${section[`${day}_end_time`]}`);
+        }
+    });
+    
+    return times.join(', ');
 }

@@ -20,7 +20,7 @@ function handleCartClick(event, courseId, sectionId) {
     event.stopPropagation();  // Prevent event from bubbling up to course-card
     
     let cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    let cartItem = cart.find(item => item.courseId === courseId );
+    let cartItem = cart.find(item => item.courseId === courseId && item.sectionId === sectionId);
     
     if (!cartItem) {
         cart.push({
@@ -47,6 +47,7 @@ function toggleCartPanel() {
 // Find courses with same meeting time and apply styling
 function findAndMarkAllCartConflicts() {    
     const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    const courseConflicts = {};
     
     // Clear existing conflict styling
     document.querySelectorAll('.course-card').forEach(card => {
@@ -68,8 +69,6 @@ function findAndMarkAllCartConflicts() {
     fetch(`/cart-courses/?${params}`)
         .then(response => response.json())
         .then(data => {
-            const courseConflicts = {};
-            
             data.courses.forEach(cartCourse => {
                 const cartSection = Object.values(cartCourse.section_information)[0];
                 const cartCourseId = cartCourse.id;
@@ -90,16 +89,24 @@ function findAndMarkAllCartConflicts() {
                 // Check visible course cards for conflicts
                 document.querySelectorAll('.course-card').forEach(card => {
                     const courseId = card.dataset.courseId;
-                    if (cart.some(item => item.courseId === courseId)) return;
+                    if (cart.some(item => item.courseId === courseId)) {
+                        return;
+                    }
 
-                    const sectionModal = document.createElement('div');
-                    sectionModal.style.display = 'none';
-                    document.body.appendChild(sectionModal);
+                    // skip cart course cards
+                    if (card.classList.contains('cart-course-card')) {
+                        return;
+                    }
+
+                    if (!courseId) {
+                        console.error('Course id missing:', card);
+                        return;
+                    }
 
                     fetch(`/api/course/${courseId}/sections/`)
                         .then(response => response.json())
                         .then(sections => {
-                            let hasConflict = false;
+                            const conflictingSections = [];
                             
                             sections.forEach(section => {
                                 ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
@@ -111,28 +118,29 @@ function findAndMarkAllCartConflicts() {
                                         cartMeetingTimes.forEach(cartTime => {
                                             if (cartTime.day === shortDay && 
                                                 !(end <= cartTime.start || start >= cartTime.end)) {
-                                                hasConflict = true;
+                                                conflictingSections.push(section.section_number);
                                             }
                                         });
                                     }
                                 });
                             });
 
-                            if (hasConflict) {
-                                const courseName = card.querySelector('.course-name')?.textContent || 'Unknown';
-                                
+                            if (conflictingSections.length > 0) {
                                 if (!courseConflicts[cartCourseId]) {
                                     courseConflicts[cartCourseId] = [];
                                 }
                                 courseConflicts[cartCourseId].push({
                                     id: courseId,
-                                    name: courseName
+                                    name: card.querySelector('.course-name')?.textContent || 'Unknown',
+                                    conflictingSections: conflictingSections
                                 });
 
+                                // Apply visual conflict styling
                                 card.classList.add('time-conflict');
                                 card.style.border = '2px solid #ff817a';
                                 card.style.backgroundColor = 'rgba(255,0,0,0.07)';
 
+                                // Add conflict badge
                                 const badge = document.createElement('div');
                                 badge.className = 'conflict-badge';
                                 badge.textContent = '⚠️ CONFLICT';
@@ -151,63 +159,16 @@ function findAndMarkAllCartConflicts() {
                                 if (getComputedStyle(card).position === 'static') {
                                     card.style.position = 'relative';
                                 }
-                                
                                 card.appendChild(badge);
                             }
+
                         });
                 });
             });
-
-            localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
-        })
+                })
         .catch(error => {
             console.error('Error checking conflicts:', error);
         });
-}
-
-// Update your conflict highlighting function to use the stored conflicts
-function highlightTimeConflicts() {
-    findAndMarkAllCartConflicts();
-
-    // Get courses in cart with new format
-    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    
-    // Reset all course cards first
-    document.querySelectorAll('.course-card').forEach(card => {
-        card.classList.remove('time-conflict');
-        card.style.border = '';
-        
-        const existingBadge = card.querySelector('.conflict-badge');
-        if (existingBadge) existingBadge.remove();
-    });
-    
-    if (cart.length === 0) return;
-    
-    // Get stored conflicts
-    const courseConflicts = JSON.parse(localStorage.getItem('courseTimeConflicts') || '{}');
-    
-    // Check each course card for conflicts with cart courses
-    document.querySelectorAll('.course-card').forEach(card => {
-        const courseId = card.dataset.courseId;
-        
-        // Skip courses already in cart using new format
-        if (cart.some(item => item.courseId === courseId)) return;
-        
-        // Check if any cart course conflicts with this course
-        let hasConflict = false;
-        
-        cart.forEach(cartItem => {
-            // Check if this cart course has conflicts with the current card
-            if (courseConflicts[cartItem.courseId] && 
-                courseConflicts[cartItem.courseId].includes(courseId)) {
-                hasConflict = true;
-            }
-        });
-        
-        if (hasConflict) {
-            card.classList.add('time-conflict');
-        }
-    });
 }
 
 function updateButtonState(courseId, inCart) {
@@ -407,7 +368,7 @@ function updateCartDisplay() {
                                         <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
                                         <h4 class="course-name">${course.name}</h4>
                                     </div>
-                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.values(course.section_information)[0].id}')" class="remove-btn">×</button>
+                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn">×</button>
                                 </div>
                             </div>
                         `;
@@ -559,6 +520,9 @@ function showSectionModal(event, courseId, courseName) {
     const modal = document.getElementById('section-modal');
     const sectionList = document.getElementById('section-list');
     
+    // Get stored conflicts
+    const courseConflicts = JSON.parse(localStorage.getItem('courseTimeConflicts') || '{}');
+
     // Fetch sections for this course
     fetch(`/api/course/${courseId}/sections/`)
         .then(response => response.json())
@@ -568,14 +532,41 @@ function showSectionModal(event, courseId, courseName) {
             sections.forEach(section => {
                 const sectionElement = document.createElement('div');
                 sectionElement.className = 'section-item';
+                
+                // Check if this section is in conflicts
+                let hasConflict = false;
+                Object.values(courseConflicts).forEach(conflicts => {
+                    conflicts.forEach(conflict => {
+                        if (conflict.conflictingSections && 
+                            conflict.id === courseId &&
+                            conflict.conflictingSections.includes(section.section_number)) {
+                            hasConflict = true;
+                        }
+                    });
+                });
+                
+                // Add conflict styling if needed
+                if (hasConflict) {
+                    sectionElement.classList.add('section-conflict');
+                    sectionElement.style.border = '2px solid #ff817a';
+                    sectionElement.style.backgroundColor = 'rgba(255,0,0,0.07)';
+                }
+                
                 sectionElement.innerHTML = `
-                    Section ${section.section_number}<br>
-                    Professor: ${section.professor_name}<br>
-                    Location: ${section.location}<br>
-                    Time: ${formatMeetingTimes(section)}
+                    <div class="section-header">
+                        Section ${section.section_number}
+                        ${hasConflict ? '<span class="conflict-badge">⚠️ CONFLICT</span>' : ''}
+                    </div>
+                    <div class="section-details">
+                        <p>Professor: ${section.professor_name || 'TBA'}</p>
+                        <p>Location: ${section.location || 'TBA'}</p>
+                        <p>Time: ${formatMeetingTimes(section)}</p>
+                    </div>
                 `;
-                sectionElement.onclick = () => {
-                    handleCartClick(event, courseId, section.id);
+                
+                sectionElement.onclick = (clickEvent) => {
+                    clickEvent.stopPropagation();
+                    handleCartClick(clickEvent, courseId, section.section_number);
                     modal.style.display = 'none';
                 };
                 sectionList.appendChild(sectionElement);

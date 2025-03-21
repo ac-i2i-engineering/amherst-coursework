@@ -35,7 +35,10 @@ function handleCartClick(event, courseId, sectionId) {
     
     localStorage.setItem('courseCart', JSON.stringify(cart));
     updateCartDisplay();
-    findAndMarkAllCartConflicts();
+    findAndMarkAllCartConflicts().then(() => {
+    }).catch(error => {
+        console.error('Error in conflict checking:', error);
+    });
 }
 
 function toggleCartPanel() {
@@ -49,20 +52,39 @@ function findAndMarkAllCartConflicts() {
     const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
     const courseConflicts = {};
     
-    // Clear existing conflict styling
-    document.querySelectorAll('.course-card').forEach(card => {
-        card.classList.remove('time-conflict');
-        card.style.border = '';
-        card.style.backgroundColor = '';
-        const existingBadge = card.querySelector('.conflict-badge');
-        if (existingBadge) existingBadge.remove();
-    });
-    
-    if (cart.length === 0) {
-        localStorage.removeItem('courseTimeConflicts');
-        return;
-    }
-    
+    return new Promise(resolve => {
+        const cards = Array.from(document.querySelectorAll('.course-card'));
+        let completed = 0;
+        
+        cards.forEach(card => {
+            // Use requestAnimationFrame for smoother DOM updates
+            requestAnimationFrame(() => {
+                card.classList.remove('time-conflict');
+                card.style.border = '';
+                card.style.backgroundColor = '';
+                const existingBadge = card.querySelector('.conflict-badge');
+                if (existingBadge) {
+                    card.removeChild(existingBadge);
+                }
+                completed++;
+                const existingBadge1 = card.querySelector('.conflict-badge');
+                if (existingBadge1) {
+                    card.removeChild(existingBadge1);
+                }
+                if (completed === cards.length) {
+                    resolve(); // All cards processed
+                }
+            });
+        });
+        
+        // Fallback resolve in case of empty cards
+        if (cards.length === 0) resolve();
+    }).then(() => {
+        if (cart.length === 0) {
+            localStorage.removeItem('courseTimeConflicts');
+            return;
+        }
+
     const params = new URLSearchParams();
     params.append('cart', JSON.stringify(cart));
     
@@ -169,6 +191,7 @@ function findAndMarkAllCartConflicts() {
         .catch(error => {
             console.error('Error checking conflicts:', error);
         });
+    });
 }
 
 function updateButtonState(courseId, inCart) {
@@ -495,25 +518,57 @@ function resetCart() {
     localStorage.removeItem('courseCart');
     localStorage.removeItem('courseTimeConflicts');
     
-    updateCartDisplay();
-    
-    // Reset all button states
-    document.querySelectorAll('.cart-button').forEach(button => {
-        const icon = button.querySelector('i');
-        icon.className = 'fa-solid fa-plus';
-        button.classList.remove('in-cart');
-    });
-    
-    // Clear all conflict styling
-    document.querySelectorAll('.course-card').forEach(card => {
-        card.classList.remove('time-conflict');
-        card.style.border = '';
-        card.style.backgroundColor = '';
+    return new Promise(resolve => {
+        // Reset all button states first
+        const buttons = Array.from(document.querySelectorAll('.cart-button'));
+        let completedButtons = 0;
         
-        const existingBadge = card.querySelector('.conflict-badge');
-        if (existingBadge) existingBadge.remove();
+        buttons.forEach(button => {
+            requestAnimationFrame(() => {
+                const icon = button.querySelector('i');
+                icon.className = 'fa-solid fa-plus';
+                button.classList.remove('in-cart');
+                
+                completedButtons++;
+                if (completedButtons === buttons.length) {
+                    // After buttons are reset, clear conflict styling
+                    const cards = Array.from(document.querySelectorAll('.course-card'));
+                    let completedCards = 0;
+                    
+                    cards.forEach(card => {
+                        requestAnimationFrame(() => {
+                            card.classList.remove('time-conflict');
+                            card.style.border = '';
+                            card.style.backgroundColor = '';
+                            
+                            const existingBadge = card.querySelector('.conflict-badge');
+                            if (existingBadge) existingBadge.remove();
+                            
+                            completedCards++;
+                            if (completedCards === cards.length) {
+                                updateCartDisplay();
+                                resolve();
+                            }
+                        });
+                    });
+                    
+                    // Handle case where there are no cards
+                    if (cards.length === 0) {
+                        updateCartDisplay();
+                        resolve();
+                    }
+                }
+            });
+        });
+        
+        // Handle case where there are no buttons
+        if (buttons.length === 0) {
+            updateCartDisplay();
+            resolve();
+        }
     });
 }
+
 
 function showSectionModal(event, courseId, courseName) {
     event.stopPropagation();

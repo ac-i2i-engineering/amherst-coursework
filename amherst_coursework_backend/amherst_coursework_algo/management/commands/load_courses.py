@@ -445,6 +445,27 @@ class Command(BaseCommand):
                     course.courseMaterialsLink = courseMaterialsLink
                     course.save()
 
+                    if course.sections.all().count() == 0:
+                        dummy_professor, _ = Professor.objects.get_or_create(
+                        name="TBA",
+                        link="https://www.amherst.edu/"
+                        )
+                        dummy_section, _ = Section.objects.update_or_create(
+                            section_number="01",
+                            section_for=course,
+                            defaults={
+                                "professor": dummy_professor,
+                                "location": "TBA"
+                            }
+                        )
+                        course.professors.add(dummy_professor)
+                        course.save()
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f'Added dummy section for course "{course.courseName}"'
+                            )
+                        )
+
                     self.stdout.write(
                         self.style.SUCCESS(
                             f'Successfully created course "{course.courseName}"'

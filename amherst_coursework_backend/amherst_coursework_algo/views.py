@@ -107,16 +107,13 @@ def format_meeting_times(time_slots):
 
 
 def get_cart_courses(request):
-    print("\n=== Starting get_cart_courses ===")
     cart_items = json.loads(request.GET.get("cart", "[]"))
-    print(f"Cart items received: {cart_items}")
     cart_data = []
 
     for item in cart_items:
         try:
             course_id = item.get("courseId")
             section_id = item.get("sectionId")
-            print(f"\nProcessing item - courseId: {course_id}, sectionId: {section_id}")
 
             course = Course.objects.prefetch_related(
                 "courseCodes", "sections__professor"
@@ -201,8 +198,6 @@ def get_cart_courses(request):
             print(f"ERROR: Unexpected error processing item {item}: {str(e)}")
             continue
 
-    print(f"\nReturning {len(cart_data)} courses")
-    print("=== Ending get_cart_courses ===\n")
     return JsonResponse({"courses": cart_data})
 
 

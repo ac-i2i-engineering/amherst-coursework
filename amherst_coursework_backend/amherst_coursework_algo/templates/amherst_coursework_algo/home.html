@@ -18,7 +18,7 @@
         <div id="cart-courses-list"></div>
         <div id="cart-total">
             Total Courses: <span id="cart-count">0</span>
-            <button onclick="resetCart()" class="reset-cart">Reset Cart</button>
+            <button class="reset-cart">Reset Cart</button>
         </div>
     
         <!-- Cart calendar -->
@@ -98,7 +98,9 @@
                         <div class="course-card-right">
                             <div class="course-header">
                                 <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
-                                <button class="cart-button" onclick="handleCartClick(event, '{{ course.id }}')" data-course-id="{{course.id}}">
+                                <button class="cart-button" 
+                                    onclick="showSectionModal(event, '{{ course.id }}', '{{ course.courseName }}')" 
+                                    data-course-id="{{course.id}}">
                                     <i class="fa-solid fa-plus" style="color: #fff"></i>
                                 </button>
                             </div>
@@ -112,13 +114,26 @@
         </div>
     </div>
 
+    <div id="section-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Select Course Section</h3>
+            <div id="section-list">
+                <!-- Sections will be populated here -->
+            </div>
+        </div>
+    </div>
+
     <script>
 
     // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', async function() {
         updateCartDisplay();
         setTimeout(() => {
-            findAndMarkAllCartConflicts();
+            findAndMarkAllCartConflicts().then(() => {
+            }).catch(error => {
+                console.error('Error in conflict checking:', error);
+            });
         }, 1000);
 
         document.querySelectorAll('.course-card').forEach(card => {
@@ -145,13 +160,40 @@
             }
         });
 
+        const closeModalButton = document.querySelector('.close-modal');
+        if (closeModalButton) {
+            closeModalButton.addEventListener('click', function() {
+                document.getElementById('section-modal').style.display = 'none';
+            });
+        }
+
+        // Handle clicking outside modal
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('section-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Handle clicking on reset cart button
+        document.querySelector('.reset-cart').addEventListener('click', async () => {
+            try {
+                await resetCart();
+                await findAndMarkAllCartConflicts();
+            } catch (error) {
+                console.error('Error resetting cart:', error);
+            }
+        });
+
+
         // Update button states to match cart
         const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
         document.querySelectorAll('.cart-button').forEach(button => {
             const courseId = button.getAttribute('data-course-id');
-            //console.log('Checking cart for course:', courseId); // Debug output
-            if (cart.includes(courseId)) {
+            if (cart.some(item => item.courseId === courseId)) {
                 updateButtonState(courseId, true);
+            } else {
+                updateButtonState(courseId, false);
             }
         });
     });

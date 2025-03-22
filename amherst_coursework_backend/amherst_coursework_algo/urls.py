@@ -11,4 +11,9 @@ urlpatterns = [
         "api/course/<int:course_id>/", views.get_course_by_id, name="get_course_by_id"
     ),
     path("api/masked_filter/", masked_filters.filter, name="filter_courses"),
+    path(
+        "api/course/<int:course_id>/sections/",
+        views.get_course_sections,
+        name="course_sections",
+    ),
 ]

@@ -29,8 +29,11 @@ function handleCartClick(event, courseId, sectionId) {
         });
         updateButtonState(courseId, true);
     } else {
-        cart = cart.filter(item => item.courseId !== courseId);
-        updateButtonState(courseId, false);
+        cart = cart.filter(item => item.courseId !== courseId || item.sectionId !== sectionId);
+        containsCourse = cart.filter(item => item.courseId === courseId);
+        if (containsCourse.length === 0) {
+            updateButtonState(courseId, false);
+        }
     }
     
     localStorage.setItem('courseCart', JSON.stringify(cart));

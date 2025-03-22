@@ -178,3 +178,5 @@ LOGGING = {
         },
     },
 }
+
+INSTITUTIONAL_DOMAIN = "https://www.amherst.edu/"

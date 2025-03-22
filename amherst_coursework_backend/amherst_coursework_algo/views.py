@@ -13,6 +13,10 @@ from amherst_coursework_algo.config.course_dictionaries import (
 )
 from typing import List
 from .masked_filters import filter
+import logging
+
+# Get logger
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -70,6 +74,10 @@ def home(request):
             "search_query": search,  # Pass search query back to template
         },
     )
+
+
+def format_section_time(time_value):
+    return time_value.strftime("%I:%M %p") if time_value else None
 
 
 def format_meeting_times(time_slots):
@@ -132,70 +140,40 @@ def get_cart_courses(request):
                             section.professor.name if section.professor else None
                         ),
                         "course_location": section.location,
-                        "mon_start_time": (
-                            section.monday_start_time.strftime("%I:%M %p")
-                            if section.monday_start_time
-                            else None
+                        "mon_start_time": format_section_time(
+                            section.monday_start_time
                         ),
-                        "mon_end_time": (
-                            section.monday_end_time.strftime("%I:%M %p")
-                            if section.monday_end_time
-                            else None
+                        "mon_end_time": format_section_time(section.monday_end_time),
+                        "tue_start_time": format_section_time(
+                            section.tuesday_start_time
                         ),
-                        "tue_start_time": (
-                            section.tuesday_start_time.strftime("%I:%M %p")
-                            if section.tuesday_start_time
-                            else None
+                        "tue_end_time": format_section_time(section.tuesday_end_time),
+                        "wed_start_time": format_section_time(
+                            section.wednesday_start_time
                         ),
-                        "tue_end_time": (
-                            section.tuesday_end_time.strftime("%I:%M %p")
-                            if section.tuesday_end_time
-                            else None
+                        "wed_end_time": format_section_time(section.wednesday_end_time),
+                        "thu_start_time": format_section_time(
+                            section.thursday_start_time
                         ),
-                        "wed_start_time": (
-                            section.wednesday_start_time.strftime("%I:%M %p")
-                            if section.wednesday_start_time
-                            else None
+                        "thu_end_time": format_section_time(section.thursday_end_time),
+                        "fri_start_time": format_section_time(
+                            section.friday_start_time
                         ),
-                        "wed_end_time": (
-                            section.wednesday_end_time.strftime("%I:%M %p")
-                            if section.wednesday_end_time
-                            else None
-                        ),
-                        "thu_start_time": (
-                            section.thursday_start_time.strftime("%I:%M %p")
-                            if section.thursday_start_time
-                            else None
-                        ),
-                        "thu_end_time": (
-                            section.thursday_end_time.strftime("%I:%M %p")
-                            if section.thursday_end_time
-                            else None
-                        ),
-                        "fri_start_time": (
-                            section.friday_start_time.strftime("%I:%M %p")
-                            if section.friday_start_time
-                            else None
-                        ),
-                        "fri_end_time": (
-                            section.friday_end_time.strftime("%I:%M %p")
-                            if section.friday_end_time
-                            else None
-                        ),
+                        "fri_end_time": format_section_time(section.friday_end_time),
                     }
                 },
             }
             cart_data.append(course_info)
         except Course.DoesNotExist:
-            print(f"ERROR: Course with ID {course_id} not found")
+            logger.error(f"ERROR: Course with ID {course_id} not found")
             continue
         except Section.DoesNotExist:
-            print(
+            logger.error(
                 f"ERROR: Section with ID {section_id} not found for course {course_id}"
             )
             continue
         except Exception as e:
-            print(f"ERROR: Unexpected error processing item {item}: {str(e)}")
+            logger.error(f"ERROR: Unexpected error processing item {item}: {str(e)}")
             continue
 
     return JsonResponse({"courses": cart_data})
@@ -216,16 +194,8 @@ def course_details(request, course_id):
             "professor_link": section.professor.link if section.professor else None,
             "course_location": section.location,
             # Add meeting times for each day
-            "mon_start_time": (
-                section.monday_start_time.strftime("%I:%M %p")
-                if section.monday_start_time
-                else None
-            ),
-            "mon_end_time": (
-                section.monday_end_time.strftime("%I:%M %p")
-                if section.monday_end_time
-                else None
-            ),
+            "mon_start_time": format_section_time(section.monday_start_time),
+            "mon_end_time": format_section_time(section.monday_end_time),
             # ... repeat for other days ...
         }
 
@@ -272,56 +242,16 @@ def get_course_sections(request, course_id):
             "section_number": str(section.section_number),
             "professor_name": section.professor.name,
             "location": section.location,
-            "monday_start_time": (
-                section.monday_start_time.strftime("%I:%M %p")
-                if section.monday_start_time
-                else None
-            ),
-            "monday_end_time": (
-                section.monday_end_time.strftime("%I:%M %p")
-                if section.monday_end_time
-                else None
-            ),
-            "tuesday_start_time": (
-                section.tuesday_start_time.strftime("%I:%M %p")
-                if section.tuesday_start_time
-                else None
-            ),
-            "tuesday_end_time": (
-                section.tuesday_end_time.strftime("%I:%M %p")
-                if section.tuesday_end_time
-                else None
-            ),
-            "wednesday_start_time": (
-                section.wednesday_start_time.strftime("%I:%M %p")
-                if section.wednesday_start_time
-                else None
-            ),
-            "wednesday_end_time": (
-                section.wednesday_end_time.strftime("%I:%M %p")
-                if section.wednesday_end_time
-                else None
-            ),
-            "thursday_start_time": (
-                section.thursday_start_time.strftime("%I:%M %p")
-                if section.thursday_start_time
-                else None
-            ),
-            "thursday_end_time": (
-                section.thursday_end_time.strftime("%I:%M %p")
-                if section.thursday_end_time
-                else None
-            ),
-            "friday_start_time": (
-                section.friday_start_time.strftime("%I:%M %p")
-                if section.friday_start_time
-                else None
-            ),
-            "friday_end_time": (
-                section.friday_end_time.strftime("%I:%M %p")
-                if section.friday_end_time
-                else None
-            ),
+            "monday_start_time": format_section_time(section.monday_start_time),
+            "monday_end_time": format_section_time(section.monday_end_time),
+            "tuesday_start_time": format_section_time(section.tuesday_start_time),
+            "tuesday_end_time": format_section_time(section.tuesday_end_time),
+            "wednesday_start_time": format_section_time(section.wednesday_start_time),
+            "wednesday_end_time": format_section_time(section.wednesday_end_time),
+            "thursday_start_time": format_section_time(section.thursday_start_time),
+            "thursday_end_time": format_section_time(section.thursday_end_time),
+            "friday_start_time": format_section_time(section.friday_start_time),
+            "friday_end_time": format_section_time(section.friday_end_time),
         }
         for section in sections
     ]

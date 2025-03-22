@@ -1,6 +1,7 @@
 const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent);
 
 let globalCourseList = [];
+const TIMEOUT_MS = 3000;
 
 // Add debounce function at the top of your file
 function debounce(func, wait) {
@@ -30,7 +31,7 @@ function handleCartClick(event, courseId, sectionId) {
         updateButtonState(courseId, true);
     } else {
         cart = cart.filter(item => item.courseId !== courseId || item.sectionId !== sectionId);
-        containsCourse = cart.filter(item => item.courseId === courseId);
+        let containsCourse = cart.filter(item => item.courseId === courseId);
         if (containsCourse.length === 0) {
             updateButtonState(courseId, false);
         }
@@ -50,154 +51,178 @@ function toggleCartPanel() {
     updateCartDisplay();
 }
 
-// Find courses with same meeting time and apply styling
-function findAndMarkAllCartConflicts() {    
-    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    const courseConflicts = {};
-    
+// Clear existing conflict styling from cards
+function clearConflictStyling() {
     return new Promise(resolve => {
         const cards = Array.from(document.querySelectorAll('.course-card'));
         let completed = 0;
         
         cards.forEach(card => {
-            // Use requestAnimationFrame for smoother DOM updates
             requestAnimationFrame(() => {
                 card.classList.remove('time-conflict');
                 card.style.border = '';
                 card.style.backgroundColor = '';
-                const existingBadge = card.querySelector('.conflict-badge');
-                if (existingBadge) {
+                let existingBadge = card.querySelector('.conflict-badge');
+                let startTime = Date.now();
+                while (existingBadge) {
+                    if (Date.now() - startTime > TIMEOUT_MS) {
+                        console.error('Timeout removing conflict badges');
+                        break;
+                    }
                     card.removeChild(existingBadge);
+                    existingBadge = card.querySelector('.conflict-badge');
                 }
                 completed++;
-                const existingBadge1 = card.querySelector('.conflict-badge');
-                if (existingBadge1) {
-                    card.removeChild(existingBadge1);
-                }
                 if (completed === cards.length) {
-                    resolve(); // All cards processed
+                    resolve();
                 }
             });
         });
         
-        // Fallback resolve in case of empty cards
         if (cards.length === 0) resolve();
-    }).then(() => {
-        if (cart.length === 0) {
-            localStorage.removeItem('courseTimeConflicts');
-            return;
-        }
+    });
+}
+
+// Get cart course meeting times
+function getCartCourseTimes(cartData) {
+    return cartData.courses.map(cartCourse => {
+        const cartSection = Object.values(cartCourse.section_information)[0];
+        const meetingTimes = [];
+        
+        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+            if (cartSection[`${day}_start_time`] && cartSection[`${day}_end_time`]) {
+                meetingTimes.push({
+                    day,
+                    start: new Date(`2000/01/01 ${cartSection[`${day}_start_time`]}`),
+                    end: new Date(`2000/01/01 ${cartSection[`${day}_end_time`]}`),
+                    courseId: cartCourse.id,
+                    courseName: cartCourse.name
+                });
+            }
+        });
+        
+        return {
+            courseId: cartCourse.id,
+            courseName: cartCourse.name,
+            meetingTimes
+        };
+    });
+}
+
+// Get non-cart course cards
+function getNonCartCourseCards(cart) {
+    return Array.from(document.querySelectorAll('.course-card')).filter(card => {
+        const courseId = card.dataset.courseId;
+        return courseId && 
+               !cart.some(item => item.courseId === courseId) && 
+               !card.classList.contains('cart-course-card');
+    });
+}
+
+// Check for time conflicts
+function checkTimeConflict(start1, end1, start2, end2) {
+    return !(end1 <= start2 || start1 >= end2);
+}
+
+// Apply conflict styling to a course card
+function applyConflictStyling(card, cartCourseName) {
+    card.classList.add('time-conflict');
+    card.style.border = '2px solid #ff817a';
+    card.style.backgroundColor = 'rgba(255,0,0,0.07)';
+
+    const badge = document.createElement('div');
+    badge.className = 'conflict-badge';
+    badge.textContent = '⚠️ CONFLICT';
+    badge.style.position = 'absolute';
+    badge.style.top = '18px';
+    badge.style.right = '50px';
+    badge.style.backgroundColor = '#ff0000';
+    badge.style.color = 'white';
+    badge.style.padding = '3px 6px';
+    badge.style.borderRadius = '3px';
+    badge.style.fontSize = '12px';
+    badge.style.fontWeight = 'bold';
+    badge.style.zIndex = '100';
+    badge.title = `Conflicts with ${cartCourseName}`;
+
+    if (getComputedStyle(card).position === 'static') {
+        card.style.position = 'relative';
+    }
+    card.appendChild(badge);
+}
+
+// Checks which course-sections have conflicts with the cart and highlights course cards with conflicts
+async function findAndMarkAllCartConflicts() {    
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    const courseConflicts = {};
+    
+    await clearConflictStyling();
+
+    if (cart.length === 0) {
+        localStorage.removeItem('courseTimeConflicts');
+        return;
+    }
 
     const params = new URLSearchParams();
     params.append('cart', JSON.stringify(cart));
     
-    fetch(`/cart-courses/?${params}`)
-        .then(response => response.json())
-        .then(data => {
-            data.courses.forEach(cartCourse => {
-                const cartSection = Object.values(cartCourse.section_information)[0];
-                const cartCourseId = cartCourse.id;
-                const cartCourseName = cartCourse.name;
-                
-                // Get meeting times for cart section
-                const cartMeetingTimes = [];
-                ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
-                    if (cartSection[`${day}_start_time`] && cartSection[`${day}_end_time`]) {
-                        cartMeetingTimes.push({
-                            day,
-                            start: new Date(`2000/01/01 ${cartSection[`${day}_start_time`]}`),
-                            end: new Date(`2000/01/01 ${cartSection[`${day}_end_time`]}`)
-                        });
-                    }
-                });
+    try {
+        const response = await fetch(`/cart-courses/?${params}`);
+        const data = await response.json();
+        const cartCourseTimes = getCartCourseTimes(data);
+        const cards = getNonCartCourseCards(cart);
 
-                // Check visible course cards for conflicts
-                document.querySelectorAll('.course-card').forEach(card => {
-                    const courseId = card.dataset.courseId;
-                    if (cart.some(item => item.courseId === courseId)) {
-                        return;
-                    }
+        const sectionPromises = cards.map(card => 
+            fetch(`/api/course/${card.dataset.courseId}/sections/`)
+                .then(r => r.json())
+                .then(sections => ({ card, sections }))
+        );
 
-                    // skip cart course cards
-                    if (card.classList.contains('cart-course-card')) {
-                        return;
-                    }
-
-                    if (!courseId) {
-                        console.error('Course id missing:', card);
-                        return;
-                    }
-
-                    fetch(`/api/course/${courseId}/sections/`)
-                        .then(response => response.json())
-                        .then(sections => {
-                            const conflictingSections = [];
-                            
-                            sections.forEach(section => {
-                                ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
-                                    const shortDay = day.substring(0, 3);
-                                    if (section[`${day}_start_time`] && section[`${day}_end_time`]) {
-                                        const start = new Date(`2000/01/01 ${section[`${day}_start_time`]}`);
-                                        const end = new Date(`2000/01/01 ${section[`${day}_end_time`]}`);
-                                        
-                                        cartMeetingTimes.forEach(cartTime => {
-                                            if (cartTime.day === shortDay && 
-                                                !(end <= cartTime.start || start >= cartTime.end)) {
-                                                conflictingSections.push(section.section_number);
-                                            }
-                                        });
+        const results = await Promise.all(sectionPromises);
+        
+        results.forEach(({ card, sections }) => {
+            const courseId = card.dataset.courseId;
+            
+            sections.forEach(section => {
+                ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
+                    const shortDay = day.substring(0, 3);
+                    if (section[`${day}_start_time`] && section[`${day}_end_time`]) {
+                        const start = new Date(`2000/01/01 ${section[`${day}_start_time`]}`);
+                        const end = new Date(`2000/01/01 ${section[`${day}_end_time`]}`);
+                        
+                        cartCourseTimes.forEach(cartCourse => {
+                            cartCourse.meetingTimes.forEach(cartTime => {
+                                if (cartTime.day === shortDay && 
+                                    checkTimeConflict(start, end, cartTime.start, cartTime.end)) {
+                                    
+                                    if (!courseConflicts[cartCourse.courseId]) {
+                                        courseConflicts[cartCourse.courseId] = [];
                                     }
-                                });
+                                    
+                                    if (!courseConflicts[cartCourse.courseId].some(c => 
+                                        c.id === courseId && 
+                                        c.conflictingSections.includes(section.section_number))) {
+                                        courseConflicts[cartCourse.courseId].push({
+                                            id: courseId,
+                                            name: card.querySelector('.course-name')?.textContent || 'Unknown',
+                                            conflictingSections: [section.section_number]
+                                        });
+                                        
+                                        applyConflictStyling(card, cartCourse.courseName);
+                                    }
+                                }
                             });
-
-                            if (conflictingSections.length > 0) {
-                                if (!courseConflicts[cartCourseId]) {
-                                    courseConflicts[cartCourseId] = [];
-                                }
-                                courseConflicts[cartCourseId].push({
-                                    id: courseId,
-                                    name: card.querySelector('.course-name')?.textContent || 'Unknown',
-                                    conflictingSections: conflictingSections
-                                });
-
-                                localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
-                                console.log('Stored conflicts:', courseConflicts);  // Debug log
-
-                                // Apply visual conflict styling
-                                card.classList.add('time-conflict');
-                                card.style.border = '2px solid #ff817a';
-                                card.style.backgroundColor = 'rgba(255,0,0,0.07)';
-
-                                // Add conflict badge
-                                const badge = document.createElement('div');
-                                badge.className = 'conflict-badge';
-                                badge.textContent = '⚠️ CONFLICT';
-                                badge.style.position = 'absolute';
-                                badge.style.top = '18px';
-                                badge.style.right = '50px';
-                                badge.style.backgroundColor = '#ff0000';
-                                badge.style.color = 'white';
-                                badge.style.padding = '3px 6px';
-                                badge.style.borderRadius = '3px';
-                                badge.style.fontSize = '12px';
-                                badge.style.fontWeight = 'bold';
-                                badge.style.zIndex = '100';
-                                badge.title = `Conflicts with ${cartCourseName}`;
-
-                                if (getComputedStyle(card).position === 'static') {
-                                    card.style.position = 'relative';
-                                }
-                                card.appendChild(badge);
-                            }
-
                         });
+                    }
                 });
             });
-                })
-        .catch(error => {
-            console.error('Error checking conflicts:', error);
         });
-    });
+
+        localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
+        
+    } catch (error) {
+        console.error('Error checking for conflicts:', error);
+    }
 }
 
 function updateButtonState(courseId, inCart) {
@@ -351,7 +376,6 @@ function updateCartDisplay() {
     }
 
     if (cart.length > 0) {
-        // Create URLSearchParams object properly
         const params = new URLSearchParams();
         params.append('cart', JSON.stringify(cart));
 

@@ -157,6 +157,9 @@ function findAndMarkAllCartConflicts() {
                                     conflictingSections: conflictingSections
                                 });
 
+                                localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
+                                console.log('Stored conflicts:', courseConflicts);  // Debug log
+
                                 // Apply visual conflict styling
                                 card.classList.add('time-conflict');
                                 card.style.border = '2px solid #ff817a';
@@ -575,8 +578,10 @@ function showSectionModal(event, courseId, courseName) {
     const modal = document.getElementById('section-modal');
     const sectionList = document.getElementById('section-list');
     
-    // Get stored conflicts
+    // Get stored conflicts and cart
     const courseConflicts = JSON.parse(localStorage.getItem('courseTimeConflicts') || '{}');
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+
 
     // Fetch sections for this course
     fetch(`/api/course/${courseId}/sections/`)
@@ -587,29 +592,39 @@ function showSectionModal(event, courseId, courseName) {
             sections.forEach(section => {
                 const sectionElement = document.createElement('div');
                 sectionElement.className = 'section-item';
-                
+
+                // Check if this section is in the cart
+                const isInCart = cart.some(item => 
+                    item.courseId === courseId && 
+                    item.sectionId === section.section_number
+                );
+
                 // Check if this section is in conflicts
                 let hasConflict = false;
                 Object.values(courseConflicts).forEach(conflicts => {
+
                     conflicts.forEach(conflict => {
+                        console.log("reviewing conflict", conflict);
                         if (conflict.conflictingSections && 
                             conflict.id === courseId &&
                             conflict.conflictingSections.includes(section.section_number)) {
                             hasConflict = true;
+                            console.log("conflict found for", courseId, section.section_number);
                         }
                     });
                 });
                 
                 // Add conflict styling if needed
-                if (hasConflict) {
+                if (isInCart) {
+                    sectionElement.classList.add('section-in-cart');
+                } else if (hasConflict) {
                     sectionElement.classList.add('section-conflict');
-                    sectionElement.style.border = '2px solid #ff817a';
-                    sectionElement.style.backgroundColor = 'rgba(255,0,0,0.07)';
                 }
                 
                 sectionElement.innerHTML = `
                     <div class="section-header">
                         Section ${section.section_number}
+                        ${isInCart ? '<span class="cart-badge"> IN CART</span>' : ''}
                         ${hasConflict ? '<span class="conflict-badge">⚠️ CONFLICT</span>' : ''}
                     </div>
                     <div class="section-details">

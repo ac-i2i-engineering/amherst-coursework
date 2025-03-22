@@ -655,6 +655,39 @@ p {
     cursor: pointer;
 }
 
+.section-item.section-conflict {
+    border: 2px solid #ff817a !important;
+    background-color: rgba(255,0,0,0.07) !important;
+}
+
+.section-item.section-in-cart {
+    border: 2px solid #874ec4;
+    background-color: rgba(135, 78, 196, 0.1);
+}
+
 .section-item:hover {
-    background-color: #f5f5f5;
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+.cart-badge {
+    color: white;
+    background-color: #874ec4;
+    font-weight:bold;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.conflict-badge {
+    color: white;
+    background-color: #ff0000;
+    font-weight:bold;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.section-header {
+    font-weight: bold;
 }

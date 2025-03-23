@@ -2,7 +2,7 @@ import re
 import json
 import os
 from django.shortcuts import get_object_or_404, render
-from .models import Course, Department, Division, CourseCode
+from .models import Course, Department, Division, CourseCode, Section
 from django.db.models import Q
 from django.http import JsonResponse
 from datetime import datetime, time, timedelta
@@ -13,6 +13,10 @@ from amherst_coursework_algo.config.course_dictionaries import (
 )
 from typing import List
 from .masked_filters import filter
+import logging
+
+# Get logger
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -72,6 +76,10 @@ def home(request):
     )
 
 
+def format_section_time(time_value):
+    return time_value.strftime("%I:%M %p") if time_value else None
+
+
 def format_meeting_times(time_slots):
     # Group times by their start and end time
     time_groups = {}
@@ -107,78 +115,66 @@ def format_meeting_times(time_slots):
 
 
 def get_cart_courses(request):
-    course_ids = request.GET.getlist("ids[]")
-    courses = Course.objects.prefetch_related(
-        "courseCodes", "sections__professor"
-    ).filter(id__in=course_ids)
-
+    cart_items = json.loads(request.GET.get("cart", "[]"))
     cart_data = []
-    for course in courses:
-        course_info = {
-            "id": course.id,
-            "name": course.courseName,
-            "course_acronyms": [code.value for code in course.courseCodes.all()],
-            "section_information": {},
-        }
 
-        for section in course.sections.all():
-            section_info = {
-                "professor_name": section.professor.name if section.professor else None,
-                "course_location": section.location,
-                "mon_start_time": (
-                    section.monday_start_time.strftime("%I:%M %p")
-                    if section.monday_start_time
-                    else None
-                ),
-                "mon_end_time": (
-                    section.monday_end_time.strftime("%I:%M %p")
-                    if section.monday_end_time
-                    else None
-                ),
-                "tue_start_time": (
-                    section.tuesday_start_time.strftime("%I:%M %p")
-                    if section.tuesday_start_time
-                    else None
-                ),
-                "tue_end_time": (
-                    section.tuesday_end_time.strftime("%I:%M %p")
-                    if section.tuesday_end_time
-                    else None
-                ),
-                "wed_start_time": (
-                    section.wednesday_start_time.strftime("%I:%M %p")
-                    if section.wednesday_start_time
-                    else None
-                ),
-                "wed_end_time": (
-                    section.wednesday_end_time.strftime("%I:%M %p")
-                    if section.wednesday_end_time
-                    else None
-                ),
-                "thu_start_time": (
-                    section.thursday_start_time.strftime("%I:%M %p")
-                    if section.thursday_start_time
-                    else None
-                ),
-                "thu_end_time": (
-                    section.thursday_end_time.strftime("%I:%M %p")
-                    if section.thursday_end_time
-                    else None
-                ),
-                "fri_start_time": (
-                    section.friday_start_time.strftime("%I:%M %p")
-                    if section.friday_start_time
-                    else None
-                ),
-                "fri_end_time": (
-                    section.friday_end_time.strftime("%I:%M %p")
-                    if section.friday_end_time
-                    else None
-                ),
+    for item in cart_items:
+        try:
+            course_id = item.get("courseId")
+            section_id = item.get("sectionId")
+
+            course = Course.objects.prefetch_related(
+                "courseCodes", "sections__professor"
+            ).get(id=course_id)
+
+            section = course.sections.get(section_number=section_id)
+
+            course_info = {
+                "id": course.id,
+                "name": course.courseName,
+                "course_acronyms": [code.value for code in course.courseCodes.all()],
+                "section_information": {
+                    str(section.section_number): {
+                        "section_number": str(section.section_number),
+                        "professor_name": (
+                            section.professor.name if section.professor else None
+                        ),
+                        "course_location": section.location,
+                        "mon_start_time": format_section_time(
+                            section.monday_start_time
+                        ),
+                        "mon_end_time": format_section_time(section.monday_end_time),
+                        "tue_start_time": format_section_time(
+                            section.tuesday_start_time
+                        ),
+                        "tue_end_time": format_section_time(section.tuesday_end_time),
+                        "wed_start_time": format_section_time(
+                            section.wednesday_start_time
+                        ),
+                        "wed_end_time": format_section_time(section.wednesday_end_time),
+                        "thu_start_time": format_section_time(
+                            section.thursday_start_time
+                        ),
+                        "thu_end_time": format_section_time(section.thursday_end_time),
+                        "fri_start_time": format_section_time(
+                            section.friday_start_time
+                        ),
+                        "fri_end_time": format_section_time(section.friday_end_time),
+                    }
+                },
             }
-            course_info["section_information"][section.section_number] = section_info
-
-        cart_data.append(course_info)
+            cart_data.append(course_info)
+        except Course.DoesNotExist:
+            logger.error(f"ERROR: Course with ID {course_id} not found")
+            continue
+        except Section.DoesNotExist:
+            logger.error(
+                f"ERROR: Section with ID {section_id} not found for course {course_id}"
+            )
+            continue
+        except Exception as e:
+            logger.error(f"ERROR: Unexpected error processing item {item}: {str(e)}")
+            continue
 
     return JsonResponse({"courses": cart_data})
 
@@ -198,16 +194,8 @@ def course_details(request, course_id):
             "professor_link": section.professor.link if section.professor else None,
             "course_location": section.location,
             # Add meeting times for each day
-            "mon_start_time": (
-                section.monday_start_time.strftime("%I:%M %p")
-                if section.monday_start_time
-                else None
-            ),
-            "mon_end_time": (
-                section.monday_end_time.strftime("%I:%M %p")
-                if section.monday_end_time
-                else None
-            ),
+            "mon_start_time": format_section_time(section.monday_start_time),
+            "mon_end_time": format_section_time(section.monday_end_time),
             # ... repeat for other days ...
         }
 
@@ -243,3 +231,28 @@ def get_course_by_id(request, course_id):
         return JsonResponse({"course": course_data})
     except Course.DoesNotExist:
         return JsonResponse({"error": "Course not found"}, status=404)
+
+
+def get_course_sections(request, course_id):
+    sections = Section.objects.filter(section_for_id=course_id).select_related(
+        "professor"
+    )
+    sections_data = [
+        {
+            "section_number": str(section.section_number),
+            "professor_name": section.professor.name,
+            "location": section.location,
+            "monday_start_time": format_section_time(section.monday_start_time),
+            "monday_end_time": format_section_time(section.monday_end_time),
+            "tuesday_start_time": format_section_time(section.tuesday_start_time),
+            "tuesday_end_time": format_section_time(section.tuesday_end_time),
+            "wednesday_start_time": format_section_time(section.wednesday_start_time),
+            "wednesday_end_time": format_section_time(section.wednesday_end_time),
+            "thursday_start_time": format_section_time(section.thursday_start_time),
+            "thursday_end_time": format_section_time(section.thursday_end_time),
+            "friday_start_time": format_section_time(section.friday_start_time),
+            "friday_end_time": format_section_time(section.friday_end_time),
+        }
+        for section in sections
+    ]
+    return JsonResponse(sections_data, safe=False)

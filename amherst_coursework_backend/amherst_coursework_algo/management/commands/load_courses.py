@@ -95,6 +95,10 @@ from amherst_coursework_algo.config.course_dictionaries import (
 )
 import json
 from datetime import datetime
+from django.conf import settings
+
+
+INSTITUTIONAL_DOMAIN = settings.INSTITUTIONAL_DOMAIN
 
 
 class Command(BaseCommand):
@@ -209,7 +213,7 @@ class Command(BaseCommand):
                     departments = []
                     deptList = course_data.get("departments", {})
                     if len(deptList) == 0:
-                        deptList = {"Other": "https://www.amherst.edu/"}
+                        deptList = {"Other": INSTITUTIONAL_DOMAIN}
                         print(f"Department not found for {course_data['course_name']}")
                         print(deptList)
                     i = 0
@@ -363,13 +367,13 @@ class Command(BaseCommand):
                     professors = []
                     sections = []
                     i = 0
-                    courseMaterialsLink = "https://www.amherst.edu/"
+                    courseMaterialsLink = INSTITUTIONAL_DOMAIN
                     for section_number, section_data in course_data.get(
                         "section_information", {}
                     ).items():
                         if i == 0:
                             courseMaterialsLink = section_data.get(
-                                "course_materials_links", "https://www.amherst.edu/"
+                                "course_materials_links", INSTITUTIONAL_DOMAIN
                             )
                         sectionProfessor, _ = Professor.objects.get_or_create(
                             name=(
@@ -378,11 +382,9 @@ class Command(BaseCommand):
                                 else "Unknown Professor"
                             ),
                             link=(
-                                section_data.get(
-                                    "professor_link", "https://www.amherst.edu/"
-                                )
+                                section_data.get("professor_link", INSTITUTIONAL_DOMAIN)
                                 if section_data.get("professor_link")
-                                else "https://www.amherst.edu/"
+                                else INSTITUTIONAL_DOMAIN
                             ),
                         )
                         section, _ = Section.objects.update_or_create(
@@ -444,6 +446,23 @@ class Command(BaseCommand):
                     course.professors.set(professors)
                     course.courseMaterialsLink = courseMaterialsLink
                     course.save()
+
+                    if course.sections.all().count() == 0:
+                        dummy_professor, _ = Professor.objects.get_or_create(
+                            name="TBA", link=INSTITUTIONAL_DOMAIN
+                        )
+                        dummy_section, _ = Section.objects.update_or_create(
+                            section_number="01",
+                            section_for=course,
+                            defaults={"professor": dummy_professor, "location": "TBA"},
+                        )
+                        course.professors.add(dummy_professor)
+                        course.save()
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f'Added dummy section for course "{course.courseName}"'
+                            )
+                        )
 
                     self.stdout.write(
                         self.style.SUCCESS(

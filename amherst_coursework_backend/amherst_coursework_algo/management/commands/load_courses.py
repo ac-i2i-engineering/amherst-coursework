@@ -96,7 +96,11 @@ from amherst_coursework_algo.config.course_dictionaries import (
 import json
 from datetime import datetime
 from django.conf import settings
-from amherst_coursework_algo.management.commands.parse_course_catalogue import get_all_department_courses, parse_all_courses, parse_all_courses_second_deg
+from amherst_coursework_algo.management.commands.parse_course_catalogue import (
+    get_all_department_courses,
+    parse_all_courses,
+    parse_all_courses_second_deg,
+)
 
 
 INSTITUTIONAL_DOMAIN = settings.INSTITUTIONAL_DOMAIN
@@ -216,7 +220,10 @@ class Command(BaseCommand):
                     if len(deptList) == 0:
                         deptList = {"Other": INSTITUTIONAL_DOMAIN}
                         self.stdout.write(
-                            self.style.WARNING(f"Department not found for {course_data['course_name']}"))
+                            self.style.WARNING(
+                                f"Department not found for {course_data['course_name']}"
+                            )
+                        )
                         print(deptList)
                     i = 0
                     for department, link in deptList.items():

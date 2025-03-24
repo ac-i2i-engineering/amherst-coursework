@@ -28,7 +28,7 @@ RETRY_DELAY_503 = 5  # seconds
 DATA_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
     "data",
-    "course_catalogue"
+    "course_catalogue",
 )
 
 DEPARTMENT_LINKS_PATH = os.path.join(DATA_DIR, "department_catalogue_links.json")
@@ -115,9 +115,7 @@ def get_all_department_courses():
             all_courses[dept_name] = course_links
 
         # Save results to JSON file
-        output_path = (
-            DEPARTMENT_COURSES_PATH
-        )
+        output_path = DEPARTMENT_COURSES_PATH
         with open(output_path, "w") as f:
             json.dump(all_courses, f, indent=4)
 
@@ -458,16 +456,12 @@ def save_incremental_results(output_path: str, all_courses: Dict):
 
 def parse_all_courses(testing_mode: bool = False):
     """Parse all course pages using parse_course_first_deg."""
-    output_path = (
-        LEVEL_1_PARSED_COURSES_PATH
-    )
+    output_path = LEVEL_1_PARSED_COURSES_PATH
     failed_urls = []
 
     try:
         # Load all department courses
-        with open(
-            DEPARTMENT_COURSES_PATH, "r"
-        ) as f:
+        with open(DEPARTMENT_COURSES_PATH, "r") as f:
             departments = json.load(f)
 
         all_courses = {}
@@ -570,9 +564,7 @@ def parse_course_second_deg(course_data: dict) -> dict:
 def parse_all_courses_second_deg():
     """Parse all courses to generate enhanced course information."""
     input_path = LEVEL_1_PARSED_COURSES_PATH
-    output_path = (
-        LEVEL_2_PARSED_COURSES_PATH
-    )
+    output_path = LEVEL_2_PARSED_COURSES_PATH
 
     try:
         # Load existing first degree parsed courses
@@ -644,7 +636,7 @@ def parse_course_second_deg(course_data: dict) -> dict:
                 strong = section.find("strong")
                 if strong:
                     section_num = strong.text.strip().replace("Section ", "")
-                    
+
                     # Initialize section info with all days set to null
                     section_info[section_num] = {
                         "professor_name": None,
@@ -664,7 +656,7 @@ def parse_course_second_deg(course_data: dict) -> dict:
                         "sat_start_time": None,
                         "sat_end_time": None,
                         "sun_start_time": None,
-                        "sun_end_time": None
+                        "sun_end_time": None,
                     }
 
                     # Get the original HTML content with <br> tags
@@ -680,17 +672,21 @@ def parse_course_second_deg(course_data: dict) -> dict:
                         if clean_line:
                             # Try to extract time and location
                             pattern = r"(M|Tu|W|Th|F|Sa|Su)[\s.]*(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)[\s.]*([A-Za-z0-9\s]+)"
-                            
+
                             match = re.search(pattern, clean_line)
                             if match:
-                                days_str, start_time, end_time, location = match.groups()
-                                
+                                days_str, start_time, end_time, location = (
+                                    match.groups()
+                                )
+
                                 # Split days if multiple are listed
                                 days = [d.strip() for d in re.split(r"[,/]", days_str)]
-                                
+
                                 # Store the location
-                                section_info[section_num]["course_location"] = location.strip()
-                                
+                                section_info[section_num][
+                                    "course_location"
+                                ] = location.strip()
+
                                 # Map days to their respective fields
                                 day_mapping = {
                                     "M": ("mon_start_time", "mon_end_time"),
@@ -699,14 +695,16 @@ def parse_course_second_deg(course_data: dict) -> dict:
                                     "Th": ("thu_start_time", "thu_end_time"),
                                     "F": ("fri_start_time", "fri_end_time"),
                                     "Sa": ("sat_start_time", "sat_end_time"),
-                                    "Su": ("sun_start_time", "sun_end_time")
+                                    "Su": ("sun_start_time", "sun_end_time"),
                                 }
-                                
+
                                 # Update times for each day
                                 for day in days:
                                     if day in day_mapping:
                                         start_field, end_field = day_mapping[day]
-                                        section_info[section_num][start_field] = start_time
+                                        section_info[section_num][
+                                            start_field
+                                        ] = start_time
                                         section_info[section_num][end_field] = end_time
 
         # Match professors to sections

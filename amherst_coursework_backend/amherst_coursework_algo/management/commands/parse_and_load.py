@@ -8,15 +8,16 @@ from amherst_coursework_algo.management.commands.parse_course_catalogue import (
     get_all_department_courses,
     parse_all_courses,
     parse_all_courses_second_deg,
-    DATA_DIR
+    DATA_DIR,
 )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class Command(BaseCommand):
-    help = 'Parse course catalog and load courses into database'
+    help = "Parse course catalog and load courses into database"
 
     def handle(self, *args, **options):
         try:
@@ -47,7 +48,7 @@ class Command(BaseCommand):
             if not os.path.exists(final_output_path):
                 raise Exception(f"Parsed courses file not found at {final_output_path}")
 
-            call_command('load_courses', final_output_path)
+            call_command("load_courses", final_output_path)
             logger.info("Successfully completed all steps!")
 
         except Exception as e:

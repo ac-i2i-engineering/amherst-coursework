@@ -48,7 +48,7 @@ jobs:
     - name: Test Load Command
       working-directory: ./amherst_coursework_backend
       run: |
-        python manage.py load_courses ./test.json
+        python manage.py load_courses ./amherst_coursework_algo/data/course_catalogue/parsed_courses_second_deg.json
     - name: Coveralls Workflow
       working-directory: ./amherst_coursework_backend
       run: |

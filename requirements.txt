@@ -27,3 +27,4 @@ sqlparse==0.5.3
 scikit-learn
 whitenoise
 nltk
+beautifulsoup4==4.12.2

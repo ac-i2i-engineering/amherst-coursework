@@ -96,11 +96,6 @@ from amherst_coursework_algo.config.course_dictionaries import (
 import json
 from datetime import datetime
 from django.conf import settings
-from amherst_coursework_algo.management.commands.parse_course_catalogue import (
-    get_all_department_courses,
-    parse_all_courses,
-    parse_all_courses_second_deg,
-)
 
 
 INSTITUTIONAL_DOMAIN = settings.INSTITUTIONAL_DOMAIN

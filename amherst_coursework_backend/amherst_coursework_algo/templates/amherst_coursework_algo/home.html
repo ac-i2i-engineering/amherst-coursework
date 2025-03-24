@@ -60,7 +60,10 @@
 
     <div class = "main-content">
         <div class="container">
-            <h1>Amherst College Course Catalog</h1>
+            <div style="display: flex; align-items: flex-end; margin: 20px;">
+                <h1>Amherst College Course Catalog</h1>
+                <a href="{% url 'catalog:about' %}" class="nav-link">About</a>
+            </div>
 
             <div class="search-container">
                 <form method="GET" action="{% url 'catalog:home' %}" class="search-container">

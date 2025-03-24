@@ -28,11 +28,154 @@
 }
 
 h1, h2 {
+    margin: 0;
     color: #311a4d;
 }
 
 p {
     line-height: 1.5;
+}
+
+.nav-link {
+    margin: 0 0 4px 12px;
+    padding: 5px 15px;
+    background-color: #3b1f5c;
+    border-radius: 20px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.home-link {
+    margin: 20px auto;
+}
+
+/* About Page Styles */
+#about {
+    padding: 40px 15%;
+    background: #fcfaf6;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+#about h1 {
+    margin: 0 auto;
+    text-align: center;
+}
+
+#about h2 {
+    margin: 0 auto 20px auto;
+    text-align: center;
+}
+
+#about-intro {
+    margin: 40px 0;
+}
+
+#about-intro p {
+    margin-bottom: 1.5em;
+}
+
+#about-intro p:last-child {
+    margin-bottom: 0;
+}
+
+#about-team {
+    margin: 80px auto;
+}
+
+#team-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.team-card {
+    width: calc(33.33% - 40px);
+    min-width: 200px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.team-name {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.team-role {
+    margin-top: 10px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+#contributions {
+    text-align: center;
+    margin: 30px 0;
+}
+
+#contributions a {
+    color: #ffffff;
+    text-decoration: underline;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #3b1f5c;
+    border: 1px solid #3b1f5c;
+    transition: all 0.2s ease;
+}
+
+#contributions a:hover {
+    background-color: #3b1f5c;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.team-img {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+    #team-cards {
+        flex-wrap: wrap;
+    }
+
+    .team-card {
+        flex-basis: 50%;
+        box-sizing: border-box;
+        margin: 30px 0;
+    }
+
+    .team-img {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 640px) {
+    #team-cards {
+        flex-wrap: wrap;
+    }
+
+    .team-card {
+        flex-basis: 100%;
+        box-sizing: border-box;
+    }
+
+    .team-img {
+        width: 180px;
+        height: 180px;
+    }
+
+    #contributions {
+        font-size: 14px;
+    }
 }
 
 /* Course Grid */
@@ -614,7 +757,7 @@ p {
 }
 
 .course-card.time-conflict .cart-button {
-    background-color: #ff817a;
+    display: none;
 }
 
 /* Selecting sections */

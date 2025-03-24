@@ -1,0 +1,74 @@
+{% extends "amherst_coursework_algo/base.html" %}
+{% load static %}
+{% block content %}
+<main id="about">
+    <div style="display: flex; align-items: flex-end; margin: 20px;">
+        <a href="{% url 'catalog:home' %}" class="nav-link home-link">Return to homepage</a>
+    </div>
+
+    <h1>About Us</h1>
+
+    <section id="about-intro">
+        <p>Curious about how it all works? Explore our code on <a href="https://github.com/ac-i2i-engineering/amherst-coursework">Github</a>. Have suggestions? We’d love to hear them! Feel free to reach out to any of us—your feedback means a lot.</p>
+        <p>Built by Amherst students, this course catalog is a dynamic discovery platform designed to bring the Open Curriculum philosophy to life through technology. We created this intuitive platform to give students the power to truly explore their academic options without limitations. By providing equitable visibility to all courses across departments, Course Explorer ensures you'll discover classes that are not as visible on Workday, helping you make the most of Amherst's unique curriculum freedom.</p>
+        <p>Planning your schedule is seamless with our integrated calendar views and multi-semester planning tools. Add course sections to your saved schedule to visualize how they fit together, while our intelligent conflict detection system automatically highlights scheduling conflicts with color indicators.</p>
+        <p>We hope Amherst Course Catalog helps you make the most of your academic journey at Amherst!</p>
+    </section>
+
+    <section id="about-team">
+        <h2>Engineering Team</h2>
+
+        <div id="team-cards">
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/dhyeymavani25.png' %}" alt="Executive Director of Engineering">
+                <p class="team-name">Dhyey Mavani '25</p>
+                <p class="team-role">Executive Director of Engineering</p>
+            </div>
+
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/ryanji26.JPG' %}" alt="Senior Engineer">
+                <p class="team-name">Ryan Ji '26</p>
+                <p class="team-role">Senior Back-end Engineer</p>
+            </div>
+
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/meganli27.jpg' %}" alt="Back-end Developer">
+                <p class="team-name">Megan Li '27</p>
+                <p class="team-role">Back-end Engineer</p>
+            </div>
+
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/thuhoang28.jpg' %}" alt="Front-end Developer">
+                <p class="team-name">Thu Hoang '28</p>
+                <p class="team-role">Front-end Developer</p>
+            </div>
+
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/yilinhuang28.jpg' %}" alt="Front-end Developer">
+                <p class="team-name">Yilin Huang '28</p>
+                <p class="team-role">Technical Product Manager</p>
+            </div>
+        </div>
+
+        <h3 id="contributions"><a href="https://github.com/ac-i2i-engineering/amherst-coursework/graphs/contributors" style="text-decoration: none;">See Our Individual Contributions</a></h3>
+    </section>
+
+    <section id="about-team">
+        <h2>Catalyst Team</h2>
+
+        <div id="team-cards">
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/alexnichols26.jpg' %}" alt="UX-Designer & Operational Liasion">
+                <p class="team-name">Alex Nichols '26</p>
+                <p class="team-role">UX-Designer & Operational Liasion</p>
+            </div>
+
+            <div class="team-card">
+                <img class="team-img" src="{% static 'img/josephtoth27.jpg' %}" alt="UX-Designer & Operational Liasion">
+                <p class="team-name">Joseph Toth '26</p>
+                <p class="team-role">UX-Designer & Operational Liasion</p>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

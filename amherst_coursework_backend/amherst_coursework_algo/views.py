@@ -256,3 +256,7 @@ def get_course_sections(request, course_id):
         for section in sections
     ]
     return JsonResponse(sections_data, safe=False)
+
+
+def about(request):
+    return render(request, "amherst_coursework_algo/about.html")

@@ -16,7 +16,6 @@ function debounce(func, wait) {
     };
 }
 
-/* Add this to your script section */
 function handleCartClick(event, courseId, sectionId) {
     event.stopPropagation();  // Prevent event from bubbling up to course-card
     
@@ -135,7 +134,7 @@ function applyConflictStyling(card, cartCourseName) {
     badge.textContent = '⚠️ CONFLICT';
     badge.style.position = 'absolute';
     badge.style.top = '18px';
-    badge.style.right = '50px';
+    badge.style.right = '20px';
     badge.style.backgroundColor = '#ff0000';
     badge.style.color = 'white';
     badge.style.padding = '3px 6px';

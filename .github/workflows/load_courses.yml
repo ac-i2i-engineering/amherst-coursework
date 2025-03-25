@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 5 1 4,11 *"  # Runs at 05:00 (5 AM) on April 1 and November 1
   workflow_dispatch:
+    inputs:
+        branch:
+          description: 'Branch to run on'
+          required: false
+          default: ${{ github.ref_name }}
 
 jobs:
   update-database:

@@ -62,9 +62,17 @@ def get_request_headers() -> dict:
     """Generate secure request headers with request tracking."""
 
     USER_AGENTS = os.getenv("USER_AGENTS").split("|")
-    # Get bot identity from environment or use secure fallback
 
-    user_agent = random.choice(USER_AGENTS)
+    default_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+
+    user_agent = default_agent
+
+    user_agents_str = os.getenv("USER_AGENTS")
+    if user_agents_str:
+        user_agent = random.choice(USER_AGENTS)
+        logger.info("Using user agents from environment variables")
+    else:
+        logger.warning("USER_AGENTS not found in environment, using default values")
 
     headers = {
         # Identify as a bot following robots.txt guidelines

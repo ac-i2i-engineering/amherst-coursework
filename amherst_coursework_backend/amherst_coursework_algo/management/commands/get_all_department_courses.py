@@ -4,7 +4,7 @@ import os
 import json
 import logging
 
-from amherst_coursework_backend.amherst_coursework_algo.parse_course_catalogue.parse_course_catalogue import (
+from amherst_coursework_algo.parse_course_catalogue.parse_course_catalogue import (
     get_all_department_courses,
     DATA_DIR,
 )

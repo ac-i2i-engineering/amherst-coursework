@@ -13,7 +13,7 @@ import logging
 import argparse
 import os
 from dotenv import load_dotenv
-import uuid
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +29,7 @@ RETRY_DELAY_503 = 5  # seconds
 
 DATA_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+    "amherst_coursework_algo",
     "data",
     "course_catalogue",
 )
@@ -54,22 +55,22 @@ EXCLUDED_COURSE_TYPES = [
 ]
 
 
+load_dotenv()
+
+
 def get_request_headers() -> dict:
     """Generate secure request headers with request tracking."""
 
+    USER_AGENTS = os.getenv("USER_AGENTS").split("|")
     # Get bot identity from environment or use secure fallback
-    BOT_EMAIL = os.getenv("COURSE_BOT_EMAIL", "coursework-bot@amherst.edu")
-    BOT_VERSION = os.getenv("COURSE_BOT_VERSION", "1.0")
 
-    # Generate unique request ID
-    request_id = str(uuid.uuid4())
+    user_agent = random.choice(USER_AGENTS)
 
     headers = {
-        "User-Agent": f"AmherstCourseworkBot/{BOT_VERSION} ({BOT_EMAIL})",
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "en-US",
-        "X-Request-ID": request_id,
-        "From": BOT_EMAIL,  # RFC 7231 compliant identifier
+        # Identify as a bot following robots.txt guidelines
+        "User-Agent": user_agent,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
     }
 
     # Validate headers
@@ -82,11 +83,7 @@ def get_request_headers() -> dict:
 
 def parse_department_catalogue(department_url: str) -> List[str]:
     """Parse a department page and extract course links."""
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-    }
+    headers = get_request_headers()
 
     try:
         logger.info(f"Fetching department page: {department_url}")
@@ -152,6 +149,7 @@ def get_all_department_courses():
 
     except FileNotFoundError:
         logger.error("Department links file not found")
+        logger.info(DEPARTMENT_LINKS_PATH)
         return {}
     except Exception as e:
         logger.error(f"Error collecting all courses: {e}")
@@ -549,44 +547,6 @@ def parse_all_courses(testing_mode: bool = False):
     except Exception as e:
         logger.error(f"Error parsing courses: {e}")
         return {}
-
-
-def parse_course_second_deg(course_data: dict) -> dict:
-    """Extract additional information from course materials pages."""
-    session = create_session()
-    sections_info = {}
-
-    # Process each materials link as a separate section
-    for idx, link in enumerate(course_data.get("course_materials_links", []), 1):
-        section_num = str(idx)
-        sections_info[section_num] = {"instructor": None}
-
-        try:
-            success, content = fetch_url_with_retry(link, session)
-            if not success:
-                logger.warning(f"Failed to fetch materials link: {link}")
-                continue
-
-            soup = BeautifulSoup(content, "html.parser")
-            instructor = soup.find("span")
-            print(instructor)
-
-            # Find instructor info in the course-container-label div
-            instructor_span = soup.find("span", class_="course-instructor")
-            if instructor_span:
-                instructor_name = instructor_span.text.strip()
-                instructor_name = instructor_name.replace("Instructor", "").strip()
-                sections_info[section_num]["instructor"] = instructor_name
-            else:
-                logger.warning(f"No instructor found for section {section_num}")
-
-        except Exception as e:
-            logger.error(f"Error processing materials link {link}: {e}")
-            continue
-
-    # Add sections info to course data
-    course_data["sections"] = sections_info
-    return course_data
 
 
 def parse_all_courses_second_deg():

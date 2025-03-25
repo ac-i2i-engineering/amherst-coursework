@@ -1,23 +1,26 @@
-name: Periodic Django Management Commands
+name: Periodic Course Database Update
 
 on:
   schedule:
-    - cron: "0 0 * 1 FRI"  # Runs at 0th min past every 7 hours
+    - cron: "0 5 1 4,11 *"  # Runs at 05:00 (5 AM) on April 1 and November 1
   workflow_dispatch:
 
 jobs:
-  build:
+  update-database:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    
     steps:
     - uses: actions/checkout@v4
       with:
-        persist-credentials: true  # Required for pushing changes
+        persist-credentials: true
+    
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+        
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
@@ -27,15 +30,17 @@ jobs:
       working-directory: ./amherst_coursework_backend
       run: |
         python manage.py collectstatic --noinput
-    - name: Run Django Management Commands
+        
+    - name: Update Database
       working-directory: ./amherst_coursework_backend
       run: |
-        echo "yes" | python manage.py flush
-        python manage.py load_courses ./test.json
-    - name: Commit and Push Changes
+        python manage.py flush --noinput
+        python manage.py load_courses ./amherst_coursework_algo/data/course_catalogue/parsed_courses_second_deg.json
+        
+    - name: Commit Database Changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git commit -m "ran periodic workflow for db update"
+        git commit -m "Update database with latest course data [automated]"
         git push

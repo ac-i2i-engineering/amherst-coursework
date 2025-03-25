@@ -4,8 +4,7 @@ on:
   schedule:
     - cron: "0 5 1 4,11 *"  # Runs at 05:00 (5 AM) on April 1 and November 1
   workflow_dispatch:
-  on:
-    pull_request:
+  pull_request:
 
 jobs:
   update-database:

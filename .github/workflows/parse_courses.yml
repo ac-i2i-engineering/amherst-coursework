@@ -4,8 +4,7 @@ on:
   schedule:
     - cron: "0 0 1 4,11 *"  # Runs at midnight on April 1 and November 1
   workflow_dispatch:
-  on:
-    pull_request:
+  pull_request:
 
 jobs:
   scrape-catalog:

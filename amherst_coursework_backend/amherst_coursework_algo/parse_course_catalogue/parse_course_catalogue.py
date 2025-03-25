@@ -12,6 +12,8 @@ from typing import List, Dict, Optional
 import logging
 import argparse
 import os
+from dotenv import load_dotenv
+import uuid
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -50,6 +52,32 @@ EXCLUDED_COURSE_TYPES = [
     "Teaching",
     "Five College Dance",
 ]
+
+
+def get_request_headers() -> dict:
+    """Generate secure request headers with request tracking."""
+
+    # Get bot identity from environment or use secure fallback
+    BOT_EMAIL = os.getenv("COURSE_BOT_EMAIL", "coursework-bot@amherst.edu")
+    BOT_VERSION = os.getenv("COURSE_BOT_VERSION", "1.0")
+
+    # Generate unique request ID
+    request_id = str(uuid.uuid4())
+
+    headers = {
+        "User-Agent": f"AmherstCourseworkBot/{BOT_VERSION} ({BOT_EMAIL})",
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "en-US",
+        "X-Request-ID": request_id,
+        "From": BOT_EMAIL,  # RFC 7231 compliant identifier
+    }
+
+    # Validate headers
+    if not headers["User-Agent"] or len(headers["User-Agent"]) < 10:
+        logger.error("Invalid User-Agent configuration")
+        raise ValueError("Invalid User-Agent configuration")
+
+    return headers
 
 
 def parse_department_catalogue(department_url: str) -> List[str]:

@@ -214,7 +214,11 @@ class Command(BaseCommand):
                     deptList = course_data.get("departments", {})
                     if len(deptList) == 0:
                         deptList = {"Other": INSTITUTIONAL_DOMAIN}
-                        print(f"Department not found for {course_data['course_name']}")
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f"Department not found for {course_data['course_name']}"
+                            )
+                        )
                         print(deptList)
                     i = 0
                     for department, link in deptList.items():

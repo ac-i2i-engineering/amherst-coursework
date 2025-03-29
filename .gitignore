@@ -173,4 +173,7 @@ amherst_coursework_backend/nonexistent.json
 amherst_coursework_backend/test_courses.json
 
 *env*
+.env
+
+
 *staticfiles*

@@ -42,6 +42,7 @@ jobs:
     - name: Run Course Scraper
       working-directory: ./amherst_coursework_backend
       run: |
+        python manage.py course_parser_setup
         python manage.py get_all_department_courses
         python manage.py parse_deg_1
         python manage.py parse_deg_2

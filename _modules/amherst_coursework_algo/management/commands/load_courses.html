@@ -51,6 +51,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../models.html">Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../load_courses.html">Load Courses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../course_parser_commands.html">Course Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../course_parser.html">Amherst Course Catalogue Parser</a></li>
 </ul>
 
     </nav>
@@ -326,7 +328,11 @@
                     <span class="n">deptList</span> <span class="o">=</span> <span class="n">course_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;departments&quot;</span><span class="p">,</span> <span class="p">{})</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deptList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">deptList</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Other&quot;</span><span class="p">:</span> <span class="n">INSTITUTIONAL_DOMAIN</span><span class="p">}</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Department not found for </span><span class="si">{</span><span class="n">course_data</span><span class="p">[</span><span class="s1">&#39;course_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">WARNING</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Department not found for </span><span class="si">{</span><span class="n">course_data</span><span class="p">[</span><span class="s1">&#39;course_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                         <span class="nb">print</span><span class="p">(</span><span class="n">deptList</span><span class="p">)</span>
                     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">for</span> <span class="n">department</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">deptList</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

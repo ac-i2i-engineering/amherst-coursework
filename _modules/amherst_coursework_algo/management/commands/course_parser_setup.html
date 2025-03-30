@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="no-js" lang="python" data-content_root="../../../../">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>amherst_coursework_algo.management.commands.course_parser_setup &mdash; Amherst Coursework 0.0.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/dist/fontawesome.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/dist/theme.css?v=310cf088" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=901ed8ac" />
+            <link rel="index" title="Index" href="../../../../genindex.html" />
+            <link rel="search" title="Search" href="../../../../search.html" />
+            <link rel="top" title="Amherst Coursework 0.0.0 documentation" href="#" />
+            <link rel="up" title="Module code" href="../../../index.html" />
+    </head>
+<body>
+    <script type="text/javascript" src="../../../../_static/dist/blocking.js"></script>
+    <header class="container-fluid bg-primary">
+        <a class="btn btn-sm btn-light skip-to-content-link" href="#main">Skip to content</a>
+        <div class="container-fluid">
+            <div class="navbar navbar-expand-lg navbar-dark font-weight-bold">
+                
+                <button class="navbar-toggler btn btn-primary d-lg-none" type="button" data-toggle="collapse" data-target="#collapseSidebar" aria-expanded="false" aria-controls="collapseExample">
+                    <span class="navbar-toggler-icon"></span>
+                    <span class="sr-only">menu</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-12 col-lg-3 sidebar-container">
+                <div id="collapseSidebar" class="collapse sticky-top d-lg-block pt-5 pr-lg-4">
+<div id="searchbox" class="searchbox mb-6 px-1" role="search">
+    <form id="search-form" action="../../../../search.html" autocomplete="off" method="get" role="search">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text border-right-0 bg-white py-3 pl-3 pr-2"><span class="fas fa-search"></span></div>
+            </div>
+            <input class="form-control py-3 pr-3 pl-1 h-100 border-left-0" type="search" name="q" placeholder="Search documentation" aria-label="Search documentation" id="searchinput" />
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div><div class="site-toc">
+    <nav class="toc mt-3" aria-label="Main menu">
+        <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../load_courses.html">Load Courses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../course_parser_commands.html">Course Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../course_parser.html">Amherst Course Catalogue Parser</a></li>
+</ul>
+
+    </nav>
+    <template data-toggle-item-template>
+        <button class="btn btn-sm btn-link toctree-expand" type="button">
+            <span class="sr-only">Toggle menu contents</span>
+        </button>
+    </template>
+</div>
+                    <div class="d-lg-none border-bottom">
+                        
+                    </div>
+                </div>
+            </aside>
+            <div class="col-12 col-lg-9 pt-5">
+                <header class="row align-items-baseline">
+                    <div class="col">
+                        <nav aria-label="breadcrumb">
+    <ol class="breadcrumb m-0 p-0 bg-transparent">
+        <li class="breadcrumb-item"><a href="../../../../index.html">Docs</a></li>
+            <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+        <li class="breadcrumb-item active" aria-current="page">amherst_coursework_algo.management.commands.course_parser_setup</li>
+    </ol>
+</nav>
+                    </div>
+                    <div class="col-sm-12 col-lg-auto mt-3 mt-lg-3">
+                        <noscript>
+                            <p>JavaScript is required to toggle light/dark mode..</p>
+                        </noscript>
+                        <button id="wagtail-theme" class="btn btn-sm btn-light text-decoration-none" type="button">
+                            <span class="dark-only"><i class="fas fa-sun"></i> Light mode</span>
+                            <span class="light-only"><i class="fas fa-moon"></i> Dark mode</span>
+                        </button>
+    <a class="btn btn-sm btn-light text-decoration-none" href="https://github.com/ac-i2i-engineering/amherst-coursework/" rel="nofollow">
+        <span class="btn-icon"><span class="fab fa-github"></span></span>
+        <span class="btn-text">GitHub</span>
+    </a>
+                        
+                    </div>
+                </header>
+                <div class="row" >
+                    <div class="col-12">
+                        <hr class="w-100 my-4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-9 order-last order-lg-first rst-content">
+                        <main role="main" id="main">
+    <h1>Source code for amherst_coursework_algo.management.commands.course_parser_setup</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Course Parser Setup Command</span>
+<span class="sd">============================</span>
+
+<span class="sd">This module provides a Django management command to setup course parsing by creating</span>
+<span class="sd">semester-specific department catalog links from a base file.</span>
+
+<span class="sd">The command reads a base JSON file containing department links and modifies them to</span>
+<span class="sd">include the current semester identifier in the URLs.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    To run this command::</span>
+
+<span class="sd">        $ python manage.py course_parser_setup</span>
+
+<span class="sd">Configuration:</span>
+<span class="sd">    - SEMESTER: Global variable defining the current semester (e.g., &quot;2526F&quot;)</span>
+<span class="sd">    - BASE_DIR: Directory containing course catalog data</span>
+<span class="sd">    - BASE_JSON_PATH: Path to the base department links file</span>
+<span class="sd">    - TARGET_JSON_PATH: Path where the modified file will be saved</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.core.management.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseCommand</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="c1"># Configure logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Global semester variable - can be modified as needed</span>
+<span class="n">SEMESTER</span> <span class="o">=</span> <span class="s2">&quot;2526F&quot;</span>  <span class="c1"># Example: 2324F for Fall 2023 semester, 2324S for Spring 2024</span>
+
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))),</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;course_catalogue&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">BASE_JSON_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s2">&quot;department_catalogue_links_base.json&quot;</span><span class="p">)</span>
+<span class="n">TARGET_JSON_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s2">&quot;department_catalogue_links.json&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Command">
+<a class="viewcode-back" href="../../../../course_parser_commands.html#amherst_coursework_algo.management.commands.course_parser_setup.Command">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Django management command to prepare department catalog links for course parsing.</span>
+
+<span class="sd">    This command reads department links from a base JSON file and modifies them to include</span>
+<span class="sd">    the current semester identifier in the URLs. The modified links are then saved to a</span>
+<span class="sd">    new JSON file for use by the course parser.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        help (str): Brief command description shown in manage.py help</span>
+
+<span class="sd">    File Structure:</span>
+<span class="sd">        - Input: department_catalogue_links_base.json</span>
+<span class="sd">            Contains base URLs for department course pages</span>
+<span class="sd">        - Output: department_catalogue_links.json</span>
+<span class="sd">            Contains URLs modified to include current semester</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;Create semester-specific department catalog links from base file&quot;</span>
+
+<div class="viewcode-block" id="Command.handle">
+<a class="viewcode-back" href="../../../../course_parser_commands.html#amherst_coursework_algo.management.commands.course_parser_setup.Command.handle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the command to create semester-specific department catalog links.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: Variable length argument list</span>
+<span class="sd">            **options: Arbitrary keyword arguments</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If the base JSON file is not found</span>
+<span class="sd">            Exception: For other errors during execution</span>
+
+<span class="sd">        Example JSON structure::</span>
+
+<span class="sd">            [</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;name&quot;: &quot;American Studies&quot;,</span>
+<span class="sd">                    &quot;url&quot;: &quot;https://www.amherst.edu/academiclife/departments/american_studies/courses&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">            ]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Read the base JSON file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">BASE_JSON_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">departments</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="c1"># Modify URLs to include semester</span>
+            <span class="n">modified_departments</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">dept</span> <span class="ow">in</span> <span class="n">departments</span><span class="p">:</span>
+                <span class="n">dept_copy</span> <span class="o">=</span> <span class="n">dept</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Create a copy to avoid modifying the original</span>
+                <span class="n">dept_copy</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dept</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">SEMESTER</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">modified_departments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dept_copy</span><span class="p">)</span>
+
+            <span class="c1"># Write to the target JSON file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TARGET_JSON_PATH</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">modified_departments</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Successfully created </span><span class="si">{</span><span class="n">TARGET_JSON_PATH</span><span class="si">}</span><span class="s2"> with semester </span><span class="si">{</span><span class="n">SEMESTER</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Base file not found: </span><span class="si">{</span><span class="n">BASE_JSON_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error updating department links: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span></div>
+</div>
+
+</pre></div>
+</main>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid bg-primary text-light">
+        <div class="container">
+            <div class="row">
+        <div class="col p-4">
+            
+                <nav aria-label="Footer">
+                    <ul class="nav justify-content-center mb-2">
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/features/">Features</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/about-wagtail/"> About Wagtail</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/services/"> Services</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/blog/"> Blog</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/packages/"> Packages</a></li>
+                        
+                            
+                            
+                            <li class="nav-item"><a class="nav-link text-light"  href="https://wagtail.org/developers/"> Developers</a></li>
+                        
+                    </ul>
+                </nav>
+            
+            <div class="text-center">
+                    &copy; Copyright 2024, Dhyey Mavani, Liam Davis, Ryan Ji, Megan Li
+            </div>
+            <div class="text-center text-white-50 font-italic mt-3">
+                <small>
+                    Created using
+                    <a class="text-white" href="https://github.com/wagtail/sphinx_wagtail_theme" rel="nofollow" target="_blank">
+                        Sphinx Wagtail Theme 6.5.0
+                    </a>
+                    and
+                    <a class="text-white" href="https://www.sphinx-doc.org/" rel="nofollow" target="_blank">
+                        Sphinx 8.2.3
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+        </div>
+    </footer>
+        <script src="../../../../_static/documentation_options.js?v=3dc53093"></script>
+        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script type="text/javascript" src="../../../../_static/dist/theme.js"></script>
+        <script type="text/javascript" src="../../../../_static/dist/vendor.js"></script>
+        <script type="text/javascript" src="../../../../_static/searchtools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() { Search.loadIndex("../../../../searchindex.js"); });
+        </script>
+        <script type="text/javascript" id="searchindexloader"></script>
+    </body>
+</html>

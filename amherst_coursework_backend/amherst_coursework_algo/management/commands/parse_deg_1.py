@@ -18,7 +18,7 @@ File Dependencies:
     Input:
         - all_department_courses.json:
             Contains URLs of all courses by department
-    
+
     Output:
         - parsed_courses_detailed.json:
             Contains detailed course information for each department

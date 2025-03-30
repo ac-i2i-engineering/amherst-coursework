@@ -18,7 +18,7 @@ File Structure:
             URLs for all courses by department
         - parsed_courses_detailed.json:
             First-degree parsed course data
-    
+
     Output Files:
         - parsed_courses_second_deg.json:
             Final enhanced course information

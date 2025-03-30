@@ -17,7 +17,7 @@ File Dependencies:
     Input:
         - parsed_courses_detailed.json:
             Contains basic course information from first degree parsing
-    
+
     Output:
         - parsed_courses_second_deg.json:
             Contains enhanced course information with structured section data

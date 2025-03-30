@@ -17,7 +17,7 @@ File Structure:
     Input:
         - department_catalogue_links.json:
             Contains department names and their course catalog URLs
-    
+
     Output:
         - all_department_courses.json:
             Maps department names to lists of course URLs

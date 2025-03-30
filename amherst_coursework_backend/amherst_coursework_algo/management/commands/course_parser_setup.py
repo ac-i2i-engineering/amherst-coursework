@@ -20,7 +20,6 @@ Configuration:
     - TARGET_JSON_PATH: Path where the modified file will be saved
 """
 
-
 from django.core.management.base import BaseCommand
 import os
 import json
@@ -61,6 +60,7 @@ class Command(BaseCommand):
         - Output: department_catalogue_links.json
             Contains URLs modified to include current semester
     """
+
     help = "Create semester-specific department catalog links from base file"
 
     def handle(self, *args, **options):

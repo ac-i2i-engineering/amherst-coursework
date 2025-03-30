@@ -105,10 +105,10 @@ load_dotenv()
 
 def get_request_headers() -> dict:
     """Generate secure request headers with request tracking.
-    
+
     Returns:
         dict: Headers dictionary containing User-Agent and accept headers
-    
+
     Raises:
         ValueError: If User-Agent configuration is invalid
     """
@@ -143,13 +143,13 @@ def get_request_headers() -> dict:
 
 def parse_department_catalogue(department_url: str) -> List[str]:
     """Parse a department page and extract course links.
-    
+
     Args:
         department_url (str): URL of department course catalog page
-    
+
     Returns:
         List[str]: List of course URLs found in the department page
-        
+
     Example:
         >>> urls = parse_department_catalogue("https://www.amherst.edu/academiclife/departments/courses")
         >>> print(urls[0])
@@ -254,14 +254,14 @@ def find_next_siblings_with_text(tag, limit: int = -1):
 
 def parse_course_first_deg(html_content: str, course_url: str) -> Optional[str]:
     """Parse basic course information from HTML content.
-    
+
     Args:
         html_content (str): Raw HTML content of course page
         course_url (str): URL of the course page
-    
+
     Returns:
         Optional[str]: JSON string containing parsed course data or None if parsing fails
-        
+
     Example Output Format::
         {
             "course_url": "https://www.amherst.edu/...",
@@ -696,13 +696,13 @@ def parse_all_courses_second_deg():
 def parse_course_second_deg(course_data: dict) -> dict:
     """
     Parse additional course information and restructure data.
-    
+
     Args:
         course_data (dict): Course data from first degree parsing
-    
+
     Returns:
         dict: Enhanced course data with structured section information
-        
+
     Example Output Format::
         {
             "course_name": "Introduction to American Studies",

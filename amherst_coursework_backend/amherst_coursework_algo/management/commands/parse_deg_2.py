@@ -74,13 +74,13 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """Django management command to enhance course information with section details.
-    
+
     This command performs the second level of parsing, which:
     1. Reads the basic course information from first degree parsing
     2. Extracts detailed section information including times and locations
     3. Structures professor assignments and course materials by section
     4. Cleans and enhances course descriptions
-    
+
     Note:
         This command should be run after parse_deg_1 to ensure the required
         input file exists with basic course information.
@@ -90,14 +90,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Execute the command to parse second-degree course information.
-        
+
         Args:
             *args: Variable length argument list
             **options: Arbitrary keyword arguments
-        
+
         Raises:
             Exception: If course enhancement fails or required files are missing
-            
+
         Example:
             >>> python manage.py parse_deg_2
             Starting step 3: Parsing courses (second degree)...

@@ -57,14 +57,14 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """Django management command to retrieve all course URLs by department.
-    
+
     This command:
     1. Creates the data directory if it doesn't exist
     2. Reads department links from JSON
     3. Scrapes each department's course catalog page
     4. Collects all course URLs
     5. Saves results to JSON file
-    
+
     Raises:
         FileNotFoundError: If department_catalogue_links.json is not found
         Exception: For other errors during execution
@@ -74,14 +74,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Execute the command to retrieve all department course URLs.
-        
+
         Args:
             *args: Variable length argument list
             **options: Arbitrary keyword arguments
-        
+
         Raises:
             Exception: If department course retrieval fails
-            
+
         Example:
             >>> python manage.py get_all_department_courses
             Starting step 1: Getting all department courses...

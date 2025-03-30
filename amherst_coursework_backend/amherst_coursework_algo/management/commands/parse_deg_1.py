@@ -71,7 +71,7 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """Django management command to parse detailed course information.
-    
+
     This command performs the first level of parsing on course pages, extracting
     basic information like course names, descriptions, professors, and other
     metadata.
@@ -85,14 +85,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Execute the command to parse first-degree course information.
-        
+
         Args:
             *args: Variable length argument list
             **options: Arbitrary keyword arguments
-        
+
         Raises:
             Exception: If course parsing fails or required files are missing
-            
+
         Example:
             >>> python manage.py parse_deg_1
             Starting step 2: Parsing courses (first degree)...

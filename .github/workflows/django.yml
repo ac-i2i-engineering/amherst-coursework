@@ -20,6 +20,9 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: ["3.12"]
+    
+    env:
+      USER_AGENTS: ${{ secrets.USER_AGENTS }}
 
     steps:
     - uses: actions/checkout@v4
@@ -48,7 +51,7 @@ jobs:
     - name: Test Load Command
       working-directory: ./amherst_coursework_backend
       run: |
-        python manage.py load_courses ./test.json
+        python manage.py load_courses ./amherst_coursework_algo/data/course_catalogue/parsed_courses_second_deg.json
     - name: Coveralls Workflow
       working-directory: ./amherst_coursework_backend
       run: |

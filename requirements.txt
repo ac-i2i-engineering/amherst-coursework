@@ -1,6 +1,6 @@
 alabaster==1.0.0
 asgiref==3.8.1
-black==24.10.0
+black==25.1.0
 click==8.1.7
 coverage==7.6.9
 Django==5.1.7
@@ -27,3 +27,4 @@ sqlparse==0.5.3
 scikit-learn
 whitenoise
 nltk
+beautifulsoup4==4.12.2

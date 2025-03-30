@@ -1,4 +1,49 @@
-# TODO: Run the algo on all departments and manually go through the outputs
+"""
+Amherst Course Catalogue Parser
+================================
+
+This module provides functionality to scrape and parse course information from the
+Amherst College course catalogue. It includes tools for handling HTTP requests,
+parsing HTML content, and structuring course data.
+
+The module implements a two-stage parsing process:
+1. First degree parsing: Basic course information extraction
+2. Second degree parsing: Enhanced parsing with section details
+
+File Structure:
+    Input Files:
+        - department_catalogue_links.json:
+            Base department URLs
+        - all_department_courses.json:
+            URLs for all courses by department
+        - parsed_courses_detailed.json:
+            First-degree parsed course data
+    
+    Output Files:
+        - parsed_courses_second_deg.json:
+            Final enhanced course information
+
+Configuration:
+    Environment Variables:
+        - USER_AGENTS: Pipe-separated list of user agent strings
+        - COURSE_BOT_EMAIL: Bot identifier email
+        - COURSE_BOT_VERSION: Bot version number
+
+Constants:
+    - MAX_RETRIES: Maximum retry attempts for failed requests
+    - TIMEOUT: Request timeout in seconds
+    - REQUEST_DELAY: Delay between requests
+    - EXCLUDED_COURSE_TYPES: Course types to skip
+
+Example Usage:
+    >>> from parse_course_catalogue import parse_all_courses_second_deg
+    >>> enhanced_courses = parse_all_courses_second_deg()
+
+Dependencies:
+    - BeautifulSoup4 for HTML parsing
+    - Requests for HTTP requests
+    - python-dotenv for environment variables
+"""
 
 import time
 from typing import Tuple
@@ -59,7 +104,14 @@ load_dotenv()
 
 
 def get_request_headers() -> dict:
-    """Generate secure request headers with request tracking."""
+    """Generate secure request headers with request tracking.
+    
+    Returns:
+        dict: Headers dictionary containing User-Agent and accept headers
+    
+    Raises:
+        ValueError: If User-Agent configuration is invalid
+    """
 
     USER_AGENTS = os.getenv("USER_AGENTS").split("|")
 
@@ -90,7 +142,19 @@ def get_request_headers() -> dict:
 
 
 def parse_department_catalogue(department_url: str) -> List[str]:
-    """Parse a department page and extract course links."""
+    """Parse a department page and extract course links.
+    
+    Args:
+        department_url (str): URL of department course catalog page
+    
+    Returns:
+        List[str]: List of course URLs found in the department page
+        
+    Example:
+        >>> urls = parse_department_catalogue("https://www.amherst.edu/academiclife/departments/courses")
+        >>> print(urls[0])
+        'https://www.amherst.edu/academiclife/departments/courses/2324F/AMST/AMST-111'
+    """
     headers = get_request_headers()
 
     try:
@@ -188,7 +252,27 @@ def find_next_siblings_with_text(tag, limit: int = -1):
     return siblings
 
 
-def parse_course_first_deg(html_content, course_url) -> Optional[str]:
+def parse_course_first_deg(html_content: str, course_url: str) -> Optional[str]:
+    """Parse basic course information from HTML content.
+    
+    Args:
+        html_content (str): Raw HTML content of course page
+        course_url (str): URL of the course page
+    
+    Returns:
+        Optional[str]: JSON string containing parsed course data or None if parsing fails
+        
+    Example Output Format::
+        {
+            "course_url": "https://www.amherst.edu/...",
+            "course_name": "Introduction to American Studies",
+            "course_acronyms": ["AMST-111"],
+            "divisions": ["Social Sciences"],
+            "departments": {
+                "American Studies": "https://www.amherst.edu/..."
+            }
+        }
+    """
     try:
         if not html_content:
             logger.error("Empty HTML content provided")
@@ -612,6 +696,25 @@ def parse_all_courses_second_deg():
 def parse_course_second_deg(course_data: dict) -> dict:
     """
     Parse additional course information and restructure data.
+    
+    Args:
+        course_data (dict): Course data from first degree parsing
+    
+    Returns:
+        dict: Enhanced course data with structured section information
+        
+    Example Output Format::
+        {
+            "course_name": "Introduction to American Studies",
+            "section_information": {
+                "1": {
+                    "professor_name": "Professor Smith",
+                    "course_location": "Webster 220",
+                    "mon_start_time": "10:00 AM",
+                    "mon_end_time": "11:20 AM"
+                }
+            }
+        }
     """
     try:
         # Create deep copy to avoid modifying original

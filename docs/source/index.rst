@@ -50,6 +50,8 @@ Contents
     models
     filters
     load_courses
+    course_parser_commands
+    course_parser
 
 Additional Resources
 ====================

@@ -56,6 +56,7 @@ def home(request):
                 if start_time and end_time:
                     time_slots.append(
                         (
+                            section.section_number,
                             day_prefix,
                             start_time.strftime("%I:%M %p"),
                             end_time.strftime("%I:%M %p"),
@@ -63,7 +64,12 @@ def home(request):
                     )
 
         course.professor_name = ", ".join(professors) if professors else None
-        course.meeting_times = format_meeting_times(time_slots) if time_slots else None
+        course.meeting_times = (
+            format_meeting_times(time_slots, False) if time_slots else None
+        )
+        course.section_with_time = (
+            format_meeting_times(time_slots, True) if time_slots else None
+        )
 
     return render(
         request,
@@ -80,36 +86,54 @@ def format_section_time(time_value):
     return time_value.strftime("%I:%M %p") if time_value else None
 
 
-def format_meeting_times(time_slots):
-    # Group times by their start and end time
+def format_meeting_times(time_slots, sections):
+    # Group times by their start and end time and track section numbers
     time_groups = {}
     day_map = {"mon": "M", "tue": "T", "wed": "W", "thu": "Th", "fri": "F"}
-
-    # Define custom day order (Tuesday before Thursday)
     day_order = {"M": 0, "T": 1, "W": 2, "Th": 3, "F": 4}
 
-    for day, start, end in time_slots:
+    for section_num, day, start, end in time_slots:
         time_key = f"{start}-{end}"
         if time_key not in time_groups:
-            time_groups[time_key] = set()
-        time_groups[time_key].add(day_map[day])
+            time_groups[time_key] = {"days": set(), "section": section_num}
+        time_groups[time_key]["days"].add(day_map[day])
 
     # Format each group
     formatted_times = []
-    for time_range, days in time_groups.items():
-        # Sort using custom day order
-        days = "".join(sorted(list(days), key=lambda x: day_order[x]))
-        start, end = time_range.split("-")
+    if sections:
+        for time_range, info in time_groups.items():
+            # Sort using custom day order
+            days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
+            start, end = time_range.split("-")
 
-        # Format the time properly
-        try:
-            start_time = datetime.strptime(start.strip(), "%I:%M %p")
-            end_time = datetime.strptime(end.strip(), "%I:%M %p")
-            formatted_start = start_time.strftime("%I:%M %p").lstrip("0")
-            formatted_end = end_time.strftime("%I:%M %p").lstrip("0")
-            formatted_times.append(f"{days} {formatted_start} - {formatted_end}")
-        except ValueError:
-            formatted_times.append(f"{days} {start.strip()} - {end.strip()}")
+            # Format the time properly
+            try:
+                start_time = datetime.strptime(start.strip(), "%I:%M %p")
+                end_time = datetime.strptime(end.strip(), "%I:%M %p")
+                formatted_start = start_time.strftime("%I:%M %p").lstrip("0")
+                formatted_end = end_time.strftime("%I:%M %p").lstrip("0")
+                formatted_times.append(
+                    f"{info['section']}~{days} {formatted_start} - {formatted_end}"
+                )
+            except ValueError:
+                formatted_times.append(
+                    f"{info['section']}~{days} {start.strip()} - {end.strip()}"
+                )
+    else:
+        for time_range, info in time_groups.items():
+            # Sort using custom day order
+            days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
+            start, end = time_range.split("-")
+
+            # Format the time properly
+            try:
+                start_time = datetime.strptime(start.strip(), "%I:%M %p")
+                end_time = datetime.strptime(end.strip(), "%I:%M %p")
+                formatted_start = start_time.strftime("%I:%M %p").lstrip("0")
+                formatted_end = end_time.strftime("%I:%M %p").lstrip("0")
+                formatted_times.append(f"{days} {formatted_start} - {formatted_end}")
+            except ValueError:
+                formatted_times.append(f"{days} {start.strip()} - {end.strip()}")
 
     return " | ".join(formatted_times)
 

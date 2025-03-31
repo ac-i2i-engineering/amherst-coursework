@@ -837,3 +837,14 @@ p {
 .section-header {
     font-weight: bold
 }
+
+.conflict-loading {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+}

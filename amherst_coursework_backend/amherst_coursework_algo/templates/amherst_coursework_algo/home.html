@@ -82,6 +82,10 @@
                 </div>
             </div>
 
+            <div id="conflict-loading" class="conflict-loading" style="display: none;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Checking for conflicts...
+            </div>
+
             <div class="course-container">
                 {% if not courses %}
                 <p>No results found for "{{ search_query }}"</p>
@@ -89,7 +93,8 @@
 
                 {% for course in courses %}
                 <div class="course-card"
-                    data-course-id="{{ course.id }}">
+                    data-course-id="{{ course.id }}"
+                    data-section-with-time="{{ course.section_with_time|default:'TBD' }}">
                     <div class="course-card-columns">
                         <div class="course-card-left">
                             <p class="course-code">
@@ -132,12 +137,17 @@
     // Initialize cart display when DOM content is loaded
     document.addEventListener('DOMContentLoaded', async function() {
         updateCartDisplay();
-        setTimeout(() => {
-            findAndMarkAllCartConflicts().then(() => {
-            }).catch(error => {
+        const loadingIndicator = document.getElementById('conflict-loading');
+        loadingIndicator.style.display = 'block';
+
+        findAndMarkAllCartConflicts()
+            .then(() => {
+                loadingIndicator.style.display = 'none';
+            })
+            .catch(error => {
                 console.error('Error in conflict checking:', error);
+                loadingIndicator.style.display = 'none';
             });
-        }, 1000);
 
         document.querySelectorAll('.course-card').forEach(card => {
             card.addEventListener('click', function(event) {

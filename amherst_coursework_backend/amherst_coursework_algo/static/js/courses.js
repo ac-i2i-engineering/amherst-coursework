@@ -170,24 +170,63 @@ async function findAndMarkAllCartConflicts() {
         const data = await response.json();
         const cartCourseTimes = getCartCourseTimes(data);
         const cards = getNonCartCourseCards(cart);
-
-        const sectionPromises = cards.map(card => 
-            fetch(`/api/course/${card.dataset.courseId}/sections/`)
-                .then(r => r.json())
-                .then(sections => ({ card, sections }))
-        );
-
-        const results = await Promise.all(sectionPromises);
         
-        results.forEach(({ card, sections }) => {
+        cards.forEach(card => {
             const courseId = card.dataset.courseId;
+            if (card.dataset.sectionWithTime === 'TBD') {
+                return null;
+            }
+            let sectionTimes = card.dataset.sectionWithTime.split('|');
+
+            sectionTimes = sectionTimes.map(section_time => {
+                if (!section_time) {
+                    console.warn('Empty section time encountered');
+                    return null;
+                }
+                
+                const section_time_split = section_time.split('~');
+                if (section_time_split.length !== 2) {
+                    console.warn(`Invalid section time format: ${section_time}`);
+                    return null;
+                }
+                
+                const [sectionNum, timeSlot] = section_time_split;
+                if (!sectionNum || !timeSlot) {
+                    console.warn(`Missing section number or time slot: ${section_time}`);
+                    return null;
+                }
+                
+                return {
+                    sectionNumber: sectionNum.trim(),
+                    timeSlot: timeSlot.trim()
+                };
+            }).filter(Boolean);
             
-            sections.forEach(section => {
-                ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
-                    const shortDay = day.substring(0, 3);
-                    if (section[`${day}_start_time`] && section[`${day}_end_time`]) {
-                        const start = new Date(`2000/01/01 ${section[`${day}_start_time`]}`);
-                        const end = new Date(`2000/01/01 ${section[`${day}_end_time`]}`);
+            sectionTimes.forEach(section_time => {
+                timeSlot = section_time.timeSlot;
+                sectionNumber = section_time.sectionNumber;
+                // Extract days and time range
+                const [days, timeRange] = timeSlot.trim().split(' ');
+                const [startTime, endTime] = timeRange.split(' - ');
+                
+                // Convert the days string into individual days
+                const daysArray = days.match(/.{1,2}/g) || []; // Split into 1-2 char chunks (M, T, W, Th, F)
+                
+                // Process each day
+                daysArray.forEach(day => {
+                    // Convert to our standard 3-letter format
+                    const dayMap = {
+                        'M': 'mon',
+                        'T': 'tue',
+                        'W': 'wed',
+                        'Th': 'thu',
+                        'F': 'fri'
+                    };
+                    const shortDay = dayMap[day];
+                    
+                    if (shortDay) {
+                        const start = new Date(`2000/01/01 ${startTime}`);
+                        const end = new Date(`2000/01/01 ${endTime}`);
                         
                         cartCourseTimes.forEach(cartCourse => {
                             cartCourse.meetingTimes.forEach(cartTime => {
@@ -200,11 +239,11 @@ async function findAndMarkAllCartConflicts() {
                                     
                                     if (!courseConflicts[cartCourse.courseId].some(c => 
                                         c.id === courseId && 
-                                        c.conflictingSections.includes(section.section_number))) {
+                                        c.conflictingSections.includes(sectionNumber))) {
                                         courseConflicts[cartCourse.courseId].push({
                                             id: courseId,
                                             name: card.querySelector('.course-name')?.textContent || 'Unknown',
-                                            conflictingSections: [section.section_number]
+                                            conflictingSections: [sectionNumber]
                                         });
                                         
                                         applyConflictStyling(card, cartCourse.courseName);
@@ -215,6 +254,7 @@ async function findAndMarkAllCartConflicts() {
                     }
                 });
             });
+                                          
         });
 
         localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));

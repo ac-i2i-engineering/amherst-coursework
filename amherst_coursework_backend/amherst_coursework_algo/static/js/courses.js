@@ -59,9 +59,11 @@ function clearConflictStyling() {
         cards.forEach(card => {
             requestAnimationFrame(() => {
                 card.classList.remove('time-conflict');
+                card.classList.remove('time-warning');
                 card.style.border = '';
                 card.style.backgroundColor = '';
                 let existingBadge = card.querySelector('.conflict-badge');
+                let warningBadge = card.querySelector('.warning-badge');
                 let startTime = Date.now();
                 while (existingBadge) {
                     if (Date.now() - startTime > TIMEOUT_MS) {
@@ -70,6 +72,14 @@ function clearConflictStyling() {
                     }
                     card.removeChild(existingBadge);
                     existingBadge = card.querySelector('.conflict-badge');
+                }
+                while(warningBadge) {
+                    if (Date.now() - startTime > TIMEOUT_MS) {
+                        console.error('Timeout removing warning badges');
+                        break;
+                    }
+                    card.removeChild(warningBadge);
+                    warningBadge = card.querySelector('.warning-badge');
                 }
                 completed++;
                 if (completed === cards.length) {
@@ -131,11 +141,37 @@ function applyConflictStyling(card, cartCourseName) {
 
     const badge = document.createElement('div');
     badge.className = 'conflict-badge';
-    badge.textContent = '⚠️ CONFLICT';
+    badge.textContent = '⛔️ CONFLICT';
     badge.style.position = 'absolute';
     badge.style.top = '18px';
-    badge.style.right = '20px';
+    badge.style.right = '60px';
     badge.style.backgroundColor = '#ff0000';
+    badge.style.color = 'white';
+    badge.style.padding = '3px 6px';
+    badge.style.borderRadius = '3px';
+    badge.style.fontSize = '12px';
+    badge.style.fontWeight = 'bold';
+    badge.style.zIndex = '100';
+    badge.title = `Conflicts with ${cartCourseName}`;
+
+    if (getComputedStyle(card).position === 'static') {
+        card.style.position = 'relative';
+    }
+    card.appendChild(badge);
+}
+
+function applyWarningStyling(card, cartCourseName) {
+    card.classList.add('time-warning');
+    card.style.border = '2px solid rgb(255, 176, 91)';
+    card.style.backgroundColor = 'rgba(255, 176, 91, 0.1)';
+
+    const badge = document.createElement('div');
+    badge.className = 'warning-badge';
+    badge.textContent = '⚠️ WARNING';
+    badge.style.position = 'absolute';
+    badge.style.top = '18px';
+    badge.style.right = '60px';
+    badge.style.backgroundColor = 'rgb(252, 130, 0)';
     badge.style.color = 'white';
     badge.style.padding = '3px 6px';
     badge.style.borderRadius = '3px';
@@ -177,6 +213,8 @@ async function findAndMarkAllCartConflicts() {
                 return null;
             }
             let sectionTimes = card.dataset.sectionWithTime.split('|');
+            let totalSections = 0;
+            let conflictingSections = 0;
 
             sectionTimes = sectionTimes.map(section_time => {
                 if (!section_time) {
@@ -202,19 +240,18 @@ async function findAndMarkAllCartConflicts() {
                 };
             }).filter(Boolean);
             
+            totalSections = sectionTimes.length;
+            
             sectionTimes.forEach(section_time => {
                 timeSlot = section_time.timeSlot;
                 sectionNumber = section_time.sectionNumber;
-                // Extract days and time range
                 const [days, timeRange] = timeSlot.trim().split(' ');
                 const [startTime, endTime] = timeRange.split(' - ');
                 
-                // Convert the days string into individual days
-                const daysArray = days.match(/.{1,2}/g) || []; // Split into 1-2 char chunks (M, T, W, Th, F)
+                let hasConflict = false;
+                const daysArray = days.match(/.{1,2}/g) || [];
                 
-                // Process each day
                 daysArray.forEach(day => {
-                    // Convert to our standard 3-letter format
                     const dayMap = {
                         'M': 'mon',
                         'T': 'tue',
@@ -232,6 +269,7 @@ async function findAndMarkAllCartConflicts() {
                             cartCourse.meetingTimes.forEach(cartTime => {
                                 if (cartTime.day === shortDay && 
                                     checkTimeConflict(start, end, cartTime.start, cartTime.end)) {
+                                    hasConflict = true;
                                     
                                     if (!courseConflicts[cartCourse.courseId]) {
                                         courseConflicts[cartCourse.courseId] = [];
@@ -245,16 +283,28 @@ async function findAndMarkAllCartConflicts() {
                                             name: card.querySelector('.course-name')?.textContent || 'Unknown',
                                             conflictingSections: [sectionNumber]
                                         });
-                                        
-                                        applyConflictStyling(card, cartCourse.courseName);
                                     }
                                 }
                             });
                         });
                     }
                 });
+                
+                if (hasConflict) {
+                    conflictingSections++;
+                }
             });
-                                          
+            
+            // Apply appropriate styling based on conflict ratio
+            if (conflictingSections > 0) {
+                if (conflictingSections === totalSections) {
+                    // All sections have conflicts
+                    applyConflictStyling(card, cartCourseTimes[0]?.courseName);
+                } else {
+                    // Some sections have conflicts
+                    applyWarningStyling(card, cartCourseTimes[0]?.courseName);
+                }
+            }
         });
 
         localStorage.setItem('courseTimeConflicts', JSON.stringify(courseConflicts));
@@ -607,11 +657,23 @@ function resetCart() {
                     cards.forEach(card => {
                         requestAnimationFrame(() => {
                             card.classList.remove('time-conflict');
+                            card.classList.remove('time-warning');
                             card.style.border = '';
                             card.style.backgroundColor = '';
                             
-                            const existingBadge = card.querySelector('.conflict-badge');
-                            if (existingBadge) existingBadge.remove();
+                            let existingBadge = card.querySelector('.conflict-badge');
+                            let warningBadge = card.querySelector('.warning-badge');
+                            let startTime = Date.now();
+                            while (existingBadge || warningBadge) {
+                                if (Date.now() - startTime > TIMEOUT_MS) {
+                                    console.error('Timeout removing conflict badges');
+                                    break;
+                                }
+                                card.removeChild(existingBadge);
+                                card.removeChild(warningBadge);
+                                existingBadge = card.querySelector('.conflict-badge');
+                                warningBadge = card.querySelector('.warning-badge');
+                            }
                             
                             completedCards++;
                             if (completedCards === cards.length) {
@@ -670,7 +732,6 @@ function showSectionModal(event, courseId, courseName) {
                 Object.values(courseConflicts).forEach(conflicts => {
 
                     conflicts.forEach(conflict => {
-                        console.log("reviewing conflict", conflict);
                         if (conflict.conflictingSections && 
                             conflict.id === courseId &&
                             conflict.conflictingSections.includes(section.section_number)) {
@@ -691,7 +752,7 @@ function showSectionModal(event, courseId, courseName) {
                     <div class="section-header">
                         Section ${section.section_number}
                         ${isInCart ? '<span class="cart-badge"> IN CART</span>' : ''}
-                        ${hasConflict ? '<span class="conflict-badge">⚠️ CONFLICT</span>' : ''}
+                        ${hasConflict ? '<span class="conflict-badge">⛔️ CONFLICT</span>' : ''}
                     </div>
                     <div class="section-details">
                         <p>Professor: ${section.professor_name || 'TBA'}</p>

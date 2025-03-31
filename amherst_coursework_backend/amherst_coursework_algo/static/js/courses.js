@@ -664,16 +664,23 @@ function resetCart() {
                             let existingBadge = card.querySelector('.conflict-badge');
                             let warningBadge = card.querySelector('.warning-badge');
                             let startTime = Date.now();
-                            while (existingBadge || warningBadge) {
+                            while (existingBadge) {
                                 if (Date.now() - startTime > TIMEOUT_MS) {
                                     console.error('Timeout removing conflict badges');
                                     break;
                                 }
                                 card.removeChild(existingBadge);
-                                card.removeChild(warningBadge);
                                 existingBadge = card.querySelector('.conflict-badge');
+                            }
+                            while(warningBadge) {
+                                if (Date.now() - startTime > TIMEOUT_MS) {
+                                    console.error('Timeout removing warning badges');
+                                    break;
+                                }
+                                card.removeChild(warningBadge);
                                 warningBadge = card.querySelector('.warning-badge');
                             }
+                            
                             
                             completedCards++;
                             if (completedCards === cards.length) {

@@ -330,12 +330,13 @@ async function findAndMarkAllCartConflicts() {
             
             // Apply appropriate styling based on conflict ratio
             if (conflictingSections > 0) {
+                const conflictingCourseName = cartCourseTimes[0]?.courseName || 'another course';
                 if (conflictingSections === totalSections) {
                     // All sections have conflicts
-                    applyConflictStyling(card, cartCourseTimes[0]?.courseName);
+                    applyConflictStyling(card, conflictingCourseName);
                 } else {
-                    // Some sections have conflicts
-                    applyWarningStyling(card, cartCourseTimes[0]?.courseName);
+                    // Only some sections have conflicts
+                    applyWarningStyling(card, conflictingCourseName);
                 }
             }
         });

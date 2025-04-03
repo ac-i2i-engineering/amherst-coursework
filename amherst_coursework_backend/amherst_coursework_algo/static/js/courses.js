@@ -678,7 +678,7 @@ function resetCart() {
                 
                 // After all buttons are reset, clear conflict styling
                 if (++completedButtons === buttons.length) {
-                    clearAllConflictStyling().then(() => {
+                    clearConflictStyling().then(() => {
                         updateCartDisplay();
                         resolve();
                     });

@@ -127,60 +127,72 @@
             <span class="close-modal">&times;</span>
             <h3>Select Course Section</h3>
             <div id="section-list">
-                <!-- Sections will be populated here -->
             </div>
         </div>
     </div>
 
     <script>
-
-    // Initialize cart display when DOM content is loaded
+    // Initialize cart display and set up event handlers when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', async function() {
+        // Update the cart display with current items
         updateCartDisplay();
+
+        // Show loading indicator while checking for conflicts
         const loadingIndicator = document.getElementById('conflict-loading');
         loadingIndicator.style.display = 'block';
 
+        // Check for time conflicts in cart and update UI accordingly
         findAndMarkAllCartConflicts()
             .then(() => {
+                // Hide loading indicator on successful completion
                 loadingIndicator.style.display = 'none';
             })
             .catch(error => {
+                // Log error and hide loading indicator if conflict check fails
                 console.error('Error in conflict checking:', error);
                 loadingIndicator.style.display = 'none';
             });
 
+        // Add click handlers to all course cards for panel toggling
         document.querySelectorAll('.course-card').forEach(card => {
             card.addEventListener('click', function(event) {
+                // Only toggle panel if click wasn't on cart button
                 if (!event.target.closest('.cart-button')) {
-                    // Remove active class from all cards
+                    // Remove highlight from all other cards
                     document.querySelectorAll('.course-card').forEach(c => {
                         c.classList.remove('active');
                     });
                     
-                    // Add active class to clicked card
+                    // Highlight the clicked card
                     this.classList.add('active');
                     
+                    // Show course details in side panel
                     const courseId = this.dataset.courseId;
                     togglePanel(courseId);
                 }
             });
         });
 
+        // Add enter key handler for search input
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                // Prevent default form submission
                 e.preventDefault();
+                // Submit the form programmatically
                 this.closest('form').submit();
             }
         });
 
+        // Set up modal close button functionality
         const closeModalButton = document.querySelector('.close-modal');
         if (closeModalButton) {
             closeModalButton.addEventListener('click', function() {
+                // Hide the section selection modal
                 document.getElementById('section-modal').style.display = 'none';
             });
         }
 
-        // Handle clicking outside modal
+        // Close modal when clicking outside
         document.addEventListener('click', function(event) {
             const modal = document.getElementById('section-modal');
             if (event.target === modal) {
@@ -188,21 +200,23 @@
             }
         });
 
-        // Handle clicking on reset cart button
+        // Handle cart reset functionality
         document.querySelector('.reset-cart').addEventListener('click', async () => {
             try {
+                // Clear cart and remove styling
                 await resetCart();
+                // Recheck conflicts after cart is cleared
                 await findAndMarkAllCartConflicts();
             } catch (error) {
                 console.error('Error resetting cart:', error);
             }
         });
 
-
-        // Update button states to match cart
+        // Initialize cart button states
         const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
         document.querySelectorAll('.cart-button').forEach(button => {
             const courseId = button.getAttribute('data-course-id');
+            // Update button appearance based on cart status
             if (cart.some(item => item.courseId === courseId)) {
                 updateButtonState(courseId, true);
             } else {

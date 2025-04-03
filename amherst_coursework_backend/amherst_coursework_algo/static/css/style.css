@@ -756,8 +756,8 @@ p {
     background-color: #ff817a;
 }
 
-.course-card.time-conflict .cart-button {
-    display: none;
+.course-card.time-warning .course-card-left{
+    background-color: rgb(255, 176, 91);
 }
 
 /* Selecting sections */
@@ -828,6 +828,15 @@ p {
 .conflict-badge {
     color: white;
     background-color: #ff0000;
+    font-weight:bold;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.warning-badge {
+    color: white;
+    background-color: rgb(255, 243, 73);
     font-weight:bold;
     padding: 2px 5px;
     font-size: 12px;

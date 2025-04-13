@@ -14,28 +14,27 @@ from amherst_coursework_algo.config.course_dictionaries import (
 from typing import List
 from .masked_filters import filter
 import logging
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Get logger
 logger = logging.getLogger(__name__)
 
+PER_PAGE = 40  # Number of courses per page
 
 def home(request):
-    # Get search query from GET parameters
     search = request.GET.get("search", "")
     search_query = search.lower()
+    page = request.GET.get('page', 1)
 
-    # Get all courses initially
-    all_courses = Course.objects.prefetch_related(
-        "courseCodes", "sections__professor"
-    ).all()
-
+    # Get initial courses
+    all_courses = Course.objects.prefetch_related("courseCodes", "sections__professor").all()
+    
     if search_query:
-        # Get filter response
         courses = filter(search_query, all_courses)
     else:
         courses = all_courses
 
-    # Add professor and meeting time info to each course
+    # Process courses with professor and meeting time info
     for course in courses:
         professors = set()
         time_slots = []
@@ -71,15 +70,25 @@ def home(request):
             format_meeting_times(time_slots, True) if time_slots else None
         )
 
-    return render(
-        request,
-        "amherst_coursework_algo/home.html",
-        {
-            "courses": courses,
-            "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
-            "search_query": search,  # Pass search query back to template
-        },
-    )
+    # Add pagination
+    paginator = Paginator(list(courses), PER_PAGE)
+    try:
+        courses_page = paginator.page(page)
+    except PageNotAnInteger:
+        courses_page = paginator.page(1)
+    except EmptyPage:
+        courses_page = paginator.page(paginator.num_pages)
+
+    context = {
+        'courses': courses_page,
+        'page_obj': courses_page,
+        'DEPARTMENT_CODE_TO_NAME': json.dumps(DEPARTMENT_CODE_TO_NAME),
+        'search_query': search,
+        'total_pages': paginator.num_pages,
+        'current_page': int(page)
+    }
+
+    return render(request, "amherst_coursework_algo/home.html", context)
 
 
 def format_section_time(time_value):

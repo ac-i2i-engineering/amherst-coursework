@@ -661,6 +661,7 @@ function updateCartDisplay() {
     }
 }
 
+
 function resetCart() {
     // Clear cart data from storage
     localStorage.removeItem('courseCart');
@@ -674,7 +675,7 @@ function resetCart() {
         // Process each button in an animation frame
         buttons.forEach(button => {
             requestAnimationFrame(() => {
-                updateButtonToDefault(button);
+                updateButtonState(button, false);
                 
                 // After all buttons are reset, clear conflict styling
                 if (++completedButtons === buttons.length) {
@@ -786,3 +787,99 @@ function formatMeetingTimes(section) {
     
     return times.join(', ');
 }
+
+let currentPage = 1;
+let isLoading = false;
+
+async function loadPage(pageNumber) {
+    if (isLoading) return;
+    isLoading = true;
+
+    try {
+        // Show loading state
+        document.querySelector('.course-container').style.opacity = '0.5';
+        
+        // Get current search query if any
+        const searchParams = new URLSearchParams(window.location.search);
+        const searchQuery = searchParams.get('search') || '';
+        
+        // Build URL with page and search parameters
+        const url = `/?page=${pageNumber}${searchQuery ? `&search=${searchQuery}` : ''}`;
+        
+        // Fetch new page content
+        const response = await fetch(url);
+        const html = await response.text();
+        
+        // Parse the new HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Update the course container
+        const courseContainer = document.querySelector('.course-container');
+        const newCourses = doc.querySelector('.course-container');
+        courseContainer.innerHTML = newCourses.innerHTML;
+
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = searchQuery;
+        }
+        
+        // Update pagination controls
+        updatePaginationControls(pageNumber);
+        
+        // Update URL without refresh
+        window.history.pushState({}, '', url);
+        currentPage = pageNumber;
+        
+        // Reinitialize course functionality
+        await initializeCourses();
+        
+        // Update button states for courses in cart
+        const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+        cart.forEach(item => {
+            updateButtonState(item.courseId, true);
+        });
+        
+        // Check for conflicts after updating button states
+        await findAndMarkAllCartConflicts();
+        
+        // Restore opacity
+        courseContainer.style.opacity = '1';
+        
+        // Bind events to new elements
+        bindCourseEvents();
+        
+    } catch (error) {
+        console.error('Error loading page:', error);
+    } finally {
+        isLoading = false;
+    }
+}
+
+function updatePaginationControls(pageNumber) {
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const pageInfo = document.querySelector('.page-info');
+    const totalPages = parseInt(document.querySelector('.pagination-controls').dataset.totalPages);
+    
+    prevBtn.disabled = pageNumber <= 1;
+    nextBtn.disabled = pageNumber >= totalPages;
+    pageInfo.textContent = `Page ${pageNumber} of ${totalPages}`;
+}
+
+function bindCourseEvents() {
+    // Rebind click handlers for course cards
+    document.querySelectorAll('.course-card').forEach(card => {
+        card.addEventListener('click', function(event) {
+            if (!event.target.closest('.cart-button')) {
+                document.querySelectorAll('.course-card').forEach(c => {
+                    c.classList.remove('active');
+                });
+                this.classList.add('active');
+                const courseId = this.dataset.courseId;
+                togglePanel(courseId);
+            }
+        });
+    });
+}
+

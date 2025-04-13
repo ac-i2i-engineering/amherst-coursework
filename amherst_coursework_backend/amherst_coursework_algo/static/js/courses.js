@@ -273,12 +273,20 @@ async function findAndMarkAllCartConflicts() {
             sectionTimes.forEach(section_time => {
                 timeSlot = section_time.timeSlot;
                 sectionNumber = section_time.sectionNumber;
-                const [days, timeRange] = timeSlot.trim().split(' ');
-                const [startTime, endTime] = timeRange.split(' - ');
+                
+
+                const timeMatch = timeSlot.match(/([MTWThF]+)\s+(\d{1,2}:\d{2}\s*(?:AM|PM)\s*-\s*\d{1,2}:\d{2}\s*(?:AM|PM))/i);
+                if (!timeMatch) {
+                    console.warn(`Invalid time format: ${timeSlot}`);
+                    return;
+                }
+
+                const [_, daysString, timeRange] = timeMatch;
+                const [startTime, endTime] = timeRange.split('-').map(t => t.trim());
                 
                 let hasConflict = false;
-                const daysArray = days.match(/.{1,2}/g) || [];
-                
+                const daysArray = daysString.match(/(?:Th)|[MTWF]/g) || [];
+
                 // Check each day for conflicts
                 daysArray.forEach(day => {
                     const dayMap = {
@@ -294,6 +302,7 @@ async function findAndMarkAllCartConflicts() {
                         // Convert times to comparable format
                         const start = new Date(`2000/01/01 ${startTime}`);
                         const end = new Date(`2000/01/01 ${endTime}`);
+
                         
                         // Compare against each cart course's times
                         cartCourseTimes.forEach(cartCourse => {
@@ -307,10 +316,18 @@ async function findAndMarkAllCartConflicts() {
                                         courseConflicts[cartCourse.courseId] = [];
                                     }
                                     
-                                    // Add conflict if not already tracked
-                                    if (!courseConflicts[cartCourse.courseId].some(c => 
-                                        c.id === courseId && 
-                                        c.conflictingSections.includes(sectionNumber))) {
+                                    // Add conflict if not already tracked for this section
+                                    const existingConflict = courseConflicts[cartCourse.courseId]?.find(c => c.id === courseId);
+                                    if (existingConflict) {
+                                        // If this course already has conflicts, check if this section is already in the list
+                                        if (!existingConflict.conflictingSections.includes(sectionNumber)) {
+                                            existingConflict.conflictingSections.push(sectionNumber);
+                                        }
+                                    } else {
+                                        // Create a new conflict entry for this course
+                                        if (!courseConflicts[cartCourse.courseId]) {
+                                            courseConflicts[cartCourse.courseId] = [];
+                                        }
                                         courseConflicts[cartCourse.courseId].push({
                                             id: courseId,
                                             name: card.querySelector('.course-name')?.textContent || 'Unknown',
@@ -675,7 +692,8 @@ function resetCart() {
         // Process each button in an animation frame
         buttons.forEach(button => {
             requestAnimationFrame(() => {
-                updateButtonState(button, false);
+                const courseId = button.getAttribute('data-course-id');
+                updateButtonState(courseId, false);
                 
                 // After all buttons are reset, clear conflict styling
                 if (++completedButtons === buttons.length) {
@@ -731,7 +749,6 @@ function showSectionModal(event, courseId, courseName) {
                             conflict.id === courseId &&
                             conflict.conflictingSections.includes(section.section_number)) {
                             hasConflict = true;
-                            console.log("conflict found for", courseId, section.section_number);
                         }
                     });
                 });

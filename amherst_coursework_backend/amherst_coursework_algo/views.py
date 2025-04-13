@@ -21,14 +21,17 @@ logger = logging.getLogger(__name__)
 
 PER_PAGE = 40  # Number of courses per page
 
+
 def home(request):
     search = request.GET.get("search", "")
     search_query = search.lower()
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
     # Get initial courses
-    all_courses = Course.objects.prefetch_related("courseCodes", "sections__professor").all()
-    
+    all_courses = Course.objects.prefetch_related(
+        "courseCodes", "sections__professor"
+    ).all()
+
     if search_query:
         courses = filter(search_query, all_courses)
     else:
@@ -80,12 +83,12 @@ def home(request):
         courses_page = paginator.page(paginator.num_pages)
 
     context = {
-        'courses': courses_page,
-        'page_obj': courses_page,
-        'DEPARTMENT_CODE_TO_NAME': json.dumps(DEPARTMENT_CODE_TO_NAME),
-        'search_query': search,
-        'total_pages': paginator.num_pages,
-        'current_page': int(page)
+        "courses": courses_page,
+        "page_obj": courses_page,
+        "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
+        "search_query": search,
+        "total_pages": paginator.num_pages,
+        "current_page": int(page),
     }
 
     return render(request, "amherst_coursework_algo/home.html", context)
@@ -102,18 +105,23 @@ def format_meeting_times(time_slots, sections):
     day_order = {"M": 0, "T": 1, "W": 2, "Th": 3, "F": 4}
 
     for section_num, day, start, end in time_slots:
-        time_key = f"{start}-{end}"
-        if time_key not in time_groups:
-            time_groups[time_key] = {"days": set(), "section": section_num}
-        time_groups[time_key]["days"].add(day_map[day])
+        # Include section number in the key to distinguish different sections
+        section_time_key = f"{section_num}-{start}-{end}"
+        if section_time_key not in time_groups:
+            time_groups[section_time_key] = {
+                "days": set(),
+                "section": section_num,
+                "time": f"{start}-{end}",
+            }
+        time_groups[section_time_key]["days"].add(day_map[day])
 
     # Format each group
     formatted_times = []
     if sections:
-        for time_range, info in time_groups.items():
+        for key, info in time_groups.items():
             # Sort using custom day order
             days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
-            start, end = time_range.split("-")
+            start, end = info["time"].split("-")
 
             # Format the time properly
             try:
@@ -129,7 +137,16 @@ def format_meeting_times(time_slots, sections):
                     f"{info['section']}~{days} {start.strip()} - {end.strip()}"
                 )
     else:
-        for time_range, info in time_groups.items():
+        # For non-section display (regular meeting times without section numbers)
+        # Group by unique time + day combinations
+        display_groups = {}
+        for key, info in time_groups.items():
+            time_key = info["time"]
+            if time_key not in display_groups:
+                display_groups[time_key] = {"days": set()}
+            display_groups[time_key]["days"].update(info["days"])
+
+        for time_range, info in display_groups.items():
             # Sort using custom day order
             days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
             start, end = time_range.split("-")

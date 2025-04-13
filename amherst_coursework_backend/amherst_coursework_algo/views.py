@@ -14,28 +14,30 @@ from amherst_coursework_algo.config.course_dictionaries import (
 from typing import List
 from .masked_filters import filter
 import logging
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Get logger
 logger = logging.getLogger(__name__)
 
+PER_PAGE = 40  # Number of courses per page
+
 
 def home(request):
-    # Get search query from GET parameters
     search = request.GET.get("search", "")
     search_query = search.lower()
+    page = request.GET.get("page", 1)
 
-    # Get all courses initially
+    # Get initial courses
     all_courses = Course.objects.prefetch_related(
         "courseCodes", "sections__professor"
     ).all()
 
     if search_query:
-        # Get filter response
         courses = filter(search_query, all_courses)
     else:
         courses = all_courses
 
-    # Add professor and meeting time info to each course
+    # Process courses with professor and meeting time info
     for course in courses:
         professors = set()
         time_slots = []
@@ -71,15 +73,25 @@ def home(request):
             format_meeting_times(time_slots, True) if time_slots else None
         )
 
-    return render(
-        request,
-        "amherst_coursework_algo/home.html",
-        {
-            "courses": courses,
-            "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
-            "search_query": search,  # Pass search query back to template
-        },
-    )
+    # Add pagination
+    paginator = Paginator(list(courses), PER_PAGE)
+    try:
+        courses_page = paginator.page(page)
+    except PageNotAnInteger:
+        courses_page = paginator.page(1)
+    except EmptyPage:
+        courses_page = paginator.page(paginator.num_pages)
+
+    context = {
+        "courses": courses_page,
+        "page_obj": courses_page,
+        "DEPARTMENT_CODE_TO_NAME": json.dumps(DEPARTMENT_CODE_TO_NAME),
+        "search_query": search,
+        "total_pages": paginator.num_pages,
+        "current_page": int(page),
+    }
+
+    return render(request, "amherst_coursework_algo/home.html", context)
 
 
 def format_section_time(time_value):
@@ -93,18 +105,23 @@ def format_meeting_times(time_slots, sections):
     day_order = {"M": 0, "T": 1, "W": 2, "Th": 3, "F": 4}
 
     for section_num, day, start, end in time_slots:
-        time_key = f"{start}-{end}"
-        if time_key not in time_groups:
-            time_groups[time_key] = {"days": set(), "section": section_num}
-        time_groups[time_key]["days"].add(day_map[day])
+        # Include section number in the key to distinguish different sections
+        section_time_key = f"{section_num}-{start}-{end}"
+        if section_time_key not in time_groups:
+            time_groups[section_time_key] = {
+                "days": set(),
+                "section": section_num,
+                "time": f"{start}-{end}",
+            }
+        time_groups[section_time_key]["days"].add(day_map[day])
 
     # Format each group
     formatted_times = []
     if sections:
-        for time_range, info in time_groups.items():
+        for key, info in time_groups.items():
             # Sort using custom day order
             days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
-            start, end = time_range.split("-")
+            start, end = info["time"].split("-")
 
             # Format the time properly
             try:
@@ -120,7 +137,16 @@ def format_meeting_times(time_slots, sections):
                     f"{info['section']}~{days} {start.strip()} - {end.strip()}"
                 )
     else:
-        for time_range, info in time_groups.items():
+        # For non-section display (regular meeting times without section numbers)
+        # Group by unique time + day combinations
+        display_groups = {}
+        for key, info in time_groups.items():
+            time_key = info["time"]
+            if time_key not in display_groups:
+                display_groups[time_key] = {"days": set()}
+            display_groups[time_key]["days"].update(info["days"])
+
+        for time_range, info in display_groups.items():
             # Sort using custom day order
             days = "".join(sorted(list(info["days"]), key=lambda x: day_order[x]))
             start, end = time_range.split("-")

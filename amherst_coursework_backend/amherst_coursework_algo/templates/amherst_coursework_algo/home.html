@@ -119,6 +119,17 @@
                 </div>
                 {% endfor %}
             </div>
+
+            <div class="pagination-controls" data-total-pages="{{ total_pages }}">
+                <button id="prev-page" class="page-btn" {% if current_page == 1 %}disabled{% endif %}>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-info">Page {{ current_page }} of {{ total_pages }}</span>
+                <button id="next-page" class="page-btn" {% if current_page == total_pages %}disabled{% endif %}>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
         </div>
     </div>
 
@@ -142,16 +153,14 @@
         loadingIndicator.style.display = 'block';
 
         // Check for time conflicts in cart and update UI accordingly
-        findAndMarkAllCartConflicts()
-            .then(() => {
-                // Hide loading indicator on successful completion
-                loadingIndicator.style.display = 'none';
-            })
-            .catch(error => {
-                // Log error and hide loading indicator if conflict check fails
-                console.error('Error in conflict checking:', error);
-                loadingIndicator.style.display = 'none';
-            });
+        try {
+            await findAndMarkAllCartConflicts();
+            bindCourseEvents();
+        } catch (error) {
+            console.error('Error in initialization:', error);
+        } finally {
+            loadingIndicator.style.display = 'none';
+        }
 
         // Add click handlers to all course cards for panel toggling
         document.querySelectorAll('.course-card').forEach(card => {
@@ -221,6 +230,24 @@
                 updateButtonState(courseId, true);
             } else {
                 updateButtonState(courseId, false);
+            }
+        });
+
+        currentPage = {{ current_page }};
+
+        const prevBtn = document.getElementById('prev-page');
+        const nextBtn = document.getElementById('next-page');
+        
+        prevBtn?.addEventListener('click', () => {
+            if (currentPage > 1) {
+                loadPage(currentPage - 1);
+            }
+        });
+        
+        nextBtn?.addEventListener('click', () => {
+            const totalPages = parseInt(document.querySelector('.pagination-controls').dataset.totalPages);
+            if (currentPage < totalPages) {
+                loadPage(currentPage + 1);
             }
         });
     });

@@ -29,6 +29,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    "amherstcourses.com",
+    "www.amherstcourses.com",
     "127.0.0.1",
     "localhost",
     "amherst-coursework.onrender.com",
@@ -71,6 +73,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Add CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
+    'https://amherstcourses.com',
+    'https://www.amherstcourses.com',
     "https://amherst-coursework.onrender.com",  # Notice the https protocol
     "http://localhost:8000",
     "http://127.0.0.1:8000",

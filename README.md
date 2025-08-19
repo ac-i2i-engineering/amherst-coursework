@@ -1,5 +1,7 @@
 # Amherst Coursework
 
+[![Pytest + CI/CD](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml/badge.svg)](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml) [![Coverage Status](https://coveralls.io/repos/github/ac-i2i-engineering/amherst-coursework/badge.svg?branch=main)](https://coveralls.io/github/ac-i2i-engineering/amherst-coursework) ![Docs](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/sphinx.yml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Amherst Coursework is a web application that provides Amherst College students and faculty with an intuitive, advanced interface for course search.
 
 ## Getting Started

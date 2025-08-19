@@ -495,14 +495,12 @@
                             <span class="p">)</span>
                         <span class="n">sectionProfessor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Professor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
                             <span class="n">name</span><span class="o">=</span><span class="p">(</span>
-                                <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Unknown Professor&quot;</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_name&quot;</span><span class="p">)</span>
-                                <span class="k">else</span> <span class="s2">&quot;Unknown Professor&quot;</span>
+                                <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_name&quot;</span><span class="p">)</span>
+                                <span class="ow">or</span> <span class="s2">&quot;Unknown Professor&quot;</span>
                             <span class="p">),</span>
                             <span class="n">link</span><span class="o">=</span><span class="p">(</span>
-                                <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_link&quot;</span><span class="p">,</span> <span class="n">INSTITUTIONAL_DOMAIN</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_link&quot;</span><span class="p">)</span>
-                                <span class="k">else</span> <span class="n">INSTITUTIONAL_DOMAIN</span>
+                                <span class="n">section_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;professor_link&quot;</span><span class="p">)</span>
+                                <span class="ow">or</span> <span class="n">INSTITUTIONAL_DOMAIN</span>
                             <span class="p">),</span>
                         <span class="p">)</span>
                         <span class="n">section</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Section</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_or_create</span><span class="p">(</span>

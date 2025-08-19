@@ -381,10 +381,12 @@ class Command(BaseCommand):
                             )
                         sectionProfessor, _ = Professor.objects.get_or_create(
                             name=(
-                                section_data.get("professor_name") or "Unknown Professor"
+                                section_data.get("professor_name")
+                                or "Unknown Professor"
                             ),
                             link=(
-                                section_data.get("professor_link") or INSTITUTIONAL_DOMAIN
+                                section_data.get("professor_link")
+                                or INSTITUTIONAL_DOMAIN
                             ),
                         )
                         section, _ = Section.objects.update_or_create(

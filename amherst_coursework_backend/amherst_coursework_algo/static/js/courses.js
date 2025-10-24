@@ -713,6 +713,138 @@ function resetCart() {
     });
 }
 
+// Export cart courses as iCalendar (.ics) file
+async function exportCart() {
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    
+    if (cart.length === 0) {
+        alert('Your schedule is empty. Add courses to export.');
+        return;
+    }
+    
+    try {
+        // Fetch course details for all cart items
+        const courseIds = [...new Set(cart.map(item => item.courseId))];
+        const response = await fetch(`/cart-courses/?cart=${encodeURIComponent(JSON.stringify(cart))}`);
+        const courses = await response.json();
+        
+        // Generate iCalendar content
+        let icsContent = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//Amherst College//Course Schedule//EN',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH',
+            'X-WR-CALNAME:Amherst Course Schedule',
+            'X-WR-TIMEZONE:America/New_York',
+            'X-WR-CALDESC:Exported course schedule from Amherst Coursework'
+        ];
+        
+        // Get current semester dates (adjust as needed)
+        const semesterStart = new Date('2024-09-01'); // Fall semester start
+        const semesterEnd = new Date('2024-12-20');   // Fall semester end
+        
+        // Add each course as recurring events
+        courses.forEach(course => {
+            course.sections.forEach(section => {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                const dayAbbrev = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+                
+                // Find which days this section meets
+                const meetingDays = [];
+                days.forEach((day, index) => {
+                    const startTime = section[`${day}_start_time`];
+                    const endTime = section[`${day}_end_time`];
+                    if (startTime && endTime) {
+                        meetingDays.push({
+                            day: dayAbbrev[index],
+                            startTime: startTime,
+                            endTime: endTime
+                        });
+                    }
+                });
+                
+                // Create event for each meeting day
+                meetingDays.forEach(meeting => {
+                    // Find first occurrence of this day
+                    const firstDate = new Date(semesterStart);
+                    const targetDay = dayAbbrev.indexOf(meeting.day);
+                    while (firstDate.getDay() !== targetDay) {
+                        firstDate.setDate(firstDate.getDate() + 1);
+                    }
+                    
+                    // Parse time
+                    const [startHour, startMin] = meeting.startTime.split(':').map(Number);
+                    const [endHour, endMin] = meeting.endTime.split(':').map(Number);
+                    
+                    // Format dates for iCalendar
+                    const dtstart = formatICalDateTime(firstDate, startHour, startMin);
+                    const dtend = formatICalDateTime(firstDate, endHour, endMin);
+                    const until = formatICalDate(semesterEnd);
+                    
+                    // Generate unique ID
+                    const uid = `${course.id}-${section.section_number}-${meeting.day}@amherst.edu`;
+                    
+                    icsContent.push(
+                        'BEGIN:VEVENT',
+                        `UID:${uid}`,
+                        `DTSTAMP:${formatICalDateTime(new Date())}`,
+                        `DTSTART:${dtstart}`,
+                        `DTEND:${dtend}`,
+                        `RRULE:FREQ=WEEKLY;BYDAY=${meeting.day};UNTIL=${until}`,
+                        `SUMMARY:${course.courseName}`,
+                        `LOCATION:${section.location || 'TBA'}`,
+                        `DESCRIPTION:Section ${section.section_number} - ${section.professor}\\nCourse ID: ${course.id}`,
+                        'STATUS:CONFIRMED',
+                        'TRANSP:OPAQUE',
+                        'END:VEVENT'
+                    );
+                });
+            });
+        });
+        
+        icsContent.push('END:VCALENDAR');
+        
+        // Create and download file
+        const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'amherst-schedule.ics';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+    } catch (error) {
+        console.error('Error exporting schedule:', error);
+        alert('Failed to export schedule. Please try again.');
+    }
+}
+
+// Helper function to format date/time for iCalendar
+function formatICalDateTime(date, hour = null, minute = null) {
+    if (hour !== null) {
+        date = new Date(date);
+        date.setHours(hour, minute || 0, 0, 0);
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+}
+
+// Helper function to format date for iCalendar
+function formatICalDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}${month}${day}`;
+}
+
 // Displays modal with section options for a course
 function showSectionModal(event, courseId, courseName) {
     event.stopPropagation();

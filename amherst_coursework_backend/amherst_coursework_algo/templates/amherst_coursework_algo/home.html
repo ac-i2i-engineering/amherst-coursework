@@ -18,9 +18,14 @@
         <div id="cart-courses-list"></div>
         <div id="cart-total">
             Total Courses: <span id="cart-count">0</span>
-            <button class="reset-cart">
-                <i class="fa-solid fa-rotate-left"></i> Reset Schedule
-            </button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="export-cart">
+                    <i class="fa-solid fa-download"></i> Export Schedule
+                </button>
+                <button class="reset-cart">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+            </div>
         </div>
     
         <!-- Cart calendar -->
@@ -208,6 +213,16 @@
             const modal = document.getElementById('section-modal');
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+
+        // Handle cart export functionality
+        document.querySelector('.export-cart').addEventListener('click', async () => {
+            try {
+                await exportCart();
+            } catch (error) {
+                console.error('Error exporting cart:', error);
+                alert('Failed to export schedule. Please try again.');
             }
         });
 

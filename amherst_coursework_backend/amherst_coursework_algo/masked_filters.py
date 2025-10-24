@@ -50,41 +50,44 @@ courses = []
 # Constants
 # =============================================================================
 
-MIN_CHAR_FOR_COS_SIM = 5
+MIN_CHAR_FOR_COS_SIM = 3
 """Minimum characters required in search query before applying cosine similarity matching"""
 
 # Scoring Weights
-DEPARTMENT_NAME_WEIGHT = 90
+DEPARTMENT_NAME_WEIGHT = 120
 """Weight applied to matches found in department names (e.g., 'Computer Science')"""
 
-COURSE_NAME_WEIGHT = 80
+COURSE_NAME_WEIGHT = 100
 """Weight applied to matches found in course titles"""
 
-COURSE_CODE_WEIGHT = 90
+COURSE_NAME_EXACT_WEIGHT = 150
+"""Weight applied to exact word matches in course titles"""
+
+COURSE_CODE_WEIGHT = 110
 """Weight applied to matches in course codes (e.g., 'COSC-111')"""
 
-DEPARTMENT_CODE_WEIGHT = 80
+DEPARTMENT_CODE_WEIGHT = 100
 """Weight applied to matches in department codes (e.g., 'COSC')"""
 
-DIVISION_WEIGHT = 30
+DIVISION_WEIGHT = 20
 """Weight applied to matches in academic division names (e.g., 'Science')"""
 
-KEYWORD_WEIGHT = 30
+KEYWORD_WEIGHT = 60
 """Weight applied to matches in course keywords/tags"""
 
-DESCRIPTION_WEIGHT = 40
+DESCRIPTION_WEIGHT = 30
 """Weight applied to matches found in course descriptions"""
 
-PROFESSOR_WEIGHT = 100
+PROFESSOR_WEIGHT = 110
 """Weight applied to matches in professor names"""
 
 HALF_COURSE_WEIGHT = 200
 """Additional weight applied when 'half' appears in query and course is half-credit"""
 
-SIMILARITY_WEIGHT = 160
+SIMILARITY_WEIGHT = 200
 """Multiplier applied to cosine similarity scores for text matching"""
 
-SCORE_CUTOFF = 0.45
+SCORE_CUTOFF = 0.20
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
 
 # Initialize stopwords for English
@@ -346,6 +349,10 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
         name_matches = filtered_courses.filter(courseName__icontains=term)
         for course in name_matches:
             scores[course.id] += COURSE_NAME_WEIGHT
+            # Bonus for exact word match in course name
+            course_words = course.courseName.lower().split()
+            if term in course_words:
+                scores[course.id] += COURSE_NAME_EXACT_WEIGHT
 
         dept_matches = filtered_courses.filter(departments__name__icontains=term)
         for course in dept_matches:
@@ -386,6 +393,14 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
         similarity_scores = compute_similarity_scores(search_query, course_texts)
         for course, score in zip(filtered_courses, similarity_scores):
             scores[course.id] += score * SIMILARITY_WEIGHT
+
+    # Apply penalty for overly generic courses (in many divisions)
+    for course in filtered_courses:
+        if scores[course.id] > 0:
+            num_divisions = course.divisions.count()
+            if num_divisions > 3:
+                # Reduce score for courses in 4+ divisions (likely generic)
+                scores[course.id] *= 0.5
 
     scored_courses = []
     for course in courses:

@@ -234,8 +234,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/AMST/AMST-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "AMST-490",
-                "AMST-390"
+                "AMST-390",
+                "AMST-490"
             ],
             "divisions": [
                 "Humanities",
@@ -282,8 +282,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/AMST/AMST-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "AMST-490",
-                "AMST-390"
+                "AMST-390",
+                "AMST-490"
             ],
             "divisions": [
                 "Humanities",
@@ -745,8 +745,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ANTH/ANTH-490H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ANTH-490H",
-                "ANTH-490"
+                "ANTH-490",
+                "ANTH-490H"
             ],
             "divisions": [
                 "Humanities",
@@ -797,8 +797,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ANTH/ANTH-490H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ANTH-490H",
-                "ANTH-490"
+                "ANTH-490",
+                "ANTH-490H"
             ],
             "divisions": [
                 "Humanities",
@@ -1144,8 +1144,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/SOCI/SOCI-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "SOCI-490",
-                "SOCI-390"
+                "SOCI-390",
+                "SOCI-490"
             ],
             "divisions": [
                 "Humanities",
@@ -1173,8 +1173,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/SOCI/SOCI-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "SOCI-490",
-                "SOCI-390"
+                "SOCI-390",
+                "SOCI-490"
             ],
             "divisions": [
                 "Humanities",
@@ -1722,8 +1722,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ARCH/ARCH-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ARCH-490",
-                "ARCH-390"
+                "ARCH-390",
+                "ARCH-490"
             ],
             "divisions": [
                 "Arts",
@@ -1753,8 +1753,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ARCH/ARCH-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "ARCH-490",
-                "ARCH-390"
+                "ARCH-390",
+                "ARCH-490"
             ],
             "divisions": [
                 "Arts",
@@ -4888,12 +4888,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -4931,12 +4931,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -5095,12 +5095,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -5138,12 +5138,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -5419,12 +5419,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -5462,12 +5462,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/JAPA/JAPA-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "JAPA-390H",
-                "JAPA-290",
-                "JAPA-490",
                 "JAPA-290H",
                 "JAPA-490H",
-                "JAPA-390"
+                "JAPA-390",
+                "JAPA-390H",
+                "JAPA-290",
+                "JAPA-490"
             ],
             "divisions": [
                 "Arts",
@@ -5521,7 +5521,12 @@
                 {
                     "name": "Marc A. Edwards",
                     "link": "https://www.amherst.edu/people/facstaff/mcedwards",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Marc A. Edwards",
+                    "link": "https://www.amherst.edu/people/facstaff/mcedwards",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -5569,17 +5574,92 @@
                 {
                     "name": "Kendra Marcus",
                     "link": "https://www.amherst.edu/people/facstaff/kmarcus",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "03L"
                 },
                 {
                     "name": "Tommy Tashjian",
                     "link": "https://www.amherst.edu/people/facstaff/ttashjian",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "03L"
                 },
                 {
                     "name": "Mona Wu Orr",
                     "link": "https://www.amherst.edu/people/facstaff/morr",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "03L"
                 }
             ],
             "course_materials_links": [
@@ -5632,7 +5712,12 @@
                 {
                     "name": "Ashley R. Carter",
                     "link": "https://www.amherst.edu/people/facstaff/acarter",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Ashley R. Carter",
+                    "link": "https://www.amherst.edu/people/facstaff/acarter",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -5667,7 +5752,12 @@
                 {
                     "name": "Cole M. Dovey",
                     "link": "https://www.amherst.edu/people/facstaff/cdovey",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Cole M. Dovey",
+                    "link": "https://www.amherst.edu/people/facstaff/cdovey",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -5908,7 +5998,12 @@
                 {
                     "name": "Christina W. Bowers",
                     "link": "https://www.amherst.edu/people/facstaff/cbowers",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Christina W. Bowers",
+                    "link": "https://www.amherst.edu/people/facstaff/cbowers",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -5942,7 +6037,12 @@
                 {
                     "name": "Michael E. Hood",
                     "link": "https://www.amherst.edu/people/facstaff/mhood",
-                    "section": null
+                    "section": "01F"
+                },
+                {
+                    "name": "Michael E. Hood",
+                    "link": "https://www.amherst.edu/people/facstaff/mhood",
+                    "section": "02"
                 },
                 {
                     "name": "Thea V. Kristensen",
@@ -5952,7 +6052,12 @@
                 {
                     "name": "Kelly Wallace",
                     "link": "https://www.amherst.edu/people/facstaff/kewallace",
-                    "section": null
+                    "section": "01F"
+                },
+                {
+                    "name": "Kelly Wallace",
+                    "link": "https://www.amherst.edu/people/facstaff/kewallace",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -5998,7 +6103,17 @@
                 {
                     "name": "Thea V. Kristensen",
                     "link": "https://www.amherst.edu/people/facstaff/tkristensen",
-                    "section": null
+                    "section": "01L"
+                },
+                {
+                    "name": "Thea V. Kristensen",
+                    "link": "https://www.amherst.edu/people/facstaff/tkristensen",
+                    "section": "02L"
+                },
+                {
+                    "name": "Thea V. Kristensen",
+                    "link": "https://www.amherst.edu/people/facstaff/tkristensen",
+                    "section": "03L"
                 }
             ],
             "course_materials_links": [
@@ -6040,12 +6155,22 @@
                 {
                     "name": "Caroline E. Goutte",
                     "link": "https://www.amherst.edu/people/facstaff/cegoutte",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Caroline E. Goutte",
+                    "link": "https://www.amherst.edu/people/facstaff/cegoutte",
+                    "section": "01F"
                 },
                 {
                     "name": "Tommy Tashjian",
                     "link": "https://www.amherst.edu/people/facstaff/ttashjian",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -6094,17 +6219,32 @@
                 {
                     "name": "Christina W. Bowers",
                     "link": "https://www.amherst.edu/people/facstaff/cbowers",
-                    "section": null
+                    "section": "01L"
+                },
+                {
+                    "name": "Christina W. Bowers",
+                    "link": "https://www.amherst.edu/people/facstaff/cbowers",
+                    "section": "02L"
+                },
+                {
+                    "name": "Christina W. Bowers",
+                    "link": "https://www.amherst.edu/people/facstaff/cbowers",
+                    "section": "03L"
                 },
                 {
                     "name": "Caroline E. Goutte",
                     "link": "https://www.amherst.edu/people/facstaff/cegoutte",
-                    "section": null
+                    "section": "03L"
                 },
                 {
                     "name": "Tommy Tashjian",
                     "link": "https://www.amherst.edu/people/facstaff/ttashjian",
-                    "section": null
+                    "section": "01L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -6175,7 +6315,12 @@
                 {
                     "name": "Katerina Ragkousi",
                     "link": "https://www.amherst.edu/people/facstaff/kragkousi",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Katerina Ragkousi",
+                    "link": "https://www.amherst.edu/people/facstaff/kragkousi",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -6260,7 +6405,12 @@
                 {
                     "name": "Alexandra E. Purdy",
                     "link": "https://www.amherst.edu/people/facstaff/apurdy",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Alexandra E. Purdy",
+                    "link": "https://www.amherst.edu/people/facstaff/apurdy",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -6294,7 +6444,17 @@
                 {
                     "name": "Alexandra E. Purdy",
                     "link": "https://www.amherst.edu/people/facstaff/apurdy",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Alexandra E. Purdy",
+                    "link": "https://www.amherst.edu/people/facstaff/apurdy",
+                    "section": "01F"
+                },
+                {
+                    "name": "Alexandra E. Purdy",
+                    "link": "https://www.amherst.edu/people/facstaff/apurdy",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -6437,7 +6597,12 @@
                 {
                     "name": "Marc A. Edwards",
                     "link": "https://www.amherst.edu/people/facstaff/mcedwards",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Marc A. Edwards",
+                    "link": "https://www.amherst.edu/people/facstaff/mcedwards",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -6483,7 +6648,12 @@
                 {
                     "name": "John P. Roche",
                     "link": "https://www.amherst.edu/people/facstaff/jroche",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "John P. Roche",
+                    "link": "https://www.amherst.edu/people/facstaff/jroche",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -6533,17 +6703,92 @@
                 {
                     "name": "Kendra Marcus",
                     "link": "https://www.amherst.edu/people/facstaff/kmarcus",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "03L"
                 },
                 {
                     "name": "Tommy Tashjian",
                     "link": "https://www.amherst.edu/people/facstaff/ttashjian",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "03L"
                 },
                 {
                     "name": "Mona Wu Orr",
                     "link": "https://www.amherst.edu/people/facstaff/morr",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "03L"
                 }
             ],
             "course_materials_links": [
@@ -6596,12 +6841,22 @@
                 {
                     "name": "Olubusola O. Olukoya",
                     "link": "https://www.amherst.edu/people/facstaff/oolukoya",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Olubusola O. Olukoya",
+                    "link": "https://www.amherst.edu/people/facstaff/oolukoya",
+                    "section": "01L"
                 },
                 {
                     "name": "Josef G. Trapani",
                     "link": "https://www.amherst.edu/people/facstaff/jtrapani",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Josef G. Trapani",
+                    "link": "https://www.amherst.edu/people/facstaff/jtrapani",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -6644,7 +6899,12 @@
                 {
                     "name": "Cole M. Dovey",
                     "link": "https://www.amherst.edu/people/facstaff/cdovey",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Cole M. Dovey",
+                    "link": "https://www.amherst.edu/people/facstaff/cdovey",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -7590,12 +7850,22 @@
                 {
                     "name": "Richmond J. Ampiah-Bonney",
                     "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Richmond J. Ampiah-Bonney",
+                    "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
+                    "section": "01F"
                 },
                 {
                     "name": "Sheila S. Jaswal",
                     "link": "https://www.amherst.edu/people/facstaff/sjaswal",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -7650,17 +7920,62 @@
                 {
                     "name": "Richmond J. Ampiah-Bonney",
                     "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Richmond J. Ampiah-Bonney",
+                    "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
+                    "section": "03"
                 },
                 {
                     "name": "Dorothy Huang",
                     "link": "https://www.amherst.edu/people/facstaff/dhuang",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Dorothy Huang",
+                    "link": "https://www.amherst.edu/people/facstaff/dhuang",
+                    "section": "04"
+                },
+                {
+                    "name": "Dorothy Huang",
+                    "link": "https://www.amherst.edu/people/facstaff/dhuang",
+                    "section": "05"
                 },
                 {
                     "name": "Sheila S. Jaswal",
                     "link": "https://www.amherst.edu/people/facstaff/sjaswal",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "02"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "03"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "04"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "05"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "06"
+                },
+                {
+                    "name": "Sheila S. Jaswal",
+                    "link": "https://www.amherst.edu/people/facstaff/sjaswal",
+                    "section": "07"
                 },
                 {
                     "name": "Helen O Leung",
@@ -7714,12 +8029,32 @@
                 {
                     "name": "Helen O Leung",
                     "link": "https://www.amherst.edu/people/facstaff/hleung",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "01F"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "02F"
                 },
                 {
                     "name": "Mark D. Marshall",
                     "link": "https://www.amherst.edu/people/facstaff/mdmarshall",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mark D. Marshall",
+                    "link": "https://www.amherst.edu/people/facstaff/mdmarshall",
+                    "section": "01F"
+                },
+                {
+                    "name": "Mark D. Marshall",
+                    "link": "https://www.amherst.edu/people/facstaff/mdmarshall",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -7764,17 +8099,62 @@
                 {
                     "name": "Richmond J. Ampiah-Bonney",
                     "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Richmond J. Ampiah-Bonney",
+                    "link": "https://www.amherst.edu/people/facstaff/rampiahbonney",
+                    "section": "03"
                 },
                 {
                     "name": "Dorothy Huang",
                     "link": "https://www.amherst.edu/people/facstaff/dhuang",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Dorothy Huang",
+                    "link": "https://www.amherst.edu/people/facstaff/dhuang",
+                    "section": "04"
+                },
+                {
+                    "name": "Dorothy Huang",
+                    "link": "https://www.amherst.edu/people/facstaff/dhuang",
+                    "section": "05"
                 },
                 {
                     "name": "Helen O Leung",
                     "link": "https://www.amherst.edu/people/facstaff/hleung",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "02"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "03"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "04"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "05"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "06"
+                },
+                {
+                    "name": "Helen O Leung",
+                    "link": "https://www.amherst.edu/people/facstaff/hleung",
+                    "section": "07"
                 },
                 {
                     "name": "Mark D. Marshall",
@@ -7874,7 +8254,12 @@
                 {
                     "name": "Stephen F. Cartier",
                     "link": "https://www.amherst.edu/people/facstaff/scartier",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Stephen F. Cartier",
+                    "link": "https://www.amherst.edu/people/facstaff/scartier",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -7910,17 +8295,62 @@
                 {
                     "name": "Galina Melman",
                     "link": "https://www.amherst.edu/people/facstaff/gmelman",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "01F"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "02F"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "04F"
                 },
                 {
                     "name": "Lauren M. Reutenauer",
                     "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "01F"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "02F"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "04F"
                 },
                 {
                     "name": "Kenneth S. Rotondi",
                     "link": "https://www.amherst.edu/people/facstaff/krotondi",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "01F"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "02F"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "04F"
                 }
             ],
             "course_materials_links": [
@@ -7969,17 +8399,77 @@
                 {
                     "name": "Galina Melman",
                     "link": "https://www.amherst.edu/people/facstaff/gmelman",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "03"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "04"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "05"
+                },
+                {
+                    "name": "Galina Melman",
+                    "link": "https://www.amherst.edu/people/facstaff/gmelman",
+                    "section": "06"
                 },
                 {
                     "name": "Lauren M. Reutenauer",
                     "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "03"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "04"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "05"
+                },
+                {
+                    "name": "Lauren M. Reutenauer",
+                    "link": "https://www.amherst.edu/people/facstaff/lreutenauer",
+                    "section": "06"
                 },
                 {
                     "name": "Kenneth S. Rotondi",
                     "link": "https://www.amherst.edu/people/facstaff/krotondi",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "03"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "04"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "05"
+                },
+                {
+                    "name": "Kenneth S. Rotondi",
+                    "link": "https://www.amherst.edu/people/facstaff/krotondi",
+                    "section": "06"
                 }
             ],
             "course_materials_links": [
@@ -8018,7 +8508,12 @@
                 {
                     "name": "David E. Hansen",
                     "link": "https://www.amherst.edu/people/facstaff/dehansen",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "David E. Hansen",
+                    "link": "https://www.amherst.edu/people/facstaff/dehansen",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -8065,7 +8560,12 @@
                 {
                     "name": "David E. Hansen",
                     "link": "https://www.amherst.edu/people/facstaff/dehansen",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "David E. Hansen",
+                    "link": "https://www.amherst.edu/people/facstaff/dehansen",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -8092,12 +8592,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8151,12 +8651,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8259,17 +8759,92 @@
                 {
                     "name": "Kendra Marcus",
                     "link": "https://www.amherst.edu/people/facstaff/kmarcus",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "01L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02F"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "02L"
+                },
+                {
+                    "name": "Kendra Marcus",
+                    "link": "https://www.amherst.edu/people/facstaff/kmarcus",
+                    "section": "03L"
                 },
                 {
                     "name": "Tommy Tashjian",
                     "link": "https://www.amherst.edu/people/facstaff/ttashjian",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "01L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02F"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "02L"
+                },
+                {
+                    "name": "Tommy Tashjian",
+                    "link": "https://www.amherst.edu/people/facstaff/ttashjian",
+                    "section": "03L"
                 },
                 {
                     "name": "Mona Wu Orr",
                     "link": "https://www.amherst.edu/people/facstaff/morr",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "01L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02F"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "02L"
+                },
+                {
+                    "name": "Mona Wu Orr",
+                    "link": "https://www.amherst.edu/people/facstaff/morr",
+                    "section": "03L"
                 }
             ],
             "course_materials_links": [
@@ -8320,7 +8895,17 @@
                 {
                     "name": "Jacob H. Olshansky",
                     "link": "https://www.amherst.edu/people/facstaff/jolshansky",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jacob H. Olshansky",
+                    "link": "https://www.amherst.edu/people/facstaff/jolshansky",
+                    "section": "01L"
+                },
+                {
+                    "name": "Jacob H. Olshansky",
+                    "link": "https://www.amherst.edu/people/facstaff/jolshansky",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -8368,12 +8953,42 @@
                 {
                     "name": "Sandra Burkett",
                     "link": "https://www.amherst.edu/people/facstaff/slburkett",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sandra Burkett",
+                    "link": "https://www.amherst.edu/people/facstaff/slburkett",
+                    "section": "01F"
+                },
+                {
+                    "name": "Sandra Burkett",
+                    "link": "https://www.amherst.edu/people/facstaff/slburkett",
+                    "section": "01L"
+                },
+                {
+                    "name": "Sandra Burkett",
+                    "link": "https://www.amherst.edu/people/facstaff/slburkett",
+                    "section": "02L"
                 },
                 {
                     "name": "Jesus Daniel Loya",
                     "link": "https://www.amherst.edu/people/facstaff/jloya",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jesus Daniel Loya",
+                    "link": "https://www.amherst.edu/people/facstaff/jloya",
+                    "section": "01F"
+                },
+                {
+                    "name": "Jesus Daniel Loya",
+                    "link": "https://www.amherst.edu/people/facstaff/jloya",
+                    "section": "01L"
+                },
+                {
+                    "name": "Jesus Daniel Loya",
+                    "link": "https://www.amherst.edu/people/facstaff/jloya",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -8405,12 +9020,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8464,12 +9079,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8523,12 +9138,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8582,12 +9197,12 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "CHEM-390",
                 "CHEM-390H",
                 "CHEM-290",
                 "CHEM-490",
                 "CHEM-290H",
-                "CHEM-490H",
-                "CHEM-390"
+                "CHEM-490H"
             ],
             "divisions": [
                 "Science & Mathematics"
@@ -8699,12 +9314,22 @@
                 {
                     "name": "Jacob H. Olshansky",
                     "link": "https://www.amherst.edu/people/facstaff/jolshansky",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Jacob H. Olshansky",
+                    "link": "https://www.amherst.edu/people/facstaff/jolshansky",
+                    "section": "10"
                 },
                 {
                     "name": "Ren Wiscons",
                     "link": "https://www.amherst.edu/people/facstaff/rwiscons",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "Ren Wiscons",
+                    "link": "https://www.amherst.edu/people/facstaff/rwiscons",
+                    "section": "11"
                 }
             ],
             "course_materials_links": [
@@ -8806,12 +9431,22 @@
                 {
                     "name": "Jacob H. Olshansky",
                     "link": "https://www.amherst.edu/people/facstaff/jolshansky",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Jacob H. Olshansky",
+                    "link": "https://www.amherst.edu/people/facstaff/jolshansky",
+                    "section": "10"
                 },
                 {
                     "name": "Ren Wiscons",
                     "link": "https://www.amherst.edu/people/facstaff/rwiscons",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "Ren Wiscons",
+                    "link": "https://www.amherst.edu/people/facstaff/rwiscons",
+                    "section": "11"
                 }
             ],
             "course_materials_links": [
@@ -9175,8 +9810,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/GREE/GREE-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "GREE-390",
-                "GREE-490"
+                "GREE-490",
+                "GREE-390"
             ],
             "divisions": [
                 "Humanities",
@@ -9255,8 +9890,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/GREE/GREE-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "GREE-390",
-                "GREE-490"
+                "GREE-490",
+                "GREE-390"
             ],
             "divisions": [
                 "Humanities",
@@ -9660,12 +10295,22 @@
                 {
                     "name": "Matteo Riondato",
                     "link": "https://www.amherst.edu/people/facstaff/mriondato",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Matteo Riondato",
+                    "link": "https://www.amherst.edu/people/facstaff/mriondato",
+                    "section": "02"
                 },
                 {
                     "name": "Andrew Wu",
                     "link": "https://www.amherst.edu/people/facstaff/hwu",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "Andrew Wu",
+                    "link": "https://www.amherst.edu/people/facstaff/hwu",
+                    "section": "04"
                 }
             ],
             "course_materials_links": [
@@ -9762,7 +10407,12 @@
                 {
                     "name": "Shira B. Wein",
                     "link": "https://www.amherst.edu/people/facstaff/swein",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Shira B. Wein",
+                    "link": "https://www.amherst.edu/people/facstaff/swein",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -9830,7 +10480,12 @@
                 {
                     "name": "Scott F. Kaplan",
                     "link": "https://www.amherst.edu/people/facstaff/sfkaplan",
-                    "section": null
+                    "section": "01L"
+                },
+                {
+                    "name": "Scott F. Kaplan",
+                    "link": "https://www.amherst.edu/people/facstaff/sfkaplan",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -10274,7 +10929,12 @@
                 {
                     "name": "Jakina Debnam Guzman",
                     "link": "https://www.amherst.edu/people/facstaff/jguzman",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jakina Debnam Guzman",
+                    "link": "https://www.amherst.edu/people/facstaff/jguzman",
+                    "section": "02"
                 },
                 {
                     "name": "Jun Ishii",
@@ -10289,7 +10949,12 @@
                 {
                     "name": "Duc M. Nguyen",
                     "link": "https://www.amherst.edu/people/facstaff/dnguyen",
-                    "section": null
+                    "section": "04"
+                },
+                {
+                    "name": "Duc M. Nguyen",
+                    "link": "https://www.amherst.edu/people/facstaff/dnguyen",
+                    "section": "05"
                 }
             ],
             "course_materials_links": [
@@ -10354,22 +11019,37 @@
                 {
                     "name": "Jakina Debnam Guzman",
                     "link": "https://www.amherst.edu/people/facstaff/jguzman",
-                    "section": null
+                    "section": "01F"
+                },
+                {
+                    "name": "Jakina Debnam Guzman",
+                    "link": "https://www.amherst.edu/people/facstaff/jguzman",
+                    "section": "02F"
                 },
                 {
                     "name": "Jun Ishii",
                     "link": "https://www.amherst.edu/people/facstaff/jishii",
-                    "section": null
+                    "section": "03F"
                 },
                 {
                     "name": "Christopher G. Kingston",
                     "link": "https://www.amherst.edu/people/facstaff/cgkingston",
-                    "section": null
+                    "section": "06F"
+                },
+                {
+                    "name": "Christopher G. Kingston",
+                    "link": "https://www.amherst.edu/people/facstaff/cgkingston",
+                    "section": "07F"
                 },
                 {
                     "name": "Duc M. Nguyen",
                     "link": "https://www.amherst.edu/people/facstaff/dnguyen",
-                    "section": null
+                    "section": "04F"
+                },
+                {
+                    "name": "Duc M. Nguyen",
+                    "link": "https://www.amherst.edu/people/facstaff/dnguyen",
+                    "section": "05F"
                 }
             ],
             "course_materials_links": [
@@ -10520,7 +11200,12 @@
                 {
                     "name": "Mengqi Wang",
                     "link": "https://www.amherst.edu/people/facstaff/mewang",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mengqi Wang",
+                    "link": "https://www.amherst.edu/people/facstaff/mewang",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -10617,10 +11302,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-390-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "ECON-490H",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490",
-                "ECON-490H"
+                "ECON-490"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -10845,7 +11530,12 @@
                 {
                     "name": "Mesay Melese Gebresilasse",
                     "link": "https://www.amherst.edu/people/facstaff/mgebresilasse",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Mesay Melese Gebresilasse",
+                    "link": "https://www.amherst.edu/people/facstaff/mgebresilasse",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -10936,10 +11626,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-390-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "ECON-490H",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490",
-                "ECON-490H"
+                "ECON-490"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -11109,10 +11799,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-390-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "ECON-490H",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490",
-                "ECON-490H"
+                "ECON-490"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -11160,10 +11850,10 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-390-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
+                "ECON-490H",
                 "ECON-290",
                 "ECON-390",
-                "ECON-490",
-                "ECON-490H"
+                "ECON-490"
             ],
             "divisions": [
                 "Science & Mathematics",
@@ -11277,7 +11967,12 @@
                 {
                     "name": "Kristina H. Reardon",
                     "link": "https://www.amherst.edu/people/facstaff/kreardon",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kristina H. Reardon",
+                    "link": "https://www.amherst.edu/people/facstaff/kreardon",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -11836,8 +12531,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "EDST-490",
-                "EDST-390"
+                "EDST-390",
+                "EDST-490"
             ],
             "divisions": [
                 "Arts",
@@ -11904,8 +12599,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-490-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "EDST-490",
-                "EDST-390"
+                "EDST-390",
+                "EDST-490"
             ],
             "divisions": [
                 "Arts",
@@ -12033,7 +12728,12 @@
                 {
                     "name": "Kristina H. Reardon",
                     "link": "https://www.amherst.edu/people/facstaff/kreardon",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kristina H. Reardon",
+                    "link": "https://www.amherst.edu/people/facstaff/kreardon",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -13371,12 +14071,12 @@
                 {
                     "name": "Michelle Fame",
                     "link": "https://www.amherst.edu/people/facstaff/mfame",
-                    "section": null
+                    "section": "02L"
                 },
                 {
                     "name": "Rebecca E. Hewitt",
                     "link": "https://www.amherst.edu/people/facstaff/rhewitt",
-                    "section": null
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -13525,7 +14225,17 @@
                 {
                     "name": "Michelle Fame",
                     "link": "https://www.amherst.edu/people/facstaff/mfame",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Michelle Fame",
+                    "link": "https://www.amherst.edu/people/facstaff/mfame",
+                    "section": "01L"
+                },
+                {
+                    "name": "Michelle Fame",
+                    "link": "https://www.amherst.edu/people/facstaff/mfame",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -14918,7 +15628,12 @@
                 {
                     "name": "Raina F. Uhden",
                     "link": "https://www.amherst.edu/people/facstaff/ruhden",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Raina F. Uhden",
+                    "link": "https://www.amherst.edu/people/facstaff/ruhden",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -15548,12 +16263,32 @@
                 {
                     "name": "Victor E. Guevara",
                     "link": "https://www.amherst.edu/people/facstaff/vguevara",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Victor E. Guevara",
+                    "link": "https://www.amherst.edu/people/facstaff/vguevara",
+                    "section": "01L"
+                },
+                {
+                    "name": "Victor E. Guevara",
+                    "link": "https://www.amherst.edu/people/facstaff/vguevara",
+                    "section": "02L"
                 },
                 {
                     "name": "Tekla A. Harms",
                     "link": "https://www.amherst.edu/people/facstaff/taharms",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tekla A. Harms",
+                    "link": "https://www.amherst.edu/people/facstaff/taharms",
+                    "section": "01L"
+                },
+                {
+                    "name": "Tekla A. Harms",
+                    "link": "https://www.amherst.edu/people/facstaff/taharms",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -15610,7 +16345,17 @@
                 {
                     "name": "Michelle Fame",
                     "link": "https://www.amherst.edu/people/facstaff/mfame",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Michelle Fame",
+                    "link": "https://www.amherst.edu/people/facstaff/mfame",
+                    "section": "01L"
+                },
+                {
+                    "name": "Michelle Fame",
+                    "link": "https://www.amherst.edu/people/facstaff/mfame",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -15647,7 +16392,12 @@
                 {
                     "name": "Victor E. Guevara",
                     "link": "https://www.amherst.edu/people/facstaff/vguevara",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Victor E. Guevara",
+                    "link": "https://www.amherst.edu/people/facstaff/vguevara",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -15785,12 +16535,22 @@
                 {
                     "name": "David S. Jones",
                     "link": "https://www.amherst.edu/people/facstaff/djones",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "David S. Jones",
+                    "link": "https://www.amherst.edu/people/facstaff/djones",
+                    "section": "04"
                 },
                 {
                     "name": "Anna M. Martini",
                     "link": "https://www.amherst.edu/people/facstaff/ammartini",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Anna M. Martini",
+                    "link": "https://www.amherst.edu/people/facstaff/ammartini",
+                    "section": "04"
                 }
             ],
             "course_materials_links": [
@@ -19076,8 +19836,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-490H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "MUSI-490H",
-                "MUSI-490"
+                "MUSI-490",
+                "MUSI-490H"
             ],
             "divisions": [
                 "Arts",
@@ -19129,8 +19889,8 @@
             "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-490H-2526F",
             "course_name": "Special Topics",
             "course_acronyms": [
-                "MUSI-490H",
-                "MUSI-490"
+                "MUSI-490",
+                "MUSI-490H"
             ],
             "divisions": [
                 "Arts",
@@ -19211,7 +19971,12 @@
                 {
                     "name": "Jason Robinson",
                     "link": "https://www.amherst.edu/people/facstaff/jrobinson",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "Jason Robinson",
+                    "link": "https://www.amherst.edu/people/facstaff/jrobinson",
+                    "section": "04"
                 },
                 {
                     "name": "LJ White",
@@ -19283,7 +20048,12 @@
                 {
                     "name": "Jason Robinson",
                     "link": "https://www.amherst.edu/people/facstaff/jrobinson",
-                    "section": null
+                    "section": "03"
+                },
+                {
+                    "name": "Jason Robinson",
+                    "link": "https://www.amherst.edu/people/facstaff/jrobinson",
+                    "section": "04"
                 },
                 {
                     "name": "LJ White",
@@ -20323,7 +21093,17 @@
                 {
                     "name": "Sarah M. Turgeon",
                     "link": "https://www.amherst.edu/people/facstaff/smturgeon",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sarah M. Turgeon",
+                    "link": "https://www.amherst.edu/people/facstaff/smturgeon",
+                    "section": "01L"
+                },
+                {
+                    "name": "Sarah M. Turgeon",
+                    "link": "https://www.amherst.edu/people/facstaff/smturgeon",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -20354,7 +21134,12 @@
                 {
                     "name": "John P. Roche",
                     "link": "https://www.amherst.edu/people/facstaff/jroche",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "John P. Roche",
+                    "link": "https://www.amherst.edu/people/facstaff/jroche",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -20402,7 +21187,12 @@
                 {
                     "name": "John-Paul Baird",
                     "link": "https://www.amherst.edu/people/facstaff/jpbaird",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "John-Paul Baird",
+                    "link": "https://www.amherst.edu/people/facstaff/jpbaird",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -20439,12 +21229,22 @@
                 {
                     "name": "Olubusola O. Olukoya",
                     "link": "https://www.amherst.edu/people/facstaff/oolukoya",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Olubusola O. Olukoya",
+                    "link": "https://www.amherst.edu/people/facstaff/oolukoya",
+                    "section": "01L"
                 },
                 {
                     "name": "Josef G. Trapani",
                     "link": "https://www.amherst.edu/people/facstaff/jtrapani",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Josef G. Trapani",
+                    "link": "https://www.amherst.edu/people/facstaff/jtrapani",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -20663,7 +21463,17 @@
                 {
                     "name": "Alexander George",
                     "link": "https://www.amherst.edu/people/facstaff/ageorge",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Alexander George",
+                    "link": "https://www.amherst.edu/people/facstaff/ageorge",
+                    "section": "01F"
+                },
+                {
+                    "name": "Alexander George",
+                    "link": "https://www.amherst.edu/people/facstaff/ageorge",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -21017,7 +21827,12 @@
                 {
                     "name": "Kate Follette",
                     "link": "https://www.amherst.edu/people/facstaff/kfollette",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Kate Follette",
+                    "link": "https://www.amherst.edu/people/facstaff/kfollette",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -21257,17 +22072,47 @@
                 {
                     "name": "Sean Foster",
                     "link": "https://www.amherst.edu/people/facstaff/sfoster",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sean Foster",
+                    "link": "https://www.amherst.edu/people/facstaff/sfoster",
+                    "section": "01F"
+                },
+                {
+                    "name": "Sean Foster",
+                    "link": "https://www.amherst.edu/people/facstaff/sfoster",
+                    "section": "02F"
                 },
                 {
                     "name": "Jonathan R. Friedman",
                     "link": "https://www.amherst.edu/people/facstaff/jrfriedman",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jonathan R. Friedman",
+                    "link": "https://www.amherst.edu/people/facstaff/jrfriedman",
+                    "section": "01F"
+                },
+                {
+                    "name": "Jonathan R. Friedman",
+                    "link": "https://www.amherst.edu/people/facstaff/jrfriedman",
+                    "section": "02F"
                 },
                 {
                     "name": "Bahar Modir",
                     "link": "https://www.amherst.edu/people/facstaff/bmodir",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Bahar Modir",
+                    "link": "https://www.amherst.edu/people/facstaff/bmodir",
+                    "section": "01F"
+                },
+                {
+                    "name": "Bahar Modir",
+                    "link": "https://www.amherst.edu/people/facstaff/bmodir",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -21320,17 +22165,32 @@
                 {
                     "name": "Sean Foster",
                     "link": "https://www.amherst.edu/people/facstaff/sfoster",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sean Foster",
+                    "link": "https://www.amherst.edu/people/facstaff/sfoster",
+                    "section": "02"
                 },
                 {
                     "name": "Jonathan R. Friedman",
                     "link": "https://www.amherst.edu/people/facstaff/jrfriedman",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jonathan R. Friedman",
+                    "link": "https://www.amherst.edu/people/facstaff/jrfriedman",
+                    "section": "02"
                 },
                 {
                     "name": "Bahar Modir",
                     "link": "https://www.amherst.edu/people/facstaff/bmodir",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Bahar Modir",
+                    "link": "https://www.amherst.edu/people/facstaff/bmodir",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -21366,7 +22226,17 @@
                 {
                     "name": "Jarrett A. Moyer",
                     "link": "https://www.amherst.edu/people/facstaff/jmoyer",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jarrett A. Moyer",
+                    "link": "https://www.amherst.edu/people/facstaff/jmoyer",
+                    "section": "01F"
+                },
+                {
+                    "name": "Jarrett A. Moyer",
+                    "link": "https://www.amherst.edu/people/facstaff/jmoyer",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -21419,7 +22289,12 @@
                 {
                     "name": "Jarrett A. Moyer",
                     "link": "https://www.amherst.edu/people/facstaff/jmoyer",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Jarrett A. Moyer",
+                    "link": "https://www.amherst.edu/people/facstaff/jmoyer",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -21571,12 +22446,22 @@
                 {
                     "name": "David Hanneke",
                     "link": "https://www.amherst.edu/people/facstaff/dhanneke",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "David Hanneke",
+                    "link": "https://www.amherst.edu/people/facstaff/dhanneke",
+                    "section": "02"
                 },
                 {
                     "name": "Bahar Modir",
                     "link": "https://www.amherst.edu/people/facstaff/bmodir",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Bahar Modir",
+                    "link": "https://www.amherst.edu/people/facstaff/bmodir",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -21656,7 +22541,12 @@
                 {
                     "name": "Ashley R. Carter",
                     "link": "https://www.amherst.edu/people/facstaff/acarter",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Ashley R. Carter",
+                    "link": "https://www.amherst.edu/people/facstaff/acarter",
+                    "section": "01L"
                 }
             ],
             "course_materials_links": [
@@ -22241,7 +23131,7 @@
                 "Social Sciences"
             ],
             "departments": {
-                "Political Science": "https://www.amherst.edu/academiclife/departments/political_science/courses"
+                "Political Science": "https://www.amherst.edu/-mm-redirect/20319"
             },
             "professors": [
                 {
@@ -22938,7 +23828,17 @@
                 {
                     "name": "Sarah M. Turgeon",
                     "link": "https://www.amherst.edu/people/facstaff/smturgeon",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sarah M. Turgeon",
+                    "link": "https://www.amherst.edu/people/facstaff/smturgeon",
+                    "section": "01L"
+                },
+                {
+                    "name": "Sarah M. Turgeon",
+                    "link": "https://www.amherst.edu/people/facstaff/smturgeon",
+                    "section": "02L"
                 }
             ],
             "course_materials_links": [
@@ -23173,7 +24073,12 @@
                 {
                     "name": "John-Paul Baird",
                     "link": "https://www.amherst.edu/people/facstaff/jpbaird",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "John-Paul Baird",
+                    "link": "https://www.amherst.edu/people/facstaff/jpbaird",
+                    "section": "02"
                 }
             ],
             "course_materials_links": [
@@ -23955,7 +24860,12 @@
                 {
                     "name": "Tatyana Babyonyshev",
                     "link": "https://www.amherst.edu/people/facstaff/tbabyonyshev",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Tatyana Babyonyshev",
+                    "link": "https://www.amherst.edu/people/facstaff/tbabyonyshev",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -24075,7 +24985,12 @@
                 {
                     "name": "Catherine A. Ciepiela",
                     "link": "https://www.amherst.edu/people/facstaff/caciepiela",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Catherine A. Ciepiela",
+                    "link": "https://www.amherst.edu/people/facstaff/caciepiela",
+                    "section": "01F"
                 }
             ],
             "course_materials_links": [
@@ -24232,7 +25147,7 @@
                 {
                     "name": "Tatyana Babyonyshev",
                     "link": "https://www.amherst.edu/people/facstaff/tbabyonyshev",
-                    "section": null
+                    "section": "01F"
                 },
                 {
                     "name": "Brett Donohoe",
@@ -24959,7 +25874,12 @@
                 {
                     "name": "Katrina Karkazis",
                     "link": "https://www.amherst.edu/people/facstaff/kkarkazis",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Katrina Karkazis",
+                    "link": "https://www.amherst.edu/people/facstaff/kkarkazis",
+                    "section": "03"
                 },
                 {
                     "name": "Khary O. Polk",
@@ -25052,7 +25972,22 @@
                 {
                     "name": "Daniela Narvaez Burbano",
                     "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Daniela Narvaez Burbano",
+                    "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
+                    "section": "01F"
+                },
+                {
+                    "name": "Daniela Narvaez Burbano",
+                    "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
+                    "section": "02"
+                },
+                {
+                    "name": "Daniela Narvaez Burbano",
+                    "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -25100,7 +26035,22 @@
                 {
                     "name": "Carmen C. Granda",
                     "link": "https://www.amherst.edu/people/facstaff/cgranda",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Carmen C. Granda",
+                    "link": "https://www.amherst.edu/people/facstaff/cgranda",
+                    "section": "01F"
+                },
+                {
+                    "name": "Carmen C. Granda",
+                    "link": "https://www.amherst.edu/people/facstaff/cgranda",
+                    "section": "02"
+                },
+                {
+                    "name": "Carmen C. Granda",
+                    "link": "https://www.amherst.edu/people/facstaff/cgranda",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -25148,12 +26098,22 @@
                 {
                     "name": "Daniela Narvaez Burbano",
                     "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
-                    "section": null
+                    "section": "02"
+                },
+                {
+                    "name": "Daniela Narvaez Burbano",
+                    "link": "https://www.amherst.edu/people/facstaff/mnarvaezburbano",
+                    "section": "02F"
                 },
                 {
                     "name": "Sarah M. Piazza",
                     "link": "https://www.amherst.edu/people/facstaff/spiazza",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sarah M. Piazza",
+                    "link": "https://www.amherst.edu/people/facstaff/spiazza",
+                    "section": "03F"
                 }
             ],
             "course_materials_links": [
@@ -25201,7 +26161,22 @@
                 {
                     "name": "Sarah M. Piazza",
                     "link": "https://www.amherst.edu/people/facstaff/spiazza",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Sarah M. Piazza",
+                    "link": "https://www.amherst.edu/people/facstaff/spiazza",
+                    "section": "01F"
+                },
+                {
+                    "name": "Sarah M. Piazza",
+                    "link": "https://www.amherst.edu/people/facstaff/spiazza",
+                    "section": "02"
+                },
+                {
+                    "name": "Sarah M. Piazza",
+                    "link": "https://www.amherst.edu/people/facstaff/spiazza",
+                    "section": "02F"
                 }
             ],
             "course_materials_links": [
@@ -26012,7 +26987,12 @@
                 {
                     "name": "Angelica Monteiro",
                     "link": "https://www.amherst.edu/people/facstaff/amonteiro",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Angelica Monteiro",
+                    "link": "https://www.amherst.edu/people/facstaff/amonteiro",
+                    "section": "02"
                 },
                 {
                     "name": "Jenna M. Riegel",
@@ -26054,7 +27034,12 @@
                 {
                     "name": "Angelica Monteiro",
                     "link": "https://www.amherst.edu/people/facstaff/amonteiro",
-                    "section": null
+                    "section": "01"
+                },
+                {
+                    "name": "Angelica Monteiro",
+                    "link": "https://www.amherst.edu/people/facstaff/amonteiro",
+                    "section": "02"
                 },
                 {
                     "name": "Jenna M. Riegel",

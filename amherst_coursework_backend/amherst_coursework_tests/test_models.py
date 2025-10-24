@@ -143,6 +143,27 @@ class SectionModelTest(TestCase):
         )
         self.assertEqual(str(section), "01L for Intro to Computer Science")
 
+    def test_section_number_max_length(self):
+        """Test that section numbers with letters (3 chars) can be saved"""
+        section = Section.objects.create(
+            section_number="02A",
+            section_for=self.course,
+            monday_start_time=time(10, 0),
+            monday_end_time=time(10, 50),
+            wednesday_start_time=time(10, 0),
+            wednesday_end_time=time(10, 50),
+            friday_start_time=time(10, 0),
+            friday_end_time=time(10, 50),
+            location="MERR 132",
+            professor=self.professor,
+        )
+        # Verify the section was created and saved successfully
+        self.assertEqual(section.section_number, "02A")
+        self.assertEqual(len(section.section_number), 3)
+        # Verify it can be retrieved from database
+        retrieved = Section.objects.get(section_number="02A", section_for=self.course)
+        self.assertEqual(retrieved.section_number, "02A")
+
 
 class YearModelTest(TestCase):
     def test_year_creation(self):

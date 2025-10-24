@@ -61,33 +61,36 @@ COURSE_NAME_WEIGHT = 100
 """Weight applied to matches found in course titles"""
 
 COURSE_NAME_EXACT_WEIGHT = 150
-"""Weight applied to exact word matches in course titles"""
+"""Weight applied to exact word matches in course titles (bonus added to COURSE_NAME_WEIGHT)"""
 
-COURSE_CODE_WEIGHT = 110
-"""Weight applied to matches in course codes (e.g., 'COSC-111')"""
+COURSE_CODE_WEIGHT = 90
+"""Weight applied to partial matches in course codes (e.g., 'COSC' in 'COSC-111')"""
 
-DEPARTMENT_CODE_WEIGHT = 100
+COURSE_CODE_EXACT_WEIGHT = 300
+"""Weight applied to exact course code matches (e.g., query 'COSC-111' matches 'COSC-111')"""
+
+DEPARTMENT_CODE_WEIGHT = 150
 """Weight applied to matches in department codes (e.g., 'COSC')"""
 
-DIVISION_WEIGHT = 20
+DIVISION_WEIGHT = 15
 """Weight applied to matches in academic division names (e.g., 'Science')"""
 
-KEYWORD_WEIGHT = 60
+KEYWORD_WEIGHT = 70
 """Weight applied to matches in course keywords/tags"""
 
-DESCRIPTION_WEIGHT = 30
+DESCRIPTION_WEIGHT = 25
 """Weight applied to matches found in course descriptions"""
 
-PROFESSOR_WEIGHT = 110
+PROFESSOR_WEIGHT = 130
 """Weight applied to matches in professor names"""
 
 HALF_COURSE_WEIGHT = 200
 """Additional weight applied when 'half' appears in query and course is half-credit"""
 
-SIMILARITY_WEIGHT = 200
+SIMILARITY_WEIGHT = 180
 """Multiplier applied to cosine similarity scores for text matching"""
 
-SCORE_CUTOFF = 0.20
+SCORE_CUTOFF = 0.25
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
 
 # Initialize stopwords for English
@@ -280,7 +283,7 @@ def clean_query(query: str) -> List[str]:
     return [
         word.lower()
         for word in query.split()
-        if word.isalnum() and word.lower() not in stop_words
+        if (word.isalnum() or '-' in word) and word.lower() not in stop_words
     ]
 
 
@@ -364,6 +367,11 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
         )
         for course in code_matches.distinct():
             scores[course.id] += COURSE_CODE_WEIGHT
+            # Bonus for exact course code match
+            for code in course.courseCodes.all():
+                if code.value.upper() == term.upper():
+                    scores[course.id] += COURSE_CODE_EXACT_WEIGHT
+                    break
 
         dept_code_matches = filtered_courses.filter(
             departments__code__iexact=restore_dept_code(term)

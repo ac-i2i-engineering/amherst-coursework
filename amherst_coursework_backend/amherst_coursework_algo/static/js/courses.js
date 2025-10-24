@@ -713,6 +713,67 @@ function resetCart() {
     });
 }
 
+// Export cart courses as CSV file for Workday
+async function exportCart() {
+    const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+    
+    if (cart.length === 0) {
+        alert('Your schedule is empty. Add courses to export.');
+        return;
+    }
+    
+    try {
+        // Fetch course details for all cart items
+        const response = await fetch(`/cart-courses/?cart=${encodeURIComponent(JSON.stringify(cart))}`);
+        const data = await response.json();
+        
+        if (!data.courses || data.courses.length === 0) {
+            alert('No course data found.');
+            return;
+        }
+        
+        // Generate CSV content
+        let csvContent = 'Course Code,Department,Course Name\n';
+        
+        // Add each course to CSV
+        data.courses.forEach(course => {
+            // Get course code (first one if multiple)
+            const courseCode = course.course_acronyms && course.course_acronyms.length > 0 
+                ? course.course_acronyms[0] 
+                : 'N/A';
+            
+            // Extract department from course code (e.g., "COSC-111" -> "COSC")
+            const department = courseCode.split('-')[0] || 'N/A';
+            
+            // Get course name
+            const courseName = course.name || 'N/A';
+            
+            // Escape commas and quotes in course name
+            const escapedCourseName = courseName.includes(',') || courseName.includes('"')
+                ? `"${courseName.replace(/"/g, '""')}"` 
+                : courseName;
+            
+            // Add row to CSV
+            csvContent += `${courseCode},${department},${escapedCourseName}\n`;
+        });
+        
+        // Create and download file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'amherst-schedule.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+    } catch (error) {
+        console.error('Error exporting schedule:', error);
+        alert('Failed to export schedule. Please try again.');
+    }
+}
+
 // Displays modal with section options for a course
 function showSectionModal(event, courseId, courseName) {
     event.stopPropagation();

@@ -465,7 +465,7 @@ class Section(models.Model):
             )
         ],
         help_text="Section number (digits or L for lab)",
-        max_length=2,
+        max_length=3,
         default="1",
     )
     section_for = models.ForeignKey(

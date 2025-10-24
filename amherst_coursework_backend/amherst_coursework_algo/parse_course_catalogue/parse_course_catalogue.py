@@ -59,6 +59,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 import random
+import html
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -291,7 +292,8 @@ def parse_course_first_deg(html_content: str, course_url: str) -> Optional[str]:
         if not course_title:
             logger.error("Could not find course title (h3 tag)")
             return None
-        course_name = course_title.text.strip()
+        # Decode HTML entities in course name (e.g., &amp; -> &, &oacute; -> ó)
+        course_name = html.unescape(course_title.text.strip())
         logger.debug(f"Successfully extracted course name: {course_name}")
 
         # Extract departments info
@@ -357,6 +359,8 @@ def parse_course_first_deg(html_content: str, course_url: str) -> Optional[str]:
             description = " ".join(
                 [p.text.strip() for p in desc_header.find_next_siblings("p")]
             )
+            # Decode HTML entities in description
+            description = html.unescape(description)
             if not description:
                 logger.warning("Empty description found")
             else:

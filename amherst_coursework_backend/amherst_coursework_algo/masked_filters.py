@@ -78,7 +78,7 @@ DIVISION_WEIGHT = 15
 KEYWORD_WEIGHT = 70
 """Weight applied to matches in course keywords/tags"""
 
-DESCRIPTION_WEIGHT = 25
+DESCRIPTION_WEIGHT = 60
 """Weight applied to matches found in course descriptions"""
 
 PROFESSOR_WEIGHT = 130
@@ -90,8 +90,24 @@ HALF_COURSE_WEIGHT = 200
 SIMILARITY_WEIGHT = 180
 """Multiplier applied to cosine similarity scores for text matching"""
 
-SCORE_CUTOFF = 0.25
+PHRASE_MATCH_WEIGHT = 80
+"""Additional weight applied when a multi-word phrase appears together in course text"""
+
+SCORE_CUTOFF = 0.20
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
+
+# Common abbreviations and their expansions for semantic matching
+ABBREVIATION_MAP = {
+    "ai": "artificial intelligence",
+    "ml": "machine learning",
+    "nlp": "natural language processing",
+    "dl": "deep learning",
+    "cv": "computer vision",
+    "rl": "reinforcement learning",
+    "nn": "neural network",
+    "cnn": "convolutional neural network",
+    "rnn": "recurrent neural network",
+}
 
 # Initialize stopwords for English
 try:
@@ -261,6 +277,91 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
     return similarities[0]
 
 
+def expand_abbreviations(text: str) -> str:
+    """
+    Expand common abbreviations in text for better semantic matching.
+    Works bidirectionally: expands abbreviations AND adds abbreviations for full terms.
+
+    Parameters
+    ----------
+    text : str
+        Input text that may contain abbreviations or full terms
+
+    Returns
+    -------
+    str
+        Text with abbreviations expanded and full terms abbreviated (original + both forms)
+
+    Examples
+    --------
+    >>> expand_abbreviations("AI and ML course")
+    "AI artificial intelligence and ML machine learning course"
+    >>> expand_abbreviations("artificial intelligence course")
+    "artificial intelligence AI course"
+    """
+    import re
+
+    expanded = text
+
+    # First pass: expand abbreviations to full terms
+    for abbr, full in ABBREVIATION_MAP.items():
+        # Match abbreviation as whole word (case-insensitive)
+        pattern = r"\b" + re.escape(abbr) + r"\b"
+        if re.search(pattern, text, re.IGNORECASE):
+            # Add expanded form after the abbreviation
+            expanded = re.sub(pattern, f"{abbr} {full}", expanded, flags=re.IGNORECASE)
+
+    # Second pass: add abbreviations for full terms
+    for abbr, full in ABBREVIATION_MAP.items():
+        # Match full term (case-insensitive)
+        pattern = r"\b" + re.escape(full) + r"\b"
+        if re.search(pattern, expanded, re.IGNORECASE):
+            # Add abbreviation after the full term
+            expanded = re.sub(pattern, f"{full} {abbr}", expanded, flags=re.IGNORECASE)
+
+    return expanded
+
+
+def detect_phrases(query: str) -> List[str]:
+    """
+    Detect meaningful multi-word phrases in a query.
+
+    Parameters
+    ----------
+    query : str
+        Search query string
+
+    Returns
+    -------
+    List[str]
+        List of detected phrases (2-3 word combinations)
+
+    Examples
+    --------
+    >>> detect_phrases("artificial intelligence and ethics")
+    ["artificial intelligence", "intelligence and ethics"]
+    """
+    words = query.lower().split()
+    phrases = []
+
+    # Look for 2-word phrases
+    for i in range(len(words) - 1):
+        if words[i] not in stop_words and words[i + 1] not in stop_words:
+            phrases.append(f"{words[i]} {words[i+1]}")
+
+    # Look for 3-word phrases (skip middle word if it's a stopword)
+    for i in range(len(words) - 2):
+        if words[i] not in stop_words and words[i + 2] not in stop_words:
+            if words[i + 1] in stop_words:
+                # e.g., "artificial [and] intelligence"
+                phrases.append(f"{words[i]} {words[i+2]}")
+            else:
+                # e.g., "machine learning algorithms"
+                phrases.append(f"{words[i]} {words[i+1]} {words[i+2]}")
+
+    return phrases
+
+
 def clean_query(query: str) -> List[str]:
     """
     Clean and tokenize a search query string.
@@ -283,7 +384,7 @@ def clean_query(query: str) -> List[str]:
     return [
         word.lower()
         for word in query.split()
-        if (word.isalnum() or '-' in word) and word.lower() not in stop_words
+        if (word.isalnum() or "-" in word) and word.lower() not in stop_words
     ]
 
 
@@ -316,6 +417,7 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     - PROFESSOR_WEIGHT : Weight for professor name matches
     - HALF_COURSE_WEIGHT : Weight for half-credit courses
     - SIMILARITY_WEIGHT : Weight for cosine similarity scores
+    - PHRASE_MATCH_WEIGHT : Weight for multi-word phrase matches
 
     Global configuration:
     - SCORE_CUTOFF : Courses below this fraction of the highest score are filtered out
@@ -323,12 +425,19 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
 
     Special handling for:
     - "half" keyword to filter half-credit courses
+    - Abbreviation expansion (e.g., "AI" -> "artificial intelligence")
+    - Phrase detection for multi-word queries
     - Longer queries (>5 chars) use cosine similarity
     """
     if not search_query:
         return [(course, 1.0) for course in courses]
 
-    search_terms = clean_query(search_query)
+    # Expand abbreviations in the query for better matching
+    expanded_query = expand_abbreviations(search_query)
+    search_terms = clean_query(expanded_query)
+
+    # Detect meaningful phrases in the original query
+    phrases = detect_phrases(search_query)
 
     # Start with all courses
     filtered_courses = Course.objects.filter(
@@ -348,19 +457,83 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
                 scores[course.id] += HALF_COURSE_WEIGHT
             continue
 
-        # Calculate scores for each matching field
-        name_matches = filtered_courses.filter(courseName__icontains=term)
-        for course in name_matches:
-            scores[course.id] += COURSE_NAME_WEIGHT
-            # Bonus for exact word match in course name
-            course_words = course.courseName.lower().split()
-            if term in course_words:
-                scores[course.id] += COURSE_NAME_EXACT_WEIGHT
+        # Use word boundary matching for short terms (2-3 chars) to avoid false matches
+        # e.g., "ai" shouldn't match "said", "detail", "email"
+        use_word_boundary = len(term) <= 3
 
-        dept_matches = filtered_courses.filter(departments__name__icontains=term)
-        for course in dept_matches:
-            scores[course.id] += DEPARTMENT_NAME_WEIGHT
+        if use_word_boundary:
+            import re
 
+            # Create regex pattern with word boundaries
+            word_pattern = r"\b" + re.escape(term) + r"\b"
+
+            # Calculate scores for each matching field with word boundaries
+            name_matches = filtered_courses.filter(courseName__iregex=word_pattern)
+            for course in name_matches:
+                scores[course.id] += COURSE_NAME_WEIGHT
+                # Bonus for exact word match in course name
+                course_words = course.courseName.lower().split()
+                if term in course_words:
+                    scores[course.id] += COURSE_NAME_EXACT_WEIGHT
+
+            dept_matches = filtered_courses.filter(
+                departments__name__iregex=word_pattern
+            )
+            for course in dept_matches:
+                scores[course.id] += DEPARTMENT_NAME_WEIGHT
+
+            div_matches = filtered_courses.filter(divisions__name__iregex=word_pattern)
+            for course in div_matches:
+                scores[course.id] += DIVISION_WEIGHT
+
+            keyword_matches = filtered_courses.filter(
+                keywords__name__iregex=word_pattern
+            )
+            for course in keyword_matches:
+                scores[course.id] += KEYWORD_WEIGHT
+
+            desc_matches = filtered_courses.filter(
+                courseDescription__iregex=word_pattern
+            )
+            for course in desc_matches:
+                scores[course.id] += DESCRIPTION_WEIGHT
+
+            prof_matches = filtered_courses.filter(
+                professors__name__iregex=word_pattern
+            )
+            for course in prof_matches:
+                scores[course.id] += PROFESSOR_WEIGHT
+        else:
+            # Use regular icontains for longer terms
+            name_matches = filtered_courses.filter(courseName__icontains=term)
+            for course in name_matches:
+                scores[course.id] += COURSE_NAME_WEIGHT
+                # Bonus for exact word match in course name
+                course_words = course.courseName.lower().split()
+                if term in course_words:
+                    scores[course.id] += COURSE_NAME_EXACT_WEIGHT
+
+            dept_matches = filtered_courses.filter(departments__name__icontains=term)
+            for course in dept_matches:
+                scores[course.id] += DEPARTMENT_NAME_WEIGHT
+
+            div_matches = filtered_courses.filter(divisions__name__icontains=term)
+            for course in div_matches:
+                scores[course.id] += DIVISION_WEIGHT
+
+            keyword_matches = filtered_courses.filter(keywords__name__icontains=term)
+            for course in keyword_matches:
+                scores[course.id] += KEYWORD_WEIGHT
+
+            desc_matches = filtered_courses.filter(courseDescription__icontains=term)
+            for course in desc_matches:
+                scores[course.id] += DESCRIPTION_WEIGHT
+
+            prof_matches = filtered_courses.filter(professors__name__icontains=term)
+            for course in prof_matches:
+                scores[course.id] += PROFESSOR_WEIGHT
+
+        # Course code matching (always use special handling)
         code_matches = filtered_courses.filter(
             Q(courseCodes__value__icontains=term)
             | Q(courseCodes__value__iregex=restore_course_code(term))
@@ -379,26 +552,43 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
         for course in dept_code_matches:
             scores[course.id] += DEPARTMENT_CODE_WEIGHT
 
-        div_matches = filtered_courses.filter(divisions__name__icontains=term)
-        for course in div_matches:
-            scores[course.id] += DIVISION_WEIGHT
+    # Add bonus for phrase matches
+    for phrase in phrases:
+        # Expand abbreviations in phrases too
+        expanded_phrase = expand_abbreviations(phrase)
 
-        keyword_matches = filtered_courses.filter(keywords__name__icontains=term)
-        for course in keyword_matches:
-            scores[course.id] += KEYWORD_WEIGHT
+        # Check if phrase appears in course name or description
+        phrase_in_name = filtered_courses.filter(courseName__icontains=phrase)
+        for course in phrase_in_name:
+            scores[course.id] += PHRASE_MATCH_WEIGHT
 
-        desc_matches = filtered_courses.filter(courseDescription__icontains=term)
-        for course in desc_matches:
-            scores[course.id] += DESCRIPTION_WEIGHT
+        phrase_in_desc = filtered_courses.filter(courseDescription__icontains=phrase)
+        for course in phrase_in_desc:
+            scores[course.id] += PHRASE_MATCH_WEIGHT
 
-        prof_matches = filtered_courses.filter(professors__name__icontains=term)
-        for course in prof_matches:
-            scores[course.id] += PROFESSOR_WEIGHT
+        # Also check expanded phrase
+        if expanded_phrase != phrase:
+            phrase_in_name_exp = filtered_courses.filter(
+                courseName__icontains=expanded_phrase
+            )
+            for course in phrase_in_name_exp:
+                scores[course.id] += PHRASE_MATCH_WEIGHT
+
+            phrase_in_desc_exp = filtered_courses.filter(
+                courseDescription__icontains=expanded_phrase
+            )
+            for course in phrase_in_desc_exp:
+                scores[course.id] += PHRASE_MATCH_WEIGHT
 
     # Add similarity search for longer queries
     if len(search_query) > MIN_CHAR_FOR_COS_SIM:
-        course_texts = [prepare_course_text(course) for course in filtered_courses]
-        similarity_scores = compute_similarity_scores(search_query, course_texts)
+        # Expand abbreviations in course texts for better matching
+        course_texts = [
+            expand_abbreviations(prepare_course_text(course))
+            for course in filtered_courses
+        ]
+        # Use expanded query for similarity comparison
+        similarity_scores = compute_similarity_scores(expanded_query, course_texts)
         for course, score in zip(filtered_courses, similarity_scores):
             scores[course.id] += score * SIMILARITY_WEIGHT
 

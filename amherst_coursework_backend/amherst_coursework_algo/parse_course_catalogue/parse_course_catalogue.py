@@ -395,17 +395,33 @@ def parse_course_first_deg(html_content: str, course_url: str) -> Optional[str]:
                         if not prof_link.startswith("http"):
                             prof_link = "https://www.amherst.edu" + prof_link
 
-                        # Find the next text node after the link and look for section number
+                        # Find the next text node after the link and look for section number(s)
+                        # Handle both singular "Section" and plural "Sections"
+                        # Also handle multiple sections like "Sections 01 and 01L"
                         next_text = link.next_sibling
+                        sections = []
                         if next_text:
-                            section_match = re.search(r"\(Section\s*(\d+)\)", next_text)
-                            section = section_match.group(1) if section_match else None
-                        else:
-                            section = None
+                            # Try to match single section: (Section 01)
+                            section_match = re.search(r"\(Sections?\s*(\d+[A-Z]*)\)", next_text)
+                            if section_match:
+                                sections.append(section_match.group(1))
+                            
+                            # Try to match multiple sections: (Sections 01 and 01L)
+                            multi_section_match = re.findall(r"(\d+[A-Z]*)", next_text)
+                            if multi_section_match and len(multi_section_match) > 1:
+                                sections = multi_section_match
 
-                        professors.append(
-                            {"name": prof_name, "link": prof_link, "section": section}
-                        )
+                        # Create professor entry for each section
+                        if sections:
+                            for section in sections:
+                                professors.append(
+                                    {"name": prof_name, "link": prof_link, "section": section}
+                                )
+                        else:
+                            # No section specified, add professor without section
+                            professors.append(
+                                {"name": prof_name, "link": prof_link, "section": None}
+                            )
                         logger.debug(
                             f"Added professor: {prof_name} (Section: {section})"
                         )
@@ -821,14 +837,55 @@ def parse_course_second_deg(course_data: dict) -> dict:
                 if section_num in section_info:
                     section_info[section_num]["course_materials_links"] = link
 
-        # Clean up description - remove course offering text
+        # Extract enrollment guidelines from description
+        overGuidelines = {
+            "text": "",
+            "preferenceForMajor": False,
+            "overallCap": 0,
+            "freshmanCap": 0,
+            "sophomoreCap": 0,
+            "juniorCap": 0,
+            "seniorCap": 0,
+        }
+        
         if course_data.get("description"):
             desc = course_data["description"]
+            
+            # Extract enrollment text
+            enrollment_match = re.search(
+                r"How to handle overenrollment:\s*([^\n]*?)(?=\s*Students who enroll|$)",
+                desc,
+                re.IGNORECASE
+            )
+            if enrollment_match:
+                enrollment_text = enrollment_match.group(1).strip()
+                # Handle "null" case
+                if enrollment_text.lower() != "null" and enrollment_text:
+                    overGuidelines["text"] = enrollment_text
+                    
+                    # Check for major preference
+                    if re.search(r"major", enrollment_text, re.IGNORECASE):
+                        overGuidelines["preferenceForMajor"] = True
+                    
+                    # Extract enrollment caps if present
+                    cap_match = re.search(r"limited to (\d+)", enrollment_text, re.IGNORECASE)
+                    if cap_match:
+                        overGuidelines["overallCap"] = int(cap_match.group(1))
+            
+            # Clean up description - remove course offering text and enrollment text
             clean_desc = re.sub(r"^\([^)]*(?:Offered as|Listed as)[^)]*\)\s*", "", desc)
-            enhanced_course["description"] = clean_desc
+            # Remove enrollment guidelines from description
+            clean_desc = re.sub(
+                r"How to handle overenrollment:.*?(?=Students who enroll|Divisions:|$)",
+                "",
+                clean_desc,
+                flags=re.IGNORECASE | re.DOTALL
+            )
+            enhanced_course["description"] = clean_desc.strip()
 
         # Update enhanced course data
         enhanced_course["section_information"] = section_info
+        enhanced_course["overGuidelines"] = overGuidelines
 
         # Remove original fields that were restructured
         enhanced_course.pop("course_times_location", None)

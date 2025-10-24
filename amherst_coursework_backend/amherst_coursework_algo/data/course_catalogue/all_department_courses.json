@@ -74,7 +74,6 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARCH/ARCH-322-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARCH/ARCH-333-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-339-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-385-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-391-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-422H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-432-2526F",
@@ -112,7 +111,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-361-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-477-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ASLC/ASLC-498D-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CHIN/CHIN-101-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CHIN/CHIN-201-2526F",
@@ -143,12 +142,14 @@
     "Biochemistry and Biophysics": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-291-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-331-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-333-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-371-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-498D-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-498D-2526F"
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-498-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-498-2526F"
     ],
     "Biology": [
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-111-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-181-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-181L-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-191-2526F",
@@ -166,8 +167,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-351-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-371-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-412-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-457-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-498D-2526F"
     ],
     "Black Studies": [
@@ -186,7 +186,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-329-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-355-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-498D-2526F"
     ],
     "Chemistry": [
@@ -211,7 +211,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-290H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-498-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-498D-2526F"
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/CHEM/CHEM-498-2526F"
     ],
     "Classics": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/CLAS/CLAS-121-2526F",
@@ -246,15 +246,17 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-355-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-371-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-383-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-456-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-457-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-490-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COSC/COSC-498-2526F"
     ],
     "Economics": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-111-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-111F-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-206-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-214-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-218-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-223-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-227-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-228-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ECON/ECON-229-2526F",
@@ -290,7 +292,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-490-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-470-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-498D-2526F"
     ],
     "English": [
@@ -298,11 +300,14 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-117-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EDST/EDST-120-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-127-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-129-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-140-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-171-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-180-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-191-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/AAPI/AAPI-210-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-221-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-224-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-226-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-251-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-258-2526F",
@@ -315,6 +320,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-379-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-387-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-420-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-440-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/COLQ/COLQ-410-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-494-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-495-2526F",
@@ -323,12 +329,15 @@
     "Environmental Studies": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-105-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-110-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-110L-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BIOL/BIOL-230-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-228-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-236-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-253-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-430-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-495-2526F"
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-495-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-498-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/ENST/ENST-499-2526F"
     ],
     "European Studies": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-111-2526F",
@@ -343,7 +352,6 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-324-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-347-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ARCH/ARCH-360-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-385-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-498D-2526F"
     ],
@@ -384,7 +392,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-321-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-450-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/GEOL/GEOL-498D-2526F"
     ],
     "German": [
@@ -451,7 +459,37 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/LJST/LJST-490-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/LJST/LJST-498-2526F"
     ],
-    "Mathematics and Statistics": [],
+    "Mathematics": [
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-105-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-111-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-121-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-211-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-220-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-225-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-256-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-260-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-271-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-272-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-281-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-320-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-345-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-350-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-355-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-450-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-498-2526F"
+    ],
+    "Statistics": [
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-108-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-135-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-230-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-231-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-456-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-490-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-495-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-498-2526F"
+    ],
     "Music": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-111-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-115-2526F",
@@ -474,8 +512,8 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-439-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-490H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-490H-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-498D-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-498-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSL/MUSL-151H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSL/MUSL-152H-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSL/MUSL-153H-2526F",
@@ -537,7 +575,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-125-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-125L-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-225-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-333-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/BCBP/BCBP-333-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-343-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-347-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/PHYS/PHYS-498-2526F"
@@ -564,7 +602,7 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-415-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-418-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/POSC/POSC-498D-2526F"
     ],
     "Psychology": [
@@ -620,12 +658,11 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/RELI/RELI-261-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/LJST/LJST-260-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/BLST/BLST-275-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/ARHA/ARHA-385-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/EUST/EUST-347-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/ENGL/ENGL-372-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/HIST/HIST-424-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/SWAG/SWAG-490-2526F",
-        "https://www.amherst.edu/academiclife/departments/courses/2526F/SWAG/SWAG-498D-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/SWAG/SWAG-498-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/SWAG/SWAG-498D-2526F"
     ],
     "Spanish": [

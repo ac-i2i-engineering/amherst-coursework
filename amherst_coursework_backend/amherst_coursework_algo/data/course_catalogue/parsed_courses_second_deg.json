@@ -30289,5 +30289,1648 @@
             },
             "section_information": {}
         }
+    ],
+    "Mathematics": [
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-105-2526F",
+            "course_name": "Calculus with Algebra",
+            "course_acronyms": [
+                "MATH-105"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "MATH 105 and 106 are designed for students whose background and algebraic skills are inadequate for the fast pace of MATH 111. In addition to covering the usual material of beginning calculus, these courses will have an extensive review of algebra and trigonometry. There will be a special emphasis on solving word problems. MATH 105 starts with a quick review of algebraic manipulations, inequalities, absolute values and straight lines. Then the basic ideas of calculus\u2014limits, derivatives, and integrals\u2014are introduced, but only in the context of polynomial and rational functions. As various applications are studied, the algebraic techniques involved will be reviewed in more detail. When covering related rates and maximum-minimum problems, time will be spent learning how to approach, analyze and solve word problems. Four class meetings per week, one of which is an 80-minute group-work day. Only students with Math placement into MATH 105 are eligible. Note: While MATH 105 and 106 are sufficient for any course with a MATH 111 requisite, MATH 105 alone is not. However, students who plan to take MATH 121 should consider taking MATH 105 and then MATH 111, rather than MATH 106. Students cannot register for both MATH 105 and CHEM 151 in the same semester. How to handle overenrollment: null Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-105-1112F",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-105-1213F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-105-1314F",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-105-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-105-1516F",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-105-1718F",
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/MATH/MATH-105-1819F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/MATH/MATH-105-1920F",
+                "Fall 2020": "https://www.amherst.edu/academiclife/departments/courses/2021F/MATH/MATH-105-2021F",
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/MATH/MATH-105-2122F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-105-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-105-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-105-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-105-2526F"
+            },
+            "section_information": {
+                "01F": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "SMUD 204",
+                    "course_materials_links": null,
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "10:05 AM",
+                    "thu_end_time": "11:20 AM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-111-2526F",
+            "course_name": "Introduction to the Calculus",
+            "course_acronyms": [
+                "MATH-111"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "Basic concepts of limits, derivatives, anti-derivatives; applications, including max/min problems and related rates; the definite integral, simple applications; trigonometric functions; logarithms and exponential functions. Math placement into MATH 111 is required. In the Fall semester, the intensive section (Section 01) includes one additional weekly class meeting and is open only to students with placement into that section. How to handle overenrollment: Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-111-1112F",
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-111-1112S",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-111-1213F",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-111-1213S",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-111-1314F",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-111-1314S",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-111-1415F",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-111-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-111-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-111-1516S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-111-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-111-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-111-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-111-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-111-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-111-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-111-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Katherine E. Moore",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/kmoore",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=111&section1=01",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": "Joe Kraisler",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jkraisler",
+                    "course_location": "SMUD 206",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=111&section1=02",
+                    "mon_start_time": "1:30 PM",
+                    "mon_end_time": "2:20 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "1:30 PM",
+                    "wed_end_time": "2:20 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "1:30 PM",
+                    "fri_end_time": "2:20 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Miriam Kuzbary",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/mkuzbary",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=111&section1=03",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:25 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:25 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "11:35 AM",
+                    "fri_end_time": "12:25 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "04": {
+                    "professor_name": "Seok Hyun Byun",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/sbyun",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=111&section1=04",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-121-2526F",
+            "course_name": "Intermediate Calculus",
+            "course_acronyms": [
+                "MATH-121"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "A continuation of MATH 111. Inverse trigonometric functions; methods of integration, both exact and approximate, and applications (if time allows); improper integrals; l\u2019H\u00f4pital\u2019s rule; infinite series, power series and the Taylor development; and polar coordinates. A grade of C or better in MATH 106 or 111, or Math Placement into 121, or consent of the Department is required. How to handle overenrollment: Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-121-1112F",
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-121-1112S",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-121-1213F",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-121-1213S",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-121-1314F",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-121-1314S",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-121-1415F",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-121-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-121-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-121-1516S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-121-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-121-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-121-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-121-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-121-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-121-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-121-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "SMUD 206",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=121&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "SMUD 206",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=121&section1=02",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Fanhui Xu",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/fxu",
+                    "course_location": "SMUD 205",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=121&section1=03",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:25 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:25 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "11:35 AM",
+                    "fri_end_time": "12:25 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "04": {
+                    "professor_name": "Seok Hyun Byun",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/sbyun",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=121&section1=04",
+                    "mon_start_time": "1:30 PM",
+                    "mon_end_time": "2:20 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "1:30 PM",
+                    "wed_end_time": "2:20 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "1:30 PM",
+                    "fri_end_time": "2:20 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-211-2526F",
+            "course_name": "Multivariable Calculus",
+            "course_acronyms": [
+                "MATH-211"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "Elementary vector calculus; introduction to partial derivatives; multiple integrals in two and three dimensions; line integrals in the plane; Green\u2019s theorem. A grade of C or better in MATH 121 or placement into MATH 211 or consent of the Department is required. How to handle overenrollment: Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": null,
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-211-1112S",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-211-1213F",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-211-1213S",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-211-1314F",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-211-1314S",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-211-1415F",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-211-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-211-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-211-1516S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-211-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-211-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-211-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-211-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-211-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-211-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-211-2526F"
+            },
+            "section_information": {
+                "03": {
+                    "professor_name": "Joseph Palmer",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jpalmer",
+                    "course_location": "SMUD 206",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=211&section1=03",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:25 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:25 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "11:35 AM",
+                    "fri_end_time": "12:25 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-220-2526F",
+            "course_name": "Mathematical Reasoning and Proof",
+            "course_acronyms": [
+                "MATH-220"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "This course serves as an introduction to mathematical reasoning and pays particular attention to helping students learn how to write proofs. The topics covered may include logic, elementary set theory, functions, relations and equivalence relations, mathematical induction, sequences, and quantifiers. Additional topics may vary from semester to semester. Limited to 25 students per section. How to handle overenrollment: Preference is given to sophomores, and to other math majors who are recommended by the department for additional experience with proof-writing. Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work or exams, Take-home exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-220-1112S",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-220-1213S",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-220-1314S",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-220-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-220-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-220-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-220-1617S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-220-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-220-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-220-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-220-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-220-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-220-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-220-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Jessica Sidman",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jsidman",
+                    "course_location": "SMUD 204",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=220&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "1:05 PM",
+                    "tue_end_time": "2:20 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "1:05 PM",
+                    "thu_end_time": "2:20 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": "Jenna Zomback",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jzomback",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=220&section1=02",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "10:05 AM",
+                    "tue_end_time": "11:20 AM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "10:05 AM",
+                    "thu_end_time": "11:20 AM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Robert L. Benedetto",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/rlbenedetto",
+                    "course_location": "SMUD 205",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=220&section1=03",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-225-2526F",
+            "course_name": "Fractal Geometry",
+            "course_acronyms": [
+                "MATH-225"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "This course is a mathematical treatment of fractal geometry, a field of mathematics partly developed by Benoit Mandelbrot (1924\u20132010) that continues to be actively researched in the present day. Fractal geometry is a mathematical examination of the concepts of self-similarity, fractals, and chaos, and their applications to the modeling of natural phenomena. In particular, we will develop the iterated function system (IFS) method for describing fractals, study the concept of fractal dimension among other theoretical concepts, and examine Julia and Mandelbrot sets (time permitting). Through the teaching of these concepts, the course will also lend itself to familiarizing students with some of the formalisms and rigor of mathematical proofs. MATH 211 or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to math majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class quizzes or exams, Take-home exams, Visual analysis, Use of computational software. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-225-2223S",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-225-2324S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-225-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Amanda L. Folsom",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/afolsom",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=225&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "10:05 AM",
+                    "tue_end_time": "11:20 AM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "10:05 AM",
+                    "thu_end_time": "11:20 AM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-256-2526F",
+            "course_name": "Combinatorial Geometry: Packings and Polytopes",
+            "course_acronyms": [
+                "MATH-256"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "This course is a survey of geometry in dimensions 2, 3, 4, and higher. We will consider questions\u00a0such as: How do we know the angles of a triangle add up to 180 degrees? (Spoiler: usually they don't.) What are the different ways we could tile our kitchen floor? How many tennis balls fit in a bucket? How many regular polyhedra are\u00a0there in four dimensions? And what shape is the universe?\u00a0We will examine how mathematicians and scientists, from Euclid to Einstein, have tried to give definitive answers to these questions, and we will explore some of what is still unknown about how the mathematical world reflects what we see around us. MATH 211 or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Priority to math majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, in-class quizzes or exams, take-home exams, in-class group work. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-256-2324F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-256-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Michael C. Ching",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/mching",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=256&section1=01",
+                    "mon_start_time": "2:35 PM",
+                    "mon_end_time": "3:50 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "2:35 PM",
+                    "wed_end_time": "3:50 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-260-2526F",
+            "course_name": "Differential Equations",
+            "course_acronyms": [
+                "MATH-260"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "The study of differential equations is an important part of mathematics that involves many topics, both theoretical and practical. The course will cover first- and second-order ordinary differential equations, basic theorems concerning existence and uniqueness of solutions and continuous dependence on parameters, long-term behavior of solutions and approximate solutions. MATH 211 or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to math majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, Use of computational software, In-class and take-home exams, May include quizzes, group projects, or individual project with written report and presentation. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-260-1213S",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-260-1314S",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-260-1415S",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-260-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-260-1617S",
+                "Spring 2018": "https://www.amherst.edu/academiclife/departments/courses/1718S/MATH/MATH-260-1718S",
+                "Spring 2019": "https://www.amherst.edu/academiclife/departments/courses/1819S/MATH/MATH-260-1819S",
+                "Spring 2020": "https://www.amherst.edu/academiclife/departments/courses/1920S/MATH/MATH-260-1920S",
+                "Spring 2021": "https://www.amherst.edu/academiclife/departments/courses/2021S/MATH/MATH-260-2021S",
+                "Spring 2022": "https://www.amherst.edu/academiclife/departments/courses/2122S/MATH/MATH-260-2122S",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-260-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-260-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-260-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-260-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-260-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Xiaoqian Gong",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/xgong",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=260&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "2:35 PM",
+                    "tue_end_time": "3:50 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "2:35 PM",
+                    "thu_end_time": "3:50 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-271-2526F",
+            "course_name": "Linear Algebra",
+            "course_acronyms": [
+                "MATH-271"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "The study of vector spaces over the real and complex numbers, introducing the concepts of subspace, linear independence, basis, and dimension; systems of linear equations and their solution by Gaussian elimination; matrix operations; linear transformations and their representations by matrices; eigenvalues and eigenvectors; and inner product spaces. MATH 271 will feature both proofs and applications, with special attention paid to the theoretical development of the subject. MATH 211 or MATH 220, or consent of the instructor is required. This course and MATH 272 may not both be taken for credit. Limited to 25 students per section. How to handle overenrollment: Preference is given to sophomores, and to students for whom Linear Algebra contributes to their major. Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or take-home quizzes or exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-271-1112F",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-271-1213F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-271-1314F",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-271-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-271-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-271-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-271-1617S",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-271-1718F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-271-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-271-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-271-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-271-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-271-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-271-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-271-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Joseph Palmer",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jpalmer",
+                    "course_location": "SCCE E210",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=271&section1=01",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": "Miriam Kuzbary",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/mkuzbary",
+                    "course_location": "SCCE E208",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=271&section1=02",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Aamir Rasheed",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/arasheed",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=271&section1=03",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:25 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:25 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "11:35 AM",
+                    "fri_end_time": "12:25 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-272-2526F",
+            "course_name": "Linear Algebra with Applications",
+            "course_acronyms": [
+                "MATH-272"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "The study of vector spaces over the real and complex numbers, introducing the concepts of subspace, linear independence, basis, and dimension; systems of linear equations and their solution by Gaussian elimination; matrix operations; linear transformations and their representations by matrices; eigenvalues and eigenvectors; and inner product spaces. This course will feature both proofs and applications, with special attention paid to applied topics such as least squares and singular value decomposition. MATH 211 or 220, or consent of the instructor is required. This course and MATH 271 may not both be taken for credit. Limited to 25 students per section. How to handle overenrollment: Preference is given to sophomores, and to students for whom Linear Algebra contributes to their major. Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class group work, In-class quizzes or exams, Use of computational software. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-272-1112S",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-272-1213S",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-272-1314S",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-272-1415S",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-272-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-272-1617S",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-272-1718F",
+                "Spring 2018": "https://www.amherst.edu/academiclife/departments/courses/1718S/MATH/MATH-272-1718S",
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/MATH/MATH-272-1819F",
+                "Spring 2019": "https://www.amherst.edu/academiclife/departments/courses/1819S/MATH/MATH-272-1819S",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/MATH/MATH-272-1920F",
+                "Spring 2020": "https://www.amherst.edu/academiclife/departments/courses/1920S/MATH/MATH-272-1920S",
+                "Spring 2021": "https://www.amherst.edu/academiclife/departments/courses/2021S/MATH/MATH-272-2021S",
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/MATH/MATH-272-2122F",
+                "Spring 2022": "https://www.amherst.edu/academiclife/departments/courses/2122S/MATH/MATH-272-2122S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-272-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-272-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-272-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-272-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-272-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-272-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-272-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Joe Kraisler",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jkraisler",
+                    "course_location": "SMUD 204",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=272&section1=01",
+                    "mon_start_time": "2:35 PM",
+                    "mon_end_time": "3:50 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "2:35 PM",
+                    "wed_end_time": "3:50 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-281-2526F",
+            "course_name": "Combinatorics",
+            "course_acronyms": [
+                "MATH-281"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "This course emphasizes enumerative combinatorics, a classical subject in mathematics related to the theory of counting. Problems in this area often pertain to finding the number of possible arrangements of a set of objects under some particular constraints. This course incorporates a wide set of problems involving enumerative combinatorics, as well as theory and applications. Topics include the sum and product rules; combinations and permutations; binomial and multinomial coefficients; the principle of inclusion and exclusion; generating functions; recurrence relations; Catalan, Stirling, Bell and Eulerian numbers; partitions. Additional topics may vary. MATH 121, and one of MATH 220, 271, or 272, or other experience with mathematical proofs by consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to math majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class quizzes or exams, Take-home exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-281-2324S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-281-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Ivan Contreras",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/icontreraspalacios",
+                    "course_location": "SMUD 206",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=281&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "10:05 AM",
+                    "tue_end_time": "11:20 AM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "10:05 AM",
+                    "thu_end_time": "11:20 AM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-320-2526F",
+            "course_name": "Wavelet and Fourier Analysis",
+            "course_acronyms": [
+                "MATH-320"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "The first half of the course covers continuous and discrete Fourier transforms (including convolution and Plancherel\u2019s formula), Fourier series (including convergence and the fast Fourier transform algorithm), and applications like heat conduction along a rod and signal processing. The second half of the course is devoted to wavelets: Haar bases, the discrete Haar transform in 1 and 2 dimensions with application to image analysis, multiresolution analysis, filters, and wavelet-based image compression like JPEG2000. Three class hours per week plus a weekly one-hour computer laboratory. MATH 211 and either MATH 271 or 272, or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to seniors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, Use of computational software, In-class or take-home exams, May include quizzes, group projects, or in-class group work. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-320-1112F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-320-1314F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-320-1516F",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-320-1718F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/MATH/MATH-320-1920F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-320-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Xiaoqian Gong",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/xgong",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=320&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "1:05 PM",
+                    "tue_end_time": "2:20 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "1:05 PM",
+                    "thu_end_time": "2:20 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-345-2526F",
+            "course_name": "Functions of a Complex Variable",
+            "course_acronyms": [
+                "MATH-345"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "An introduction to analytic functions; complex numbers, derivatives, conformal mappings, integrals. Cauchy\u2019s theorem; power series, singularities, Laurent series, analytic continuation; special functions. MATH 211 and either MATH 271 or 272, or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to seniors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class quizzes or exams, Take-home exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-345-1112F",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-345-1213F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-345-1314F",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-345-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-345-1516F",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-345-1718F",
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/MATH/MATH-345-1819F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/MATH/MATH-345-1920F",
+                "Fall 2020": "https://www.amherst.edu/academiclife/departments/courses/2021F/MATH/MATH-345-2021F",
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/MATH/MATH-345-2122F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-345-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-345-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-345-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-345-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Robert L. Benedetto",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/rlbenedetto",
+                    "course_location": "SMUD 205",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=345&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-350-2526F",
+            "course_name": "Groups, Rings, and Fields",
+            "course_acronyms": [
+                "MATH-350"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "A brief consideration of properties of sets, mappings, and the system of integers, followed by an introduction to the theory of groups and rings including the principal theorems on homomorphisms and the related quotient structures; integral domains, fields, polynomial rings. MATH 211 and either MATH 271 or 272, or consent of the instructor is required. Students with a grade of B+ or lower in linear algebra are encouraged to take another 200-level course with proofs before taking MATH 350. Limited to 25 students per section. How to handle overenrollment: Preference is given to seniors who have taken MATH 355. Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class or take-home quizzes or exams, May include in-class group work. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-350-1112S",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-350-1213S",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-350-1314S",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-350-1415F",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-350-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-350-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-350-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-350-1617S",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-350-1718F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-350-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-350-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-350-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-350-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-350-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-350-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-350-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "SMUD 204",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=350&section1=01",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:25 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:25 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "11:35 AM",
+                    "fri_end_time": "12:25 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "SMUD 204",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=350&section1=02",
+                    "mon_start_time": "1:30 PM",
+                    "mon_end_time": "2:20 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "1:30 PM",
+                    "wed_end_time": "2:20 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "1:30 PM",
+                    "fri_end_time": "2:20 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-355-2526F",
+            "course_name": "Introduction to Analysis",
+            "course_acronyms": [
+                "MATH-355"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "Completeness of the real numbers; topology of the real line including the Bolzano-Weierstrass and Heine-Borel theorems; sequences, properties of continuous functions on sets; infinite series, uniform convergence. MATH 211 and either MATH 271 or 272, or consent of the instructor is required. Students with a grade of B+ or lower in linear algebra are encouraged to take another 200-level course with proofs before taking MATH 355. Limited to 25 students per section. How to handle overenrollment: Preference is given to seniors who have taken MATH 350. Students may be moved to another section that fits their course schedule. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class or take-home quizzes or exams, May include in-class group work. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-355-1112S",
+                "Spring 2013": "https://www.amherst.edu/academiclife/departments/courses/1213S/MATH/MATH-355-1213S",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-355-1314F",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-355-1314S",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/MATH/MATH-355-1415F",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-355-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/MATH/MATH-355-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-355-1516S",
+                "Spring 2017": "https://www.amherst.edu/academiclife/departments/courses/1617S/MATH/MATH-355-1617S",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/MATH/MATH-355-1718F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-355-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/MATH/MATH-355-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-355-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-355-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-355-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/MATH/MATH-355-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-355-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Harris B. Daniels",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/hdaniels",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=355&section1=01",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": "Fanhui Xu",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/fxu",
+                    "course_location": "SMUD 204",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=355&section1=02",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Michael C. Ching",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/mching",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=355&section1=03",
+                    "mon_start_time": "1:30 PM",
+                    "mon_end_time": "2:20 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "1:30 PM",
+                    "wed_end_time": "2:20 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "1:30 PM",
+                    "fri_end_time": "2:20 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+            "course_name": "Probability",
+            "course_acronyms": [
+                "MATH-360",
+                "STAT-360"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F",
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "This course explores the nature of probability and its use in modeling real world phenomena. There are two explicit complementary goals: to explore probability theory and its use in applied settings, and to learn parallel analytic and empirical problem-solving skills. The course begins with the development of an intuitive feel for probabilistic thinking, based on the simple yet subtle idea of counting. It then evolves toward the rigorous study of discrete and continuous probability spaces, independence, conditional probability, expectation, and variance. Distributions covered include the binomial, hypergeometric, Poisson, normal, Gamma, Beta, multinomial, and bivariate normal. Other topics include generating functions, order statistics, and limit theorems. Requisite: Student has completed or is in the process of completing MATH 121, or has MATH 211 placement, or has consent of the instructor.\u00a0Limited to 24 students. How to handle overenrollment: For the Fall, priority for rising sophomores and Statistics majors, then Mathematics majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, quizzes or exams, group work, use of computational software Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-360-1112F",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-360-1213F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-360-1314F",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/STAT/STAT-360-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/STAT/STAT-360-1516F",
+                "Fall 2016": "https://www.amherst.edu/academiclife/departments/courses/1617F/STAT/STAT-360-1617F",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/STAT/STAT-360-1718F",
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/STAT/STAT-360-1819F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/STAT/STAT-360-1920F",
+                "Fall 2020": "https://www.amherst.edu/academiclife/departments/courses/2021F/STAT/STAT-360-2021F",
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/STAT/STAT-360-2122F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-360-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-360-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-360-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-360-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Katherine E. Moore",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/kmoore",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=360&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-450-2526F",
+            "course_name": "Measure Theory and Integration",
+            "course_acronyms": [
+                "MATH-450"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "An introduction to Lebesgue measure and integration; topology of the real numbers; inner and outer measures and measurable set; the approximation of continuous and measurable functions; the Lebesgue integral and associated convergence theorems; the Fundamental Theorem of Calculus. MATH 355 or consent of the instructor is required. Limited to 25 students. How to handle overenrollment: Preference is given to seniors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Problem sets, In-class quizzes or exams, Take-home exams. Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2012": "https://www.amherst.edu/academiclife/departments/courses/1112S/MATH/MATH-450-1112S",
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-450-1314S",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/MATH/MATH-450-1516S",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/MATH/MATH-450-2324S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-450-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Jenna Zomback",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/jzomback",
+                    "course_location": "SMUD 014",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=MATH&course1=450&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "1:05 PM",
+                    "tue_end_time": "2:20 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "1:05 PM",
+                    "thu_end_time": "2:20 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-498-2526F",
+            "course_name": "Senior Departmental Honors",
+            "course_acronyms": [
+                "MATH-498"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F"
+            },
+            "description": "Open to seniors with the consent of the Department. Fall semester. The Department. How to handle overenrollment: null Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: Quantitative work, Writing intensive, Independent research. Divisions: Science & Mathematics",
+            "keywords": [],
+            "offerings": {
+                "Fall 2011": null,
+                "Fall 2012": null,
+                "Fall 2013": null,
+                "Fall 2014": null,
+                "Fall 2015": null,
+                "Fall 2016": null,
+                "Fall 2017": null,
+                "Fall 2018": null,
+                "Fall 2019": null,
+                "Fall 2020": null,
+                "Fall 2021": null,
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/MATH/MATH-498-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/MATH/MATH-498-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/MATH/MATH-498-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-498-2526F"
+            },
+            "section_information": {}
+        }
+    ],
+    "Statistics": [
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-108-2526F",
+            "course_name": "Statistical Ethics and Institutions",
+            "course_acronyms": [
+                "STAT-108"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "This course will provide a rigorous presentation of fundamental statistical principles and ethics. We will discuss standards for relationships between statisticians and policymakers, researchers, the press, and other institutions, as well as the standards for interactions between statisticians and their employers/clients, colleagues and research subjects. The course will explore how the interplay of institutions (e.g., organizations, systems, laws, codes of professional ethics) and the broader sociopolitical culture affect the production of reliable, high quality statistics. Students will also explore the implications of statistical principles and ethics for the operation of national, regional, and international official statistical systems. In addition, we will investigate the proper place of official statistics within a government system that operates with separate branches. Students will gain a strong foundation in international statistical principles and professional ethics as well as an understanding and the tools to assess the quality of the statistics they use. The course is designed to make students responsible and effective supporters of reliable, high quality statistics in their professions. Students will particularly learn how to assess the quality of official statistics produced by governments and how to identify areas for improvement. Examples, case studies, readings from statistical practice, and discussion will provide a full appreciation of real world applications. The course is also intended for non-majors interested in an introduction to quantitative social science and the use of data in public policy. Limited to 30 students. Fall semester. Visiting Scholar Andreas Georgiou. How to handle overenrollment: Preference is given to students who are Seniors and Juniors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: term papers, in class final and midterm, group project and class presentation, problem sets, readings, class attendance and class discussion. Divisions: Science & Mathematics",
+            "keywords": [],
+            "offerings": {
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/ECON/ECON-108-1819F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/ECON/ECON-108-1920F",
+                "Spring 2020": null,
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/STAT/STAT-108-2122F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-108-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-108-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-108-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-108-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Andreas V. Georgiou",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/avgeorgiou83",
+                    "course_location": "SMUD 205",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=108&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "2:35 PM",
+                    "thu_end_time": "5:25 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-135-2526F",
+            "course_name": "Introduction to Statistics via Modeling",
+            "course_acronyms": [
+                "STAT-135"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "This course is an introductory statistics course that uses modeling as a unifying framework. The course provides a basic foundation in statistics with a major emphasis on constructing models from data. Students learn important concepts of statistics by mastering powerful and relatively advanced statistical techniques using computational tools. Topics include descriptive and inferential statistics, visualization, probability, study design, and multiple regression. Students who have taken a semester of calculus (MATH 111 or higher, or equivalent placement) or who are majoring or planning to major in mathematics and/or statistics should take this course instead of STAT 111. (Students who have taken STAT 111, STAT136, or PSYC 122 may not also receive credit for STAT. Students who have taken ECON 360/361 will be admitted only with consent of the instructor.) No prior experience with statistical software is expected. Requisite: Student has completed or is in process of completing MATH 111 or has placement in MATH 121 or above, or has statistics placement of STAT135 or has consent of the instructor.\u00a0Limited to 24 students per section. Fall and spring semesters. The Department. How to handle overenrollment: If Overenrolled: For the Fall, priority for rising sophomores. For the Spring, priority for first-year students, then sophomores. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, homework assignments/problem sets, quizzes or exams, group work, use of computational software; may include projects Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2014": "https://www.amherst.edu/academiclife/departments/courses/1314S/MATH/MATH-135-1314S",
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/MATH/MATH-135-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/STAT/STAT-135-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/STAT/STAT-135-1516S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-135-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/STAT/STAT-135-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-135-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/STAT/STAT-135-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-135-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-135-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-135-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=135&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "02": {
+                    "professor_name": null,
+                    "professor_link": null,
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=135&section1=02",
+                    "mon_start_time": "10:05 AM",
+                    "mon_end_time": "10:55 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "10:05 AM",
+                    "wed_end_time": "10:55 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "10:05 AM",
+                    "fri_end_time": "10:55 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                },
+                "03": {
+                    "professor_name": "Brittney E. Bailey",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/bebailey",
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=135&section1=03",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "2:35 PM",
+                    "tue_end_time": "3:50 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "2:35 PM",
+                    "thu_end_time": "3:50 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-230-2526F",
+            "course_name": "Intermediate Statistics",
+            "course_acronyms": [
+                "STAT-230"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "This course is an intermediate applied statistics course that builds on the statistical data analysis methods introduced in STAT 111, STAT 135, or STAT 136. Students will learn how to pose a statistical question, perform appropriate statistical analysis of the data, and properly interpret and communicate their results. Emphasis will be placed on the use of statistical software, data wrangling, model fitting, and assessment. Topics covered will include ethics, experimental design, resampling approaches, analysis of variance models, multiple regression, model selection, and logistic regression. No prior experience with statistical software is expected Requisite: Student has completed or is in process of completing any of the following course(s): STAT 111 or MATH/STAT 135 or STAT 136 or PSYC 122 or has a STAT 230 placement or has consent of the instructor. Limited to 24 students. Four spots reserved for incoming first-year students in each Fall section. Fall and Spring semester. The Department. How to handle overenrollment: For the Fall, priority for rising sophomores. For the Spring, priority for sophomores. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, quizzes or exams, group work, use of computational software, projects Cost: $61.99-193.99  ? Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2015": "https://www.amherst.edu/academiclife/departments/courses/1415S/STAT/STAT-230-1415S",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/STAT/STAT-230-1516F",
+                "Spring 2016": "https://www.amherst.edu/academiclife/departments/courses/1516S/STAT/STAT-230-1516S",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-230-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/STAT/STAT-230-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-230-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/STAT/STAT-230-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-230-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-230-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-230-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Pamela B. Matheson",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/pmatheson",
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=230&section1=01",
+                    "mon_start_time": "1:30 PM",
+                    "mon_end_time": "2:20 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "1:30 PM",
+                    "wed_end_time": "2:20 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "1:30 PM",
+                    "fri_end_time": "2:20 PM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-231-2526F",
+            "course_name": "Data Science",
+            "course_acronyms": [
+                "STAT-231"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "Computational data analysis is an essential part of modern statistics and data science. This course provides a practical foundation for students to think with data by participating in the entire data analysis cycle. Students will generate statistical questions and then address them through data acquisition, cleaning, transforming, modeling, and interpretation. This course will introduce students to tools for data management, wrangling, and databases that are common in data science and will apply those tools to real-world applications. Students will undertake practical analyses of large, complex, and messy data sets leveraging modern computing tools. Requisite: Student has completed or is in the process of completing STAT 111, or MATH/STAT 135 or STAT 136 or PSYC 122, or has a STAT 230 placement, and COSC 111 or 112, or has consent of the instructor How to handle overenrollment: For the Fall, priority for rising sophomores and Statistics majors. For the Spring, priority for sophomores and Statistics majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, projects, group work, use of computational software, may include quizzes or exams Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-231-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/STAT/STAT-231-2223S",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-231-2324F",
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/STAT/STAT-231-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-231-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-231-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-231-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Amy S. Wagaman",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/awagaman",
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=231&section1=01",
+                    "mon_start_time": "11:35 AM",
+                    "mon_end_time": "12:50 PM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "11:35 AM",
+                    "wed_end_time": "12:50 PM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+            "course_name": "Probability",
+            "course_acronyms": [
+                "MATH-360",
+                "STAT-360"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Mathematics": "https://www.amherst.edu/academiclife/departments/mathematics/courses/2526F",
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "This course explores the nature of probability and its use in modeling real world phenomena. There are two explicit complementary goals: to explore probability theory and its use in applied settings, and to learn parallel analytic and empirical problem-solving skills. The course begins with the development of an intuitive feel for probabilistic thinking, based on the simple yet subtle idea of counting. It then evolves toward the rigorous study of discrete and continuous probability spaces, independence, conditional probability, expectation, and variance. Distributions covered include the binomial, hypergeometric, Poisson, normal, Gamma, Beta, multinomial, and bivariate normal. Other topics include generating functions, order statistics, and limit theorems. Requisite: Student has completed or is in the process of completing MATH 121, or has MATH 211 placement, or has consent of the instructor.\u00a0Limited to 24 students. How to handle overenrollment: For the Fall, priority for rising sophomores and Statistics majors, then Mathematics majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, quizzes or exams, group work, use of computational software Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2011": "https://www.amherst.edu/academiclife/departments/courses/1112F/MATH/MATH-360-1112F",
+                "Fall 2012": "https://www.amherst.edu/academiclife/departments/courses/1213F/MATH/MATH-360-1213F",
+                "Fall 2013": "https://www.amherst.edu/academiclife/departments/courses/1314F/MATH/MATH-360-1314F",
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/STAT/STAT-360-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/STAT/STAT-360-1516F",
+                "Fall 2016": "https://www.amherst.edu/academiclife/departments/courses/1617F/STAT/STAT-360-1617F",
+                "Fall 2017": "https://www.amherst.edu/academiclife/departments/courses/1718F/STAT/STAT-360-1718F",
+                "Fall 2018": "https://www.amherst.edu/academiclife/departments/courses/1819F/STAT/STAT-360-1819F",
+                "Fall 2019": "https://www.amherst.edu/academiclife/departments/courses/1920F/STAT/STAT-360-1920F",
+                "Fall 2020": "https://www.amherst.edu/academiclife/departments/courses/2021F/STAT/STAT-360-2021F",
+                "Fall 2021": "https://www.amherst.edu/academiclife/departments/courses/2122F/STAT/STAT-360-2122F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-360-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-360-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-360-2425F",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-360-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Katherine E. Moore",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/kmoore",
+                    "course_location": "SMUD 207",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=360&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-456-2526F",
+            "course_name": "Generalized Linear Models and Mixed Models",
+            "course_acronyms": [
+                "STAT-456"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "Linear regression and logistic regression are powerful tools for statistical analysis, but they are only a subset of a broader class of generalized linear models. This course will explore the theory behind and practical application of generalized linear models for responses that do not have a normal distribution, including counts, categories, and proportions. If time allows, we will also explore extensions of these models for dependent responses such as repeated measures over time. Requisite: Student has completed or is in the process of completing: STAT 230 and STAT/MATH 360.\u00a0Limited to 20 students. How to handle overenrollment: Priority for Statistics majors Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, reading research articles, group work, use of computational software, projects Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/STAT/STAT-456-2223S",
+                "Spring 2025": "https://www.amherst.edu/academiclife/departments/courses/2425S/STAT/STAT-456-2425S",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-456-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Brittney E. Bailey",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/bebailey",
+                    "course_location": "WEBS 102",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=456&section1=01",
+                    "mon_start_time": null,
+                    "mon_end_time": null,
+                    "tue_start_time": "1:05 PM",
+                    "tue_end_time": "2:20 PM",
+                    "wed_start_time": null,
+                    "wed_end_time": null,
+                    "thu_start_time": "1:05 PM",
+                    "thu_end_time": "2:20 PM",
+                    "fri_start_time": null,
+                    "fri_end_time": null,
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-490-2526F",
+            "course_name": "Special Topics",
+            "course_acronyms": [
+                "STAT-490"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "Fall and spring semesters. The Department. How to handle overenrollment: null Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, projects, use of computational software Divisions: Science & Mathematics",
+            "keywords": [],
+            "offerings": {
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-490-2223F",
+                "Spring 2023": "https://www.amherst.edu/academiclife/departments/courses/2223S/STAT/STAT-490-2223S",
+                "Fall 2023": null,
+                "Spring 2024": "https://www.amherst.edu/academiclife/departments/courses/2324S/STAT/STAT-490-2324S",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-490-2425F",
+                "Spring 2025": null,
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-490-2526F"
+            },
+            "section_information": {}
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-495-2526F",
+            "course_name": "Advanced Data Analysis",
+            "course_acronyms": [
+                "STAT-495"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "Our world is awash in data. To allow decisions to be made based on evidence, there is a need for statisticians to be able to make sense of the data around us and communicate their findings. In this course, students will be exposed to advanced statistical methods and will undertake the analysis and interpretation of complex and real-world datasets that go beyond textbook problems. Course topics will vary from year to year depending on the instructor and selected case studies. Potential topics include but are not limited to: visualization techniques to summarize and display high dimensional data, advanced topics in design and linear regression, ethics, selected topics in machine learning and data mining, nonparametric analysis, spatial data, and analysis of network data. Students will enhance their capacity to think and compute with data, undertake and assess analyses, and effectively communicate their results. How to handle overenrollment: Priority for Statistics majors. Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, problem sets, quizzes or exams, group work, use of computational software, research paper (project), reflection and integration of prior coursework, and oral presentations Quantitative ReasoningDivisions: Science & Mathematics",
+            "keywords": [
+                "Quantitative Reasoning"
+            ],
+            "offerings": {
+                "Fall 2014": "https://www.amherst.edu/academiclife/departments/courses/1415F/STAT/STAT-495-1415F",
+                "Fall 2015": "https://www.amherst.edu/academiclife/departments/courses/1516F/STAT/STAT-495-1516F",
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-495-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-495-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-495-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-495-2526F"
+            },
+            "section_information": {
+                "01": {
+                    "professor_name": "Amy S. Wagaman",
+                    "professor_link": "https://www.amherst.edu/people/facstaff/awagaman",
+                    "course_location": "SMUD 006",
+                    "course_materials_links": "https://www.bkstr.com/webApp/discoverShop?merfnbr=2350&termDir=2526F&division1=&department1=STAT&course1=495&section1=01",
+                    "mon_start_time": "9:00 AM",
+                    "mon_end_time": "9:50 AM",
+                    "tue_start_time": null,
+                    "tue_end_time": null,
+                    "wed_start_time": "9:00 AM",
+                    "wed_end_time": "9:50 AM",
+                    "thu_start_time": null,
+                    "thu_end_time": null,
+                    "fri_start_time": "9:00 AM",
+                    "fri_end_time": "9:50 AM",
+                    "sat_start_time": null,
+                    "sat_end_time": null,
+                    "sun_start_time": null,
+                    "sun_end_time": null
+                }
+            }
+        },
+        {
+            "course_url": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-498-2526F",
+            "course_name": "Senior Honors",
+            "course_acronyms": [
+                "STAT-498"
+            ],
+            "divisions": [
+                "Science & Mathematics"
+            ],
+            "departments": {
+                "Statistics": "https://www.amherst.edu/academiclife/departments/statistics/courses/2526F"
+            },
+            "description": "Fall semester. The Department. How to handle overenrollment: null Students who enroll in this course will likely encounter and be expected to engage in the following intellectual skills, modes of learning, and assessment: quantitative work, writing intensive, use of computational software, independent research Divisions: Science & Mathematics",
+            "keywords": [],
+            "offerings": {
+                "Fall 2022": "https://www.amherst.edu/academiclife/departments/courses/2223F/STAT/STAT-498-2223F",
+                "Fall 2023": "https://www.amherst.edu/academiclife/departments/courses/2324F/STAT/STAT-498-2324F",
+                "Fall 2024": "https://www.amherst.edu/academiclife/departments/courses/2425F/STAT/STAT-498-2425F",
+                "Fall 2025": "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-498-2526F"
+            },
+            "section_information": {}
+        }
     ]
 }

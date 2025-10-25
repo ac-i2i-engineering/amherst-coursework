@@ -28,4 +28,3 @@ scikit-learn
 whitenoise
 nltk
 beautifulsoup4==4.12.2
-sentence-transformers==3.3.1

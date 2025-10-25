@@ -619,7 +619,7 @@ def score_location_matches(
         Django QuerySet of courses to search
     scores : dict
         Dictionary mapping course IDs to scores (modified in place)
-    
+
     Notes
     -----
     Only matches terms that are likely building codes:
@@ -628,7 +628,7 @@ def score_location_matches(
     - Avoids matching pure numbers (e.g., "207" from "COSC-207")
     """
     import re
-    
+
     # Check each search term against section locations
     for term in search_terms:
         # Skip terms that are too short or are pure numbers
@@ -638,15 +638,15 @@ def score_location_matches(
         if term.isdigit():
             continue
         # Skip terms that look like course codes (e.g., "COSC-207", "math111")
-        if re.match(r'^[A-Z]{4}-?\d+[A-Z]?$', term, re.IGNORECASE):
+        if re.match(r"^[A-Z]{4}-?\d+[A-Z]?$", term, re.IGNORECASE):
             continue
-            
+
         # Match courses that have sections with this term in the location
         # This will match building codes like "SMUD", "KEEF", "WEBS", etc.
         location_matches = filtered_courses.filter(
             sections__location__icontains=term
         ).distinct()
-        
+
         for course in location_matches:
             scores[course.id] += LOCATION_MATCH_WEIGHT
 
@@ -841,12 +841,12 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     - Abbreviation expansion (e.g., "AI" -> "artificial intelligence")
     - Phrase detection for multi-word queries
     - Longer queries (>5 chars) use cosine similarity
-    
+
     Examples
     --------
     >>> filter("computer science SMUD", courses)
     # Returns computer science courses with sections in SMUD building, boosted to top
-    
+
     >>> filter("intro physics KEEF", courses)
     # Returns intro physics courses with sections in KEEF building, boosted to top
     """

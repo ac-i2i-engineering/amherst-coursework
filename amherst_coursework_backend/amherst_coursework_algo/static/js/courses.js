@@ -497,14 +497,12 @@ function getCookie(name) {
 function updateCartDisplay() {
     // Get cart data and initialize display elements
     const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
-    const cartCount = document.getElementById('cart-count');
     const cartCountHeader = document.getElementById('cart-count-header');
     const cartCredits = document.getElementById('cart-credits');
     const cartCoursesList = document.getElementById('cart-courses-list');
     
     // Update cart counters and clear existing content
-    cartCount.textContent = cart.length;
-    cartCountHeader.textContent = cart.length;
+    if (cartCountHeader) cartCountHeader.textContent = cart.length;
     if (cartCredits) cartCredits.textContent = '0';
     document.querySelectorAll('.cart-calendar-container .course-block').forEach(block => block.remove());
     if (cartCoursesList) cartCoursesList.innerHTML = '';

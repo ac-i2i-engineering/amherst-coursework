@@ -196,28 +196,40 @@ class TestFilter(TestCase):
         )
 
         courses = Course.objects.all()
-        
+
         # Test location code in query
         results = filter("SMUD", courses)
-        self.assertTrue(self.course1 in results, "Course1 should be in results for SMUD")
+        self.assertTrue(
+            self.course1 in results, "Course1 should be in results for SMUD"
+        )
         # course1 should be first due to location match
         if len(results) > 0:
-            self.assertEqual(results[0], self.course1, "Course1 should be first for SMUD")
-        
+            self.assertEqual(
+                results[0], self.course1, "Course1 should be first for SMUD"
+            )
+
         # Test different location code
         results = filter("KEEF", courses)
-        self.assertTrue(self.course2 in results, "Course2 should be in results for KEEF")
+        self.assertTrue(
+            self.course2 in results, "Course2 should be in results for KEEF"
+        )
         # course2 should be first due to location match
         if len(results) > 0:
-            self.assertEqual(results[0], self.course2, "Course2 should be first for KEEF")
-        
+            self.assertEqual(
+                results[0], self.course2, "Course2 should be first for KEEF"
+            )
+
         # Test combined search with location
         results = filter("computer SMUD", courses)
-        self.assertTrue(self.course1 in results, "Course1 should be in results for computer + SMUD")
+        self.assertTrue(
+            self.course1 in results, "Course1 should be in results for computer + SMUD"
+        )
         # course1 should be first due to both computer science match and location match
         if len(results) > 0:
-            self.assertEqual(results[0], self.course1, "Course1 should be first for computer + SMUD")
-    
+            self.assertEqual(
+                results[0], self.course1, "Course1 should be first for computer + SMUD"
+            )
+
     def test_location_no_false_positives(self):
         """Test that pure numbers don't match locations (avoid COSC-207 matching room 207)"""
         # Create a course with code containing numbers
@@ -229,7 +241,7 @@ class TestFilter(TestCase):
         code3 = CourseCode.objects.create(value="COSC-207")
         course3.departments.add(self.cs_dept)
         course3.courseCodes.set([code3])
-        
+
         # Create section in room 207
         section1 = Section.objects.create(
             section_number="01",
@@ -237,24 +249,24 @@ class TestFilter(TestCase):
             location="SMUD 207",
             professor=self.prof,
         )
-        
+
         courses = Course.objects.all()
-        
+
         # Searching for "207" should NOT give location boost
         # (it's a pure number, likely from course code)
         results = filter("207", courses)
         # course3 (COSC-207) might appear, but shouldn't get location boost
         # We can't easily test the score directly, but we verify it doesn't crash
         self.assertIsNotNone(results)
-        
+
         # Searching for "COSC-207" should match course code, not location
         results = filter("COSC-207", courses)
         self.assertTrue(course3 in results, "COSC-207 should match course code")
-        
+
         # Searching for "COSC 207" should also work
         results = filter("COSC 207", courses)
         self.assertTrue(course3 in results, "COSC 207 should match course code")
-    
+
     def test_location_building_codes_only(self):
         """Test that only building codes (3+ chars with letters) match locations"""
         # Create sections with various locations
@@ -270,22 +282,22 @@ class TestFilter(TestCase):
             location="WEBS 217",
             professor=self.prof,
         )
-        
+
         courses = Course.objects.all()
-        
+
         # Building code should match
         results = filter("SCCE", courses)
         self.assertTrue(self.course1 in results, "SCCE should match building code")
-        
+
         # Another building code
         results = filter("WEBS", courses)
         self.assertTrue(self.course2 in results, "WEBS should match building code")
-        
+
         # Short terms (< 3 chars) should not match locations
         results = filter("SC", courses)
         # Should not crash, but won't get location boost
         self.assertIsNotNone(results)
-        
+
         # Pure numbers should not match locations
         results = filter("217", courses)
         self.assertIsNotNone(results)

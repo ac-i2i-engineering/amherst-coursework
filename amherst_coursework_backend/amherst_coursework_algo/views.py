@@ -182,6 +182,7 @@ def get_cart_courses(request):
             course_info = {
                 "id": course.id,
                 "name": course.courseName,
+                "credits": course.credits,
                 "course_acronyms": [code.value for code in course.courseCodes.all()],
                 "section_information": {
                     str(section.section_number): {
@@ -232,29 +233,23 @@ def get_cart_courses(request):
 def course_details(request, course_id):
     course = get_object_or_404(
         Course.objects.prefetch_related(
-            "courseCodes", "sections", "divisions", "departments", "keywords"
+            "courseCodes",
+            "sections__professor",
+            "divisions",
+            "departments",
+            "keywords",
+            "professors",
+            "required_courses__courses__courseCodes",
+            "recommended_courses__courseCodes",
+            "corequisites__courseCodes",
+            "placement_course__courseCodes",
+            "fallOfferings",
+            "springOfferings",
+            "janOfferings",
         ),
         id=course_id,
     )
 
-    sections_data = {}
-    for section in course.sections.all():
-        sections_data[section.section_number] = {
-            "professor_name": section.professor.name if section.professor else None,
-            "professor_link": section.professor.link if section.professor else None,
-            "course_location": section.location,
-            # Add meeting times for each day
-            "mon_start_time": format_section_time(section.monday_start_time),
-            "mon_end_time": format_section_time(section.monday_end_time),
-            # ... repeat for other days ...
-        }
-
-    context = {
-        "course": course,
-        "sections": sections_data,
-    }
-
-    # Change this line to use course_details_partial.html instead
     return render(
         request,
         "amherst_coursework_algo/course_details_partial.html",

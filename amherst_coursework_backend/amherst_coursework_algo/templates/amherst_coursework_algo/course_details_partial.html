@@ -61,18 +61,210 @@
 <!-- course_details_partial.html -->
 <div class="panel-details">
     <h2>{{ course.courseName }}</h2>
+    
+    <!-- Course Codes and Basic Info -->
+    <div style="margin-bottom: 15px;">
+        <p style="margin: 5px 0;">
+            <strong>Course Code(s):</strong> 
+            {% for code in course.courseCodes.all %}
+                <span style="background-color: #e1d7f1; padding: 3px 8px; border-radius: 3px; margin-right: 5px;">{{ code.value }}</span>
+            {% endfor %}
+        </p>
+        <p style="margin: 5px 0;"><strong>Credits:</strong> {{ course.credits }}</p>
+        {% if course.departments.all %}
+            <p style="margin: 5px 0;">
+                <strong>Department(s):</strong> 
+                {% for dept in course.departments.all %}
+                    {{ dept.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+        {% if course.divisions.all %}
+            <p style="margin: 5px 0;">
+                <strong>Division(s):</strong> 
+                {% for div in course.divisions.all %}
+                    {{ div.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Links -->
     <div class="panel-links" style="display: block; margin-bottom: 20px; font-style: none;">
-        <span style="margin-right: 5px;"><i class="fa-solid fa-circle-info" style="color: #9556b0"></i>
+        <span style="margin-right: 15px;"><i class="fa-solid fa-circle-info" style="color: #9556b0"></i>
         {% if course.courseLink %}
-            <a href="{{ course.courseLink }}" target="_blank" style="color: #5f4d73; text-decoration: none;">Course Link</a>
+            <a href="{{ course.courseLink }}" target="_blank" style="color: #5f4d73; text-decoration: none;">Course Catalog</a>
+        {% else %}
+            <span style="color: #999;">No catalog link</span>
         {% endif %}
         </span>
         <span><i class="fa-solid fa-book" style="color: #9556b0"></i>
         {% if course.courseMaterialsLink %}
-            <a href="{{ course.courseMaterialsLink }}" target="_blank" style="color: #5f4d73; text-decoration: none;">Course Materials Link</a>
+            <a href="{{ course.courseMaterialsLink }}" target="_blank" style="color: #5f4d73; text-decoration: none;">Course Materials</a>
+        {% else %}
+            <span style="color: #999;">No materials link</span>
         {% endif %}
         </span>
     </div>
+
+    <!-- Prerequisites Section -->
+    {% if course.prereqDescription or course.required_courses.all or course.recommended_courses.all or course.corequisites.all or course.placement_course %}
+        <div class="description-section" style="margin-bottom: 20px;">
+            <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Prerequisites & Requirements:</h3>
+            
+            {% if course.prereqDescription %}
+                <p style="margin: 10px 0;"><strong>Description:</strong> {{ course.prereqDescription }}</p>
+            {% endif %}
+            
+            {% if course.required_courses.all %}
+                <div style="margin: 10px 0;">
+                    <strong>Required Prerequisites:</strong>
+                    <ul style="margin: 5px 0 5px 20px;">
+                    {% for prereq_set in course.required_courses.all %}
+                        <li>
+                            {% for prereq in prereq_set.courses.all %}
+                                {{ prereq.courseName }}
+                                {% if prereq.courseCodes.all %}
+                                    ({% for code in prereq.courseCodes.all %}{{ code.value }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                                {% endif %}
+                                {% if not forloop.last %} <strong>OR</strong> {% endif %}
+                            {% endfor %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if course.recommended_courses.all %}
+                <div style="margin: 10px 0;">
+                    <strong>Recommended (but not required):</strong>
+                    <ul style="margin: 5px 0 5px 20px;">
+                    {% for rec in course.recommended_courses.all %}
+                        <li>
+                            {{ rec.courseName }}
+                            {% if rec.courseCodes.all %}
+                                ({% for code in rec.courseCodes.all %}{{ code.value }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if course.corequisites.all %}
+                <div style="margin: 10px 0;">
+                    <strong>Corequisites (must take concurrently):</strong>
+                    <ul style="margin: 5px 0 5px 20px;">
+                    {% for coreq in course.corequisites.all %}
+                        <li>
+                            {{ coreq.courseName }}
+                            {% if coreq.courseCodes.all %}
+                                ({% for code in coreq.courseCodes.all %}{{ code.value }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if course.placement_course %}
+                <p style="margin: 10px 0;">
+                    <strong>Placement Requirement:</strong> 
+                    {{ course.placement_course.courseName }}
+                    {% if course.placement_course.courseCodes.all %}
+                        ({% for code in course.placement_course.courseCodes.all %}{{ code.value }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                    {% endif %}
+                </p>
+            {% endif %}
+            
+            {% if course.professor_override %}
+                <p style="margin: 10px 0; color: #666; font-style: italic;">
+                    <i class="fa-solid fa-info-circle"></i> Professor may override prerequisites
+                </p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Enrollment Information -->
+    {% if course.overallCap > 0 or course.freshmanCap > 0 or course.sophomoreCap > 0 or course.juniorCap > 0 or course.seniorCap > 0 or course.prefForMajor or course.enrollmentText != "Contact the professor for enrollment details." %}
+        <div class="description-section" style="margin-bottom: 20px;">
+            <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Enrollment Information:</h3>
+            
+            {% if course.overallCap > 0 %}
+                <p style="margin: 10px 0;"><strong>Overall Enrollment Cap:</strong> {{ course.overallCap }} students</p>
+            {% endif %}
+            
+            {% if course.freshmanCap > 0 or course.sophomoreCap > 0 or course.juniorCap > 0 or course.seniorCap > 0 %}
+                <div style="margin: 10px 0;">
+                    <strong>Class Year Caps:</strong>
+                    <ul style="margin: 5px 0 5px 20px;">
+                        {% if course.freshmanCap > 0 %}<li>Freshmen: {{ course.freshmanCap }}</li>{% endif %}
+                        {% if course.sophomoreCap > 0 %}<li>Sophomores: {{ course.sophomoreCap }}</li>{% endif %}
+                        {% if course.juniorCap > 0 %}<li>Juniors: {{ course.juniorCap }}</li>{% endif %}
+                        {% if course.seniorCap > 0 %}<li>Seniors: {{ course.seniorCap }}</li>{% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% if course.prefForMajor %}
+                <p style="margin: 10px 0; color: #9556b0;">
+                    <i class="fa-solid fa-star"></i> <strong>Priority given to majors</strong>
+                </p>
+            {% endif %}
+            
+            {% if course.enrollmentText and course.enrollmentText != "Contact the professor for enrollment details." %}
+                <p style="margin: 10px 0;"><strong>Enrollment Details:</strong> {{ course.enrollmentText }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Keywords/Tags -->
+    {% if course.keywords.all %}
+        <div class="description-section" style="margin-bottom: 20px;">
+            <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Course Tags:</h3>
+            <div style="margin: 10px 0;">
+                {% for keyword in course.keywords.all %}
+                    <span style="display: inline-block; background-color: #f0f0f0; padding: 4px 10px; border-radius: 12px; margin: 3px; font-size: 0.9em;">
+                        {{ keyword.name }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Course Offerings -->
+    {% if course.fallOfferings.all or course.springOfferings.all or course.janOfferings.all %}
+        <div class="description-section" style="margin-bottom: 20px;">
+            <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">When Offered:</h3>
+            <div style="margin: 10px 0;">
+                {% if course.fallOfferings.all %}
+                    <p style="margin: 5px 0;">
+                        <strong>Fall:</strong> 
+                        {% for year in course.fallOfferings.all %}
+                            {{ year.year }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if course.springOfferings.all %}
+                    <p style="margin: 5px 0;">
+                        <strong>Spring:</strong> 
+                        {% for year in course.springOfferings.all %}
+                            {{ year.year }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if course.janOfferings.all %}
+                    <p style="margin: 5px 0;">
+                        <strong>January Term:</strong> 
+                        {% for year in course.janOfferings.all %}
+                            {{ year.year }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
     <div class="course-description">
         {% with desc=course.courseDescription %}
             <!-- Main Description -->
@@ -144,35 +336,47 @@
     <div class="sections-container">
         <h3 style="background-color: #e1d7f1; padding: 5px; font-weight: normal; font-family:'TiemposHeadline', Georgia, serif;">Course Sections:</h3>
         {% for section in course.sections.all %}
-            <div class="section-card">
-                <h4>Section {{ section.section_number }} - {{ section.professor.name }}</h4>
-                <p><strong>Location:</strong> {{ section.location }}</p>
-                <div class="meeting-times">
-                    {% if section.monday_start_time %}
-                        <p>Monday: {{ section.monday_start_time|time:"g:i A" }} - {{ section.monday_end_time|time:"g:i A" }}</p>
+            <div class="section-card" style="border: 1px solid #e1d7f1; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                <h4 style="margin-top: 0;">
+                    Section {{ section.section_number }} - 
+                    {% if section.professor.link %}
+                        <a href="{{ section.professor.link }}" target="_blank" style="color: #9556b0; text-decoration: none;">
+                            {{ section.professor.name }} <i class="fa-solid fa-external-link-alt" style="font-size: 0.8em;"></i>
+                        </a>
+                    {% else %}
+                        {{ section.professor.name }}
                     {% endif %}
-                    {% if section.tuesday_start_time %}
-                        <p>Tuesday: {{ section.tuesday_start_time|time:"g:i A" }} - {{ section.tuesday_end_time|time:"g:i A" }}</p>
-                    {% endif %}
-                    {% if section.wednesday_start_time %}
-                        <p>Wednesday: {{ section.wednesday_start_time|time:"g:i A" }} - {{ section.wednesday_end_time|time:"g:i A" }}</p>
-                    {% endif %}
-                    {% if section.thursday_start_time %}
-                        <p>Thursday: {{ section.thursday_start_time|time:"g:i A" }} - {{ section.thursday_end_time|time:"g:i A" }}</p>
-                    {% endif %}
-                    {% if section.friday_start_time %}
-                        <p>Friday: {{ section.friday_start_time|time:"g:i A" }} - {{ section.friday_end_time|time:"g:i A" }}</p>
-                    {% endif %}                  
-                    {% if section.saturday_start_time %}
-                        <p>Saturday: {{ section.saturday_start_time|time:"g:i A" }} - {{ section.saturday_end_time|time:"g:i A" }}</p>
-                    {% endif %}
-                    {% if section.sunday_start_time %}
-                        <p>Sunday: {{ section.sunday_start_time|time:"g:i A" }} - {{ section.sunday_end_time|time:"g:i A" }}</p>
-                    {% endif %}
+                </h4>
+                <p style="margin: 5px 0;"><strong>Location:</strong> {{ section.location }}</p>
+                <div class="meeting-times" style="margin-top: 10px;">
+                    <strong>Meeting Times:</strong>
+                    <ul style="margin: 5px 0 0 20px; list-style: none; padding: 0;">
+                        {% if section.monday_start_time %}
+                            <li style="margin: 3px 0;">📅 Monday: {{ section.monday_start_time|time:"g:i A" }} - {{ section.monday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                        {% if section.tuesday_start_time %}
+                            <li style="margin: 3px 0;">📅 Tuesday: {{ section.tuesday_start_time|time:"g:i A" }} - {{ section.tuesday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                        {% if section.wednesday_start_time %}
+                            <li style="margin: 3px 0;">📅 Wednesday: {{ section.wednesday_start_time|time:"g:i A" }} - {{ section.wednesday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                        {% if section.thursday_start_time %}
+                            <li style="margin: 3px 0;">📅 Thursday: {{ section.thursday_start_time|time:"g:i A" }} - {{ section.thursday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                        {% if section.friday_start_time %}
+                            <li style="margin: 3px 0;">📅 Friday: {{ section.friday_start_time|time:"g:i A" }} - {{ section.friday_end_time|time:"g:i A" }}</li>
+                        {% endif %}                  
+                        {% if section.saturday_start_time %}
+                            <li style="margin: 3px 0;">📅 Saturday: {{ section.saturday_start_time|time:"g:i A" }} - {{ section.saturday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                        {% if section.sunday_start_time %}
+                            <li style="margin: 3px 0;">📅 Sunday: {{ section.sunday_start_time|time:"g:i A" }} - {{ section.sunday_end_time|time:"g:i A" }}</li>
+                        {% endif %}
+                    </ul>
                 </div><!-- Close meeting-times -->
             </div><!-- Close section-card -->
         {% empty %}
-            <p>No sections available for this course.</p>
+            <p style="color: #666; font-style: italic;">No sections available for this course.</p>
         {% endfor %}
     </div>
     <!-- Other course details -->

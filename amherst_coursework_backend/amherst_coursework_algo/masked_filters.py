@@ -46,6 +46,7 @@ from nltk.corpus import stopwords
 
 courses = []
 
+
 # =============================================================================
 # Constants
 # =============================================================================
@@ -72,8 +73,8 @@ COURSE_CODE_EXACT_WEIGHT = 300
 DEPARTMENT_CODE_WEIGHT = 150
 """Weight applied to matches in department codes (e.g., 'COSC')"""
 
-DIVISION_WEIGHT = 15
-"""Weight applied to matches in academic division names (e.g., 'Science')"""
+DIVISION_WEIGHT = 8
+"""Weight applied to matches in academic division names (e.g., 'Science') - reduced to prevent generic matches"""
 
 KEYWORD_WEIGHT = 70
 """Weight applied to matches in course keywords/tags"""
@@ -87,14 +88,17 @@ PROFESSOR_WEIGHT = 130
 HALF_COURSE_WEIGHT = 200
 """Additional weight applied when 'half' appears in query and course is half-credit"""
 
-SIMILARITY_WEIGHT = 180
-"""Multiplier applied to cosine similarity scores for text matching"""
+SIMILARITY_WEIGHT = 120
+"""Multiplier applied to TF-IDF cosine similarity scores for text matching"""
 
 PHRASE_MATCH_WEIGHT = 80
 """Additional weight applied when a multi-word phrase appears together in course text"""
 
-SCORE_CUTOFF = 0.20
+SCORE_CUTOFF = 0.25
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
+
+MAX_RESULTS = 100
+"""Maximum number of results to return (prevents overwhelming users with too many options)"""
 
 # Common abbreviations and their expansions for semantic matching
 ABBREVIATION_MAP = {
@@ -107,6 +111,16 @@ ABBREVIATION_MAP = {
     "nn": "neural network",
     "cnn": "convolutional neural network",
     "rnn": "recurrent neural network",
+}
+
+# Keyword synonyms for better matching
+KEYWORD_SYNONYMS = {
+    "coding": ["programming", "computer science", "software"],
+    "code": ["programming", "computer science"],
+    "climate": ["environmental", "climate change", "global warming"],
+    "environment": ["environmental", "climate", "ecology"],
+    "film": ["cinema", "movie"],
+    "movies": ["film", "cinema"],
 }
 
 # Initialize stopwords for English
@@ -231,7 +245,7 @@ def prepare_course_text(course) -> str:
 
 def compute_similarity_scores(query: str, information: List[str]) -> List[float]:
     """
-    Compute cosine similarity scores between a query and a list of information.
+    Compute TF-IDF cosine similarity scores between a query and a list of information.
 
     Parameters
     ----------
@@ -318,6 +332,43 @@ def expand_abbreviations(text: str) -> str:
         if re.search(pattern, expanded, re.IGNORECASE):
             # Add abbreviation after the full term
             expanded = re.sub(pattern, f"{full} {abbr}", expanded, flags=re.IGNORECASE)
+
+    return expanded
+
+
+def expand_synonyms(text: str) -> str:
+    """
+    Expand keywords with their synonyms for better matching.
+
+    Parameters
+    ----------
+    text : str
+        Input text that may contain keywords
+
+    Returns
+    -------
+    str
+        Text with synonyms added
+
+    Examples
+    --------
+    >>> expand_synonyms("I want to learn coding")
+    "I want to learn coding programming computer science software"
+    """
+    import re
+
+    expanded = text
+    text_lower = text.lower()
+
+    # Add synonyms for matching keywords
+    for keyword, synonyms in KEYWORD_SYNONYMS.items():
+        pattern = r"\b" + re.escape(keyword) + r"\b"
+        if re.search(pattern, text_lower):
+            # Add synonyms after the keyword
+            synonym_text = " ".join(synonyms)
+            expanded = re.sub(
+                pattern, f"{keyword} {synonym_text}", expanded, flags=re.IGNORECASE
+            )
 
     return expanded
 
@@ -524,7 +575,7 @@ def score_similarity(
     search_query: str, expanded_query: str, filtered_courses, scores: dict
 ) -> None:
     """
-    Score courses based on TF-IDF cosine similarity.
+    Score courses based on TF-IDF similarity.
 
     Parameters
     ----------
@@ -543,15 +594,16 @@ def score_similarity(
             expand_abbreviations(prepare_course_text(course))
             for course in filtered_courses
         ]
-        # Use expanded query for similarity comparison
-        similarity_scores = compute_similarity_scores(expanded_query, course_texts)
-        for course, score in zip(filtered_courses, similarity_scores):
+
+        # TF-IDF similarity
+        tfidf_scores = compute_similarity_scores(expanded_query, course_texts)
+        for course, score in zip(filtered_courses, tfidf_scores):
             scores[course.id] += score * SIMILARITY_WEIGHT
 
 
-def apply_score_penalties(filtered_courses, scores: dict) -> None:
+def apply_score_penalties(filtered_courses, scores: dict, search_query: str) -> None:
     """
-    Apply penalties to scores for overly generic courses.
+    Apply penalties and bonuses to scores based on query context.
 
     Parameters
     ----------
@@ -559,13 +611,101 @@ def apply_score_penalties(filtered_courses, scores: dict) -> None:
         Django QuerySet of courses to search
     scores : dict
         Dictionary mapping course IDs to scores (modified in place)
+    search_query : str
+        Original search query for context-aware penalties
     """
+    # Keywords that should prioritize specific sciences over social sciences
+    stem_keywords = {
+        "machine",
+        "learning",
+        "algorithm",
+        "computer",
+        "programming",
+        "data",
+        "mathematics",
+        "calculus",
+        "algebra",
+        "physics",
+        "chemistry",
+        "biology",
+        "engineering",
+        "statistics",
+        "natural",
+    }
+
+    # STEM department codes
+    stem_departments = {
+        "COSC",
+        "PHYS",
+        "CHEM",
+        "BIOL",
+        "BCBP",
+        "NEUR",
+        "GEOL",
+        "ENST",
+    }
+
+    query_lower = search_query.lower()
+    # Check for STEM keywords, but be more lenient with generic "science" queries
+    is_stem_query = any(keyword in query_lower for keyword in stem_keywords)
+    is_generic_science_query = "science" in query_lower and not any(
+        k in query_lower for k in stem_keywords
+    )
+
+    # Check if query explicitly mentions social sciences
+    is_social_science_query = any(
+        term in query_lower
+        for term in [
+            "social science",
+            "sociology",
+            "anthropology",
+            "gender",
+            "sexuality",
+        ]
+    )
+
     for course in filtered_courses:
         if scores[course.id] > 0:
             num_divisions = course.divisions.count()
             if num_divisions > 3:
                 # Reduce score for courses in 4+ divisions (likely generic)
                 scores[course.id] *= 0.5
+
+            # Get course department codes
+            course_dept_codes = set(course.departments.values_list("code", flat=True))
+            is_stem_course = bool(course_dept_codes & stem_departments)
+
+            # Boost STEM courses when STEM query is detected
+            if is_stem_query and not is_social_science_query and is_stem_course:
+                scores[course.id] *= 1.3
+            # Also boost STEM courses for generic science queries (but less aggressively)
+            elif is_generic_science_query and is_stem_course:
+                scores[course.id] *= 1.5
+
+            # Additional penalty for social science courses when STEM query is detected
+            # but NOT when user explicitly searches for social sciences
+            # and NOT for generic science queries (too broad)
+            if (
+                is_stem_query
+                and not is_social_science_query
+                and not is_generic_science_query
+            ):
+                course_text = prepare_course_text(course).lower()
+                social_science_indicators = [
+                    "social science",
+                    "sociology",
+                    "anthropology",
+                    "gender studies",
+                    "women studies",
+                    "sexuality",
+                    "educational equity",
+                    "feminist studies",
+                ]
+                if any(
+                    indicator in course_text for indicator in social_science_indicators
+                ):
+                    # Strong penalty for social sciences in STEM queries
+                    scores[course.id] *= 0.25
 
 
 def filter_by_score_threshold(courses: List[Course], scores: dict) -> List[Course]:
@@ -602,6 +742,8 @@ def filter_by_score_threshold(courses: List[Course], scores: dict) -> List[Cours
             for course, score in scored_courses
             if score / highest_score >= SCORE_CUTOFF
         ]
+        # Limit to MAX_RESULTS to avoid overwhelming users
+        scored_courses = scored_courses[:MAX_RESULTS]
     else:
         scored_courses = []
 
@@ -652,8 +794,10 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     if not search_query:
         return [(course, 1.0) for course in courses]
 
-    # Expand abbreviations in the query for better matching
-    expanded_query = expand_abbreviations(search_query)
+    # Expand synonyms first (e.g., "coding" -> "coding programming computer science")
+    synonym_expanded = expand_synonyms(search_query)
+    # Then expand abbreviations
+    expanded_query = expand_abbreviations(synonym_expanded)
     search_terms = clean_query(expanded_query)
 
     # Detect meaningful phrases in the original query
@@ -668,6 +812,12 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
 
     # Initialize scores dictionary
     scores = {course.id: 0.0 for course in courses}
+
+    # Check if query is looking for intro courses
+    query_lower = search_query.lower()
+    wants_intro = any(
+        word in query_lower for word in ["intro", "introduction", "beginner", "start"]
+    )
 
     # Score each search term
     for term in search_terms:
@@ -687,6 +837,17 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
         # Score course code matches (always uses special handling)
         score_course_codes(term, filtered_courses, scores)
 
+    # Boost intro courses if query suggests beginner interest
+    if wants_intro:
+        intro_courses = filtered_courses.filter(
+            Q(courseName__icontains="introduction")
+            | Q(courseName__icontains="intro")
+            | Q(courseDescription__icontains="introductory")
+        )
+        for course in intro_courses:
+            if scores[course.id] > 0:
+                scores[course.id] *= 1.5
+
     # Score phrase matches
     score_phrase_matches(phrases, filtered_courses, scores)
 
@@ -694,7 +855,7 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     score_similarity(search_query, expanded_query, filtered_courses, scores)
 
     # Apply penalties for generic courses
-    apply_score_penalties(filtered_courses, scores)
+    apply_score_penalties(filtered_courses, scores, search_query)
 
     # Filter and sort by score threshold
     return filter_by_score_threshold(courses, scores)

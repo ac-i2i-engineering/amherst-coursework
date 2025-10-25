@@ -1,17 +1,19 @@
 # Amherst Coursework - Advanced Course Search & Planning
 
-[![Pytest + CI/CD](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml/badge.svg)](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml) [![Coverage Status](https://coveralls.io/repos/github/ac-i2i-engineering/amherst-coursework/badge.svg?branch=main)](https://coveralls.io/github/ac-i2i-engineering/amherst-coursework) ![Docs](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/sphinx.yml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Documentation Status](https://readthedocs.org/projects/amherst-coursework/badge/?version=latest)](https://amherst-coursework.readthedocs.io/en/latest/?badge=latest)
+[![Pytest + CI/CD](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml/badge.svg)](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/django.yml) [![Coverage Status](https://coveralls.io/repos/github/ac-i2i-engineering/amherst-coursework/badge.svg?branch=main)](https://coveralls.io/github/ac-i2i-engineering/amherst-coursework) ![Docs](https://github.com/ac-i2i-engineering/amherst-coursework/actions/workflows/sphinx.yml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Amherst Coursework is a sophisticated web application that provides Amherst College students and faculty with an intuitive, advanced interface for course search and schedule planning. Built with Django and powered by intelligent search algorithms, it transforms the course selection experience with semantic search, conflict detection, and visual schedule management.
+Amherst Coursework is a sophisticated web application that provides Amherst College students and faculty with an intuitive, advanced interface for course search and schedule planning. Built with Django and powered by intelligent search algorithms, it transforms the course selection experience with natural language search, synonym expansion, conflict detection, and visual schedule management.
 
 ## Key Features
 
-- **Intelligent Search Engine:** Advanced weighted scoring algorithm with TF-IDF semantic similarity for highly relevant course results
+- **Intelligent Search Engine:** Advanced weighted scoring algorithm with TF-IDF similarity, synonym expansion, and context-aware ranking for highly relevant course results
+- **Natural Language Queries:** Students can search using natural language like "learn to code" or "climate change" and get relevant results
+- **Smart Synonym Expansion:** Automatically expands terms like "coding" → "programming", "movies" → "film" for better matching
 - **Interactive Schedule Builder:** Visual course cart with real-time conflict detection and calendar visualization
 - **Comprehensive Course Data:** Detailed information including prerequisites, corequisites, enrollment caps, and meeting times
 - **Automated Data Pipeline:** Fully automated web scraping and database updates twice yearly
 - **Responsive Design:** Clean, modern interface optimized for desktop and mobile devices
-- **Advanced Filtering:** Search by course code, department, professor, keywords, and more
+- **Flexible Search:** Works with course codes, department names, professor names, topics, or natural language
 
 ## Getting Started
 
@@ -529,7 +531,7 @@ amherst-coursework/
 
 ### Scoring Weights
 
-The search algorithm uses 13 configurable weights to rank courses:
+The search algorithm uses configurable weights to rank courses:
 
 | Component | Weight | Description |
 |-----------|--------|-------------|
@@ -539,21 +541,59 @@ The search algorithm uses 13 configurable weights to rank courses:
 | Course Code (Exact) | +300 | Bonus for exact code match |
 | Department Name | 120 | Matches in department name |
 | Department Code | 150 | Matches in department code |
-| Division | 15 | Matches in academic division |
+| Division | 8 | Matches in academic division (reduced to prevent generic matches) |
 | Keyword | 70 | Matches in course keywords |
 | Description | 60 | Matches in course description |
 | Professor | 130 | Matches in professor names |
 | Half Course | 200 | Bonus for "half" keyword |
-| Similarity | 180 | TF-IDF cosine similarity score |
+| TF-IDF Similarity | 120 | Cosine similarity score for semantic matching |
 | Phrase Match | 80 | Bonus for multi-word phrase matches |
 
-### Special Features
+### Search Features
 
-- **Abbreviation Expansion:** "AI" → "artificial intelligence", "ML" → "machine learning"
-- **Stop Word Removal:** Common words filtered using NLTK
+#### 1. Synonym Expansion
+Automatically expands common terms for better matching:
+- **"coding"** → "programming", "computer science", "software"
+- **"code"** → "programming", "computer science"
+- **"climate"** → "environmental", "climate change", "global warming"
+- **"movies"** → "film", "cinema"
+
+**Example:** Searching "coding" now returns 28 CS courses instead of 1!
+
+#### 2. Abbreviation Expansion
+Expands technical abbreviations bidirectionally:
+- **"AI"** ↔ "artificial intelligence"
+- **"ML"** ↔ "machine learning"
+- **"NLP"** ↔ "natural language processing"
+
+#### 3. Introductory Course Boosting
+Detects beginner intent and boosts intro courses:
+- Keywords: "intro", "introduction", "beginner", "start"
+- Applies 1.5x boost to introductory courses
+- Helps students find entry points into new subjects
+
+#### 4. Context-Aware Penalties
+Smart scoring adjustments based on query context:
+- **STEM Boost:** 1.3x-1.5x for STEM courses in STEM queries
+- **Social Science Penalty:** 0.25x for social sciences in STEM queries
+- **Generic Course Penalty:** 0.5x for courses in 4+ divisions
+
+#### 5. Result Quality Controls
+- **Score Cutoff:** 25% of highest score (filters low-relevance results)
+- **Max Results:** Limited to 100 courses (prevents overwhelming users)
 - **Phrase Detection:** 2-3 word phrases get bonus scoring
-- **Generic Course Penalty:** Courses in 4+ divisions receive lower scores
-- **Score Cutoff:** Results below 20% of max score are filtered out
+
+### Query Examples
+
+| Query Type | Example | Top Result |
+|------------|---------|------------|
+| Course Code | "COSC-111" | Introduction to Computer Science I |
+| Department | "Computer Science" | 18 CS courses |
+| Professor | "Flanagan" | Courses taught by Abby Flanagan |
+| Natural Language | "learn to code" | Introduction to Computer Science I |
+| Skills | "coding" | 28 programming courses |
+| Topics | "climate change" | 12 environmental courses |
+| Interests | "creative writing" | 20 writing courses |
 
 ## API Endpoints
 

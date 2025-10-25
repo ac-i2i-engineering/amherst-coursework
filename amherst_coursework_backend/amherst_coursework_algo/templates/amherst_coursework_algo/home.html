@@ -8,7 +8,7 @@
 
 <div class = "page-container">
     <div id="side-panel" class="side-panel">
-        <button class="close-panel" onclick="togglePanel()">×</button>
+        <button class="close-panel" onclick="togglePanel()" title="Close course details panel" aria-label="Close course details panel">×</button>
         <div id="panel-content">
         </div>
     </div>
@@ -21,10 +21,10 @@
                 <strong>Total Credits:</strong> <span id="cart-credits">0</span>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="export-cart">
+                <button class="export-cart" title="Export your schedule to a file" aria-label="Export schedule">
                     <i class="fa-solid fa-download"></i> Export
                 </button>
-                <button class="reset-cart">
+                <button class="reset-cart" title="Clear all courses from your schedule" aria-label="Reset schedule">
                     <i class="fa-solid fa-rotate-left"></i> Reset
                 </button>
             </div>
@@ -39,7 +39,7 @@
             {% endfor %}
 
             <!-- Time slots -->
-            {% for hour in "8,9,10,11,12,13,14,15,16,17,18,19,20,21"|split:"," %}
+            {% for hour in "7,8,9,10,11,12,13,14,15,16,17,18,19"|split:"," %}
                 <div class="time-column">
                     {% with hour_val=hour|add:"0" %}
                         {% if hour_val < 12 %}
@@ -60,10 +60,10 @@
             {% endfor %}
         </div>
     
-        <button class="close-panel" onclick="toggleCartPanel()">×</button>
+        <button class="close-panel" onclick="toggleCartPanel()" title="Close saved schedule panel" aria-label="Close saved schedule panel">×</button>
     </div>
 
-    <button id="cart-toggle" class="cart-toggle-button" onclick="toggleCartPanel()">
+    <button id="cart-toggle" class="cart-toggle-button" onclick="toggleCartPanel()" title="View your saved course schedule" aria-label="View saved schedule">
         View Saved Schedule (<span id="cart-count-header">0</span>)
     </button>
 
@@ -81,8 +81,10 @@
                         name="search"
                         placeholder="Search courses..."
                         class="search-input"
-                        value="{{ search_query }}">
-                    <button type="submit" class="search-button">
+                        value="{{ search_query }}"
+                        aria-label="Search for courses"
+                        title="Enter what you want to search for. Our unified search supports course names, departments, professors, course codes, locations and general semantic understanding.">
+                    <button type="submit" class="search-button" title="Search for courses" aria-label="Search">
                         <i class="fa-solid fa-search"></i> Search
                     </button>
                 </form>
@@ -117,7 +119,9 @@
                                 <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
                                 <button class="cart-button" 
                                     onclick="showSectionModal(event, '{{ course.id }}', '{{ course.courseName }}')" 
-                                    data-course-id="{{course.id}}">
+                                    data-course-id="{{course.id}}"
+                                    title="Add course to schedule"
+                                    aria-label="Add {{ course.courseName }} to schedule">
                                     <i class="fa-solid fa-plus" style="color: #fff"></i>
                                 </button>
                             </div>
@@ -130,11 +134,11 @@
             </div>
 
             <div class="pagination-controls" data-total-pages="{{ total_pages }}">
-                <button id="prev-page" class="page-btn" {% if current_page == 1 %}disabled{% endif %}>
+                <button id="prev-page" class="page-btn" {% if current_page == 1 %}disabled{% endif %} title="Go to previous page" aria-label="Previous page">
                     <i class="fas fa-chevron-left"></i> Previous
                 </button>
                 <span class="page-info">Page {{ current_page }} of {{ total_pages }}</span>
-                <button id="next-page" class="page-btn" {% if current_page == total_pages %}disabled{% endif %}>
+                <button id="next-page" class="page-btn" {% if current_page == total_pages %}disabled{% endif %} title="Go to next page" aria-label="Next page">
                     Next <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -142,10 +146,10 @@
         </div>
     </div>
 
-    <div id="section-modal" class="modal" style="display: none;">
+    <div id="section-modal" class="modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-modal="true">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Select Course Section</h3>
+            <span class="close-modal" title="Close section selection" aria-label="Close modal">&times;</span>
+            <h3 id="modal-title">Select Course Section</h3>
             <div id="section-list">
             </div>
         </div>

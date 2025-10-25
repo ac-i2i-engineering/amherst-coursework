@@ -375,9 +375,13 @@ function updateButtonState(courseId, inCart) {
         if (inCart) {
             icon.className = 'fa-solid fa-check';
             button.classList.add('in-cart');
+            button.setAttribute('title', 'Course added to schedule - Click to view sections');
+            button.setAttribute('aria-label', 'Course in schedule - Click to manage sections');
         } else {
             icon.className = 'fa-solid fa-plus';
             button.classList.remove('in-cart');
+            button.setAttribute('title', 'Add course to schedule');
+            button.setAttribute('aria-label', 'Add course to schedule');
         }
     });
 }
@@ -563,7 +567,7 @@ function updateCartDisplay() {
                                         <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
                                         <h4 class="course-name">${course.name}</h4>
                                     </div>
-                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn">×</button>
+                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
                                 </div>
                             </div>
                         `;

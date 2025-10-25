@@ -9,7 +9,7 @@
         gap: 1px;
         background: #eee;
         border: 1px solid #ddd;
-        margin-bottom: 40px;
+        margin-bottom: 80px;
         overflow-y: auto;
     }
 
@@ -390,7 +390,7 @@
     {% endfor %}
 
     <!-- Time slots -->
-    {% for hour in "8,9,10,11,12,13,14,15,16,17"|split:"," %}
+    {% for hour in "7,8,9,10,11,12,13,14,15,16,17,18,19"|split:"," %}
         <div class="time-column">
             {% with hour_val=hour|add:"0" %}
                 {% if hour_val < 12 %}

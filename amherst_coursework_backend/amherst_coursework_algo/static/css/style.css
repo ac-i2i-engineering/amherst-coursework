@@ -43,6 +43,23 @@ p {
     border-radius: 20px;
     color: #ffffff;
     text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    background-color: #4a0099;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 31, 92, 0.3);
+}
+
+.nav-link:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+.nav-link:active {
+    transform: translateY(0);
 }
 
 .home-link {
@@ -185,6 +202,7 @@ p {
     gap: 30px;
     padding: 20px;
     transition: all 0.3s ease-in-out;
+    overflow: visible;
 }
 
 .course-container.fade-in {
@@ -208,16 +226,28 @@ p {
     background: #fff;
     border-radius: 15px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
     display: block;
     opacity: 1;
-    overflow: hidden;
+    overflow: visible;
     cursor: pointer;
     position: relative;
+    z-index: 1;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.course-card:focus-within {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
 }
 
 .course-card.active {
     background-color: #f5f0fa;
+    box-shadow: 4px 4px 20px rgba(149, 86, 176, 0.2);
 }
 
 .course-card.hidden {
@@ -231,6 +261,8 @@ p {
     width: 100%;
     height: 100%;
     min-height: 100%;
+    overflow: visible;
+    border-radius: 15px;
 }
 
 .course-card-left {
@@ -287,6 +319,61 @@ p {
     white-space: nowrap;
     align-self: center;
     border-radius: 50%;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.course-header .cart-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(74, 0, 153, 0.3);
+}
+
+.course-header .cart-button:focus {
+    outline: 2px solid #4a0099;
+    outline-offset: 2px;
+}
+
+.course-header .cart-button::after {
+    content: attr(title);
+    position: absolute;
+    top: -35px;
+    right: -10px;
+    background-color: #333;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.course-header .cart-button:hover::after {
+    opacity: 1;
+}
+
+/* Arrow for tooltip */
+.course-header .cart-button::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #333;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+}
+
+.course-header .cart-button:hover::before {
+    opacity: 1;
 }
 
 .cart-button i {
@@ -364,6 +451,7 @@ p {
     opacity: 0;
     visibility: hidden;
     transform: translateX(100%);
+    z-index: 2000;
 }
 
 .side-panel.open {
@@ -466,21 +554,34 @@ p {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 6px;
     flex: 1;
+    position: relative;
 }
 
 .export-cart:hover {
     background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.export-cart:focus {
+    outline: 2px solid #28a745;
+    outline-offset: 2px;
+}
+
+.export-cart:active {
+    transform: translateY(0);
 }
 
 .export-cart:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
     opacity: 0.6;
+    transform: none;
 }
 
 .export-cart i {
@@ -495,15 +596,27 @@ p {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 6px;
     flex: 1;
+    position: relative;
 }
 
 .reset-cart:hover {
     background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.reset-cart:focus {
+    outline: 2px solid #dc3545;
+    outline-offset: 2px;
+}
+
+.reset-cart:active {
+    transform: translateY(0);
 }
 
 .reset-cart i {
@@ -528,6 +641,29 @@ p {
     background: none;
     font-size: 24px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+}
+
+.close-panel:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
+    transform: rotate(90deg);
+}
+
+.close-panel:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+.close-panel:active {
+    transform: rotate(90deg) scale(0.95);
 }
 
 .remove-from-cart {
@@ -537,10 +673,23 @@ p {
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
 }
 
 .remove-from-cart:hover {
     background-color: #cc0000;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255, 68, 68, 0.3);
+}
+
+.remove-from-cart:focus {
+    outline: 2px solid #ff4444;
+    outline-offset: 2px;
+}
+
+.remove-from-cart:active {
+    transform: translateY(0);
 }
 
 .cart-toggle-button {
@@ -555,6 +704,23 @@ p {
     border-radius: 4px;
     cursor: pointer;
     display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(74, 0, 153, 0.2);
+}
+
+.cart-toggle-button:hover {
+    background-color: #5c00b8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 0, 153, 0.3);
+}
+
+.cart-toggle-button:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+.cart-toggle-button:active {
+    transform: translateY(0);
 }
 
 .in-cart {
@@ -594,11 +760,25 @@ p {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .search-button:hover {
     background-color: #7b4491;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(149, 86, 176, 0.3);
+}
+
+.search-button:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+.search-button:active {
+    transform: translateY(0);
 }
 
 #search-loading {
@@ -670,6 +850,7 @@ p {
 
 .cart-calendar-container {
     margin-top: 20px;
+    margin-bottom: 60px;
     width: 100%;
     display: grid;
     grid-template-columns: 45px repeat(5, 1fr);
@@ -712,13 +893,22 @@ p {
     z-index: 1;
     box-sizing: border-box;
     overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 /* Hover effect to improve readability */
 .cart-calendar-container .course-block:hover {
     z-index: 10;
-    transform: scale(1.05);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-weight: 600;
+}
+
+.cart-calendar-container .course-block:focus {
+    outline: 2px solid #4a0099;
+    outline-offset: 1px;
+    z-index: 10;
 }
 
 /* Different colors for different courses */
@@ -803,7 +993,28 @@ p {
     cursor: pointer;
     padding: 0 20px;
     font-size: 16px;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-btn:hover {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.1);
+    transform: scale(1.1);
+}
+
+.remove-btn:focus {
+    outline: 2px solid #ff4444;
+    outline-offset: 2px;
+}
+
+.remove-btn:active {
+    transform: scale(0.95);
 }
 
 /* Time conflict styling */
@@ -846,6 +1057,25 @@ p {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: rotate(90deg);
+}
+
+.close-modal:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
 }
 
 .section-item {
@@ -854,6 +1084,18 @@ p {
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.section-item:hover {
+    background-color: #f5f5f5;
+    border-color: #9556b0;
+    transform: translateX(4px);
+}
+
+.section-item:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
 }
 
 .section-item.section-conflict {
@@ -929,7 +1171,7 @@ p {
     border-radius: 4px;
     background-color: #fff;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -937,6 +1179,18 @@ p {
 
 .page-btn:hover:not(:disabled) {
     background-color: #f0f0f0;
+    border-color: #9556b0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-btn:focus {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+.page-btn:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .page-btn:disabled {
@@ -947,4 +1201,110 @@ p {
 .page-info {
     font-size: 0.9rem;
     color: #666;
+}
+
+/* Accessibility Enhancements */
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid #9556b0;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
+    transition: all 0.2s ease;
+}
+
+/* Improve contrast for better readability */
+::selection {
+    background-color: #9556b0;
+    color: white;
+}
+
+/* Skip to main content link for screen readers */
+.skip-to-main {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 1em;
+    background-color: #4a0099;
+    color: white;
+    text-decoration: none;
+}
+
+.skip-to-main:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+
+/* Ensure sufficient color contrast for text */
+.course-card:hover .course-name {
+    color: #311a4d;
+}
+
+/* Add visual feedback for loading states */
+[aria-busy="true"] {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Improve calendar time slot accessibility */
+.cart-calendar-container .time-slot:focus-within {
+    outline: 2px solid #9556b0;
+    outline-offset: -2px;
+}
+
+/* Better hover states for interactive calendar elements */
+.cart-calendar-container .day-header {
+    transition: background-color 0.2s ease;
+}
+
+.cart-calendar-container .time-column {
+    transition: background-color 0.2s ease;
+}
+
+/* Mobile-specific adjustments for side panel */
+@media (max-width: 768px) {
+    .side-panel {
+        width: 55%;
+    }
+    
+    .main-content.shifted {
+        margin-right: 0;
+        transform: translateX(-250px);
+        padding-left: 10px;
+    }
+    
+    .course-container.shifted {
+        margin-right: 0;
+        padding-right: 280px;
+        padding-left: 10px;
+    }
+    
+    .course-card.shifted {
+        margin-right: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .side-panel {
+        width: 55%;
+    }
+    
+    .main-content.shifted {
+        margin-right: 0;
+        transform: translateX(-280px);
+        padding-left: 10px;
+    }
+    
+    .course-container.shifted {
+        margin-right: 0;
+        padding-right: 320px;
+        padding-left: 10px;
+    }
+    
+    .course-card.shifted {
+        margin-right: 50px;
+    }
 }

@@ -459,7 +459,37 @@
         "https://www.amherst.edu/academiclife/departments/courses/2526F/LJST/LJST-490-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/LJST/LJST-498-2526F"
     ],
-    "Mathematics and Statistics": [],
+    "Mathematics": [
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-105-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-111-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-121-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-211-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-220-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-225-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-256-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-260-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-271-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-272-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-281-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-320-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-345-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-350-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-355-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-450-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/MATH/MATH-498-2526F"
+    ],
+    "Statistics": [
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-108-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-135-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-230-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-231-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-360-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-456-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-490-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-495-2526F",
+        "https://www.amherst.edu/academiclife/departments/courses/2526F/STAT/STAT-498-2526F"
+    ],
     "Music": [
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-111-2526F",
         "https://www.amherst.edu/academiclife/departments/courses/2526F/MUSI/MUSI-115-2526F",

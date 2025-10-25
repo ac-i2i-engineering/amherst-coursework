@@ -98,7 +98,7 @@ PHRASE_MATCH_WEIGHT = 80
 LOCATION_MATCH_WEIGHT = 200
 """Weight applied when course section location matches the location code in query (e.g., 'location/SMUD')"""
 
-SCORE_CUTOFF = 0.25
+SCORE_CUTOFF = 0.18
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
 
 MAX_RESULTS = 100

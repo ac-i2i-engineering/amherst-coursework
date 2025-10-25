@@ -43,8 +43,23 @@ from typing import List
 from django.db.models import Q
 import nltk
 from nltk.corpus import stopwords
+from sentence_transformers import SentenceTransformer
+import numpy as np
 
 courses = []
+
+# Initialize sentence transformer model for semantic embeddings
+# Using a lightweight model optimized for semantic search
+_sentence_model = None
+
+
+def get_sentence_model():
+    """Lazy load the sentence transformer model."""
+    global _sentence_model
+    if _sentence_model is None:
+        _sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _sentence_model
+
 
 # =============================================================================
 # Constants
@@ -72,8 +87,8 @@ COURSE_CODE_EXACT_WEIGHT = 300
 DEPARTMENT_CODE_WEIGHT = 150
 """Weight applied to matches in department codes (e.g., 'COSC')"""
 
-DIVISION_WEIGHT = 15
-"""Weight applied to matches in academic division names (e.g., 'Science')"""
+DIVISION_WEIGHT = 8
+"""Weight applied to matches in academic division names (e.g., 'Science') - reduced to prevent generic matches"""
 
 KEYWORD_WEIGHT = 70
 """Weight applied to matches in course keywords/tags"""
@@ -87,8 +102,11 @@ PROFESSOR_WEIGHT = 130
 HALF_COURSE_WEIGHT = 200
 """Additional weight applied when 'half' appears in query and course is half-credit"""
 
-SIMILARITY_WEIGHT = 180
-"""Multiplier applied to cosine similarity scores for text matching"""
+SIMILARITY_WEIGHT = 60
+"""Multiplier applied to TF-IDF cosine similarity scores for text matching (reduced from 180)"""
+
+SEMANTIC_SIMILARITY_WEIGHT = 200
+"""Multiplier applied to ML-based semantic similarity scores (sentence transformers)"""
 
 PHRASE_MATCH_WEIGHT = 80
 """Additional weight applied when a multi-word phrase appears together in course text"""
@@ -231,7 +249,7 @@ def prepare_course_text(course) -> str:
 
 def compute_similarity_scores(query: str, information: List[str]) -> List[float]:
     """
-    Compute cosine similarity scores between a query and a list of information.
+    Compute TF-IDF cosine similarity scores between a query and a list of information.
 
     Parameters
     ----------
@@ -275,6 +293,61 @@ def compute_similarity_scores(query: str, information: List[str]) -> List[float]
     similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:])
 
     return similarities[0]
+
+
+def compute_semantic_similarity_scores(
+    query: str, information: List[str]
+) -> List[float]:
+    """
+    Compute semantic similarity scores using sentence transformers (ML-based embeddings).
+
+    Parameters
+    ----------
+    query : str
+        The input query string to compare against the information
+    information : List[str]
+        List of text strings to compare with the query
+
+    Returns
+    -------
+    List[float]
+        List of similarity scores between 0 and 1, where higher values indicate
+        greater semantic similarity
+
+    Notes
+    -----
+    - Uses sentence transformers (all-MiniLM-L6-v2) for semantic embeddings
+    - Captures semantic meaning beyond lexical matching
+    - Better at understanding synonyms and related concepts
+    - Returns list of zeros if query or information is empty
+
+    Examples
+    --------
+    >>> info = ["AI in Healthcare", "Machine Learning Workshop"]
+    >>> compute_semantic_similarity_scores("artificial intelligence medicine", info)
+    [0.85, 0.42]  # Example scores showing semantic understanding
+    """
+    if not query or not information:
+        return [0] * len(information)
+
+    try:
+        model = get_sentence_model()
+
+        # Encode query and information
+        query_embedding = model.encode([query], convert_to_tensor=False)[0]
+        info_embeddings = model.encode(information, convert_to_tensor=False)
+
+        # Compute cosine similarity
+        similarities = cosine_similarity([query_embedding], info_embeddings)[0]
+
+        # Normalize to 0-1 range (cosine similarity is already -1 to 1, but typically 0-1)
+        return np.clip(similarities, 0, 1).tolist()
+    except Exception as e:
+        # Fallback to zeros if model fails
+        import logging
+
+        logging.warning(f"Semantic similarity computation failed: {e}")
+        return [0] * len(information)
 
 
 def expand_abbreviations(text: str) -> str:
@@ -524,7 +597,7 @@ def score_similarity(
     search_query: str, expanded_query: str, filtered_courses, scores: dict
 ) -> None:
     """
-    Score courses based on TF-IDF cosine similarity.
+    Score courses based on both TF-IDF and semantic similarity.
 
     Parameters
     ----------
@@ -543,15 +616,23 @@ def score_similarity(
             expand_abbreviations(prepare_course_text(course))
             for course in filtered_courses
         ]
-        # Use expanded query for similarity comparison
-        similarity_scores = compute_similarity_scores(expanded_query, course_texts)
-        for course, score in zip(filtered_courses, similarity_scores):
+
+        # TF-IDF similarity (reduced weight)
+        tfidf_scores = compute_similarity_scores(expanded_query, course_texts)
+        for course, score in zip(filtered_courses, tfidf_scores):
             scores[course.id] += score * SIMILARITY_WEIGHT
 
+        # Semantic similarity using ML embeddings (higher weight)
+        semantic_scores = compute_semantic_similarity_scores(
+            expanded_query, course_texts
+        )
+        for course, score in zip(filtered_courses, semantic_scores):
+            scores[course.id] += score * SEMANTIC_SIMILARITY_WEIGHT
 
-def apply_score_penalties(filtered_courses, scores: dict) -> None:
+
+def apply_score_penalties(filtered_courses, scores: dict, search_query: str) -> None:
     """
-    Apply penalties to scores for overly generic courses.
+    Apply penalties and bonuses to scores based on query context.
 
     Parameters
     ----------
@@ -559,13 +640,82 @@ def apply_score_penalties(filtered_courses, scores: dict) -> None:
         Django QuerySet of courses to search
     scores : dict
         Dictionary mapping course IDs to scores (modified in place)
+    search_query : str
+        Original search query for context-aware penalties
     """
+    # Keywords that should prioritize specific sciences over social sciences
+    stem_keywords = {
+        "machine",
+        "learning",
+        "algorithm",
+        "computer",
+        "programming",
+        "data",
+        "mathematics",
+        "calculus",
+        "algebra",
+        "physics",
+        "chemistry",
+        "biology",
+        "engineering",
+        "statistics",
+        "science",  # Added to catch "sciences" queries
+        "natural",
+    }
+
+    # STEM department codes
+    stem_departments = {
+        "COSC",
+        "PHYS",
+        "CHEM",
+        "BIOL",
+        "BCBP",
+        "NEUR",
+        "GEOL",
+        "ENST",
+    }
+
+    query_lower = search_query.lower()
+    is_stem_query = any(keyword in query_lower for keyword in stem_keywords)
+    
+    # Check if query explicitly mentions social sciences
+    is_social_science_query = any(
+        term in query_lower
+        for term in ["social science", "sociology", "anthropology", "gender", "sexuality"]
+    )
+
     for course in filtered_courses:
         if scores[course.id] > 0:
             num_divisions = course.divisions.count()
             if num_divisions > 3:
                 # Reduce score for courses in 4+ divisions (likely generic)
                 scores[course.id] *= 0.5
+
+            # Get course department codes
+            course_dept_codes = set(course.departments.values_list("code", flat=True))
+            is_stem_course = bool(course_dept_codes & stem_departments)
+
+            # Boost STEM courses when STEM query is detected
+            if is_stem_query and not is_social_science_query and is_stem_course:
+                scores[course.id] *= 1.3
+
+            # Additional penalty for social science courses when STEM query is detected
+            # but NOT when user explicitly searches for social sciences
+            if is_stem_query and not is_social_science_query:
+                course_text = prepare_course_text(course).lower()
+                social_science_indicators = [
+                    "social science",
+                    "sociology",
+                    "anthropology",
+                    "gender studies",
+                    "women studies",
+                    "sexuality",
+                    "educational equity",
+                    "feminist studies",
+                ]
+                if any(indicator in course_text for indicator in social_science_indicators):
+                    # Strong penalty for social sciences in STEM queries
+                    scores[course.id] *= 0.25
 
 
 def filter_by_score_threshold(courses: List[Course], scores: dict) -> List[Course]:
@@ -694,7 +844,7 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     score_similarity(search_query, expanded_query, filtered_courses, scores)
 
     # Apply penalties for generic courses
-    apply_score_penalties(filtered_courses, scores)
+    apply_score_penalties(filtered_courses, scores, search_query)
 
     # Filter and sort by score threshold
     return filter_by_score_threshold(courses, scores)

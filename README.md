@@ -6,14 +6,14 @@ Amherst Coursework is a sophisticated web application that provides Amherst Coll
 
 ## Key Features
 
-- **Intelligent Search Engine:** Advanced weighted scoring algorithm with TF-IDF similarity, synonym expansion, and context-aware ranking for highly relevant course results
+- **Intelligent Search Engine:** Advanced weighted scoring algorithm with TF-IDF similarity, synonym expansion, location-based matching, and context-aware ranking for highly relevant course results
 - **Natural Language Queries:** Students can search using natural language like "learn to code" or "climate change" and get relevant results
 - **Smart Synonym Expansion:** Automatically expands terms like "coding" → "programming", "movies" → "film" for better matching
-- **Interactive Schedule Builder:** Visual course cart with real-time conflict detection and calendar visualization
-- **Comprehensive Course Data:** Detailed information including prerequisites, corequisites, enrollment caps, and meeting times
+- **Interactive Schedule Builder:** Visual course cart with real-time conflict detection, calendar visualization, and total credit tracking
+- **Comprehensive Course Details:** Detailed information including prerequisites, corequisites, enrollment caps, class year limits, course tags, semester offerings, and clickable professor links
 - **Automated Data Pipeline:** Fully automated web scraping and database updates twice yearly
 - **Responsive Design:** Clean, modern interface optimized for desktop and mobile devices
-- **Flexible Search:** Works with course codes, department names, professor names, topics, or natural language
+- **Flexible Search:** Works with course codes, department names, professor names, topics, building locations, or natural language
 
 ## Getting Started
 
@@ -299,9 +299,9 @@ graph TD
     end
     
     subgraph frontend ["Frontend Logic"]
-        E1[Search Interface<br/>Real-time filtering]
-        E2[Course Details Panel<br/>AJAX loading]
-        E3[Schedule Builder<br/>localStorage cart]
+        E1[Search Interface<br/>Real-time filtering + Location]
+        E2[Course Details Panel<br/>AJAX loading + Prerequisites]
+        E3[Schedule Builder<br/>localStorage cart + Credits]
         E4[Conflict Detection<br/>Time overlap analysis]
         E5[Calendar Visualization<br/>CSS Grid layout]
         
@@ -344,6 +344,7 @@ graph LR
     F --> J[Professor: 130pts]
     F --> K[Keywords: 70pts]
     F --> L[Description: 60pts]
+    F --> LA[Location: 200pts]
     
     E --> M[Phrase Detection]
     M --> N[2-word phrases: 80pts]
@@ -359,6 +360,7 @@ graph LR
     J --> S
     K --> S
     L --> S
+    LA --> S
     N --> S
     O --> S
     R --> S
@@ -546,6 +548,7 @@ The search algorithm uses configurable weights to rank courses:
 | Description | 60 | Matches in course description |
 | Professor | 130 | Matches in professor names |
 | Half Course | 200 | Bonus for "half" keyword |
+| Location Match | 200 | Matches in section building location (3+ chars, excludes pure numbers) |
 | TF-IDF Similarity | 120 | Cosine similarity score for semantic matching |
 | Phrase Match | 80 | Bonus for multi-word phrase matches |
 

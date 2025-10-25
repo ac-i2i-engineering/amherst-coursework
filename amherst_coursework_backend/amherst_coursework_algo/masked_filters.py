@@ -18,6 +18,7 @@ Scoring Weights:
     - DESCRIPTION_WEIGHT : Weight for description matches
     - PROFESSOR_WEIGHT : Weight for professor name matches
     - HALF_COURSE_WEIGHT : Weight for half-credit courses
+    - LOCATION_MATCH_WEIGHT : Weight for section location matches
     - SIMILARITY_WEIGHT : Weight for cosine similarity scores
 
 Configuration:
@@ -93,6 +94,9 @@ SIMILARITY_WEIGHT = 120
 
 PHRASE_MATCH_WEIGHT = 80
 """Additional weight applied when a multi-word phrase appears together in course text"""
+
+LOCATION_MATCH_WEIGHT = 200
+"""Weight applied when course section location matches the location code in query (e.g., 'location/SMUD')"""
 
 SCORE_CUTOFF = 0.25
 """Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results"""
@@ -601,6 +605,52 @@ def score_similarity(
             scores[course.id] += score * SIMILARITY_WEIGHT
 
 
+def score_location_matches(
+    search_terms: List[str], filtered_courses, scores: dict
+) -> None:
+    """
+    Score courses based on section location matches.
+
+    Parameters
+    ----------
+    search_terms : List[str]
+        Search terms to match against locations (e.g., ['SMUD', 'KEEF'])
+    filtered_courses : QuerySet
+        Django QuerySet of courses to search
+    scores : dict
+        Dictionary mapping course IDs to scores (modified in place)
+
+    Notes
+    -----
+    Only matches terms that are likely building codes:
+    - Must be at least 3 characters long
+    - Must contain at least one letter
+    - Avoids matching pure numbers (e.g., "207" from "COSC-207")
+    """
+    import re
+
+    # Check each search term against section locations
+    for term in search_terms:
+        # Skip terms that are too short or are pure numbers
+        # This prevents matching course numbers like "207" from "COSC-207"
+        if len(term) < 3:
+            continue
+        if term.isdigit():
+            continue
+        # Skip terms that look like course codes (e.g., "COSC-207", "math111")
+        if re.match(r"^[A-Z]{4}-?\d+[A-Z]?$", term, re.IGNORECASE):
+            continue
+
+        # Match courses that have sections with this term in the location
+        # This will match building codes like "SMUD", "KEEF", "WEBS", etc.
+        location_matches = filtered_courses.filter(
+            sections__location__icontains=term
+        ).distinct()
+
+        for course in location_matches:
+            scores[course.id] += LOCATION_MATCH_WEIGHT
+
+
 def apply_score_penalties(filtered_courses, scores: dict, search_query: str) -> None:
     """
     Apply penalties and bonuses to scores based on query context.
@@ -787,9 +837,18 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
 
     Special handling for:
     - "half" keyword to filter half-credit courses
+    - Location matching: search terms are checked against section locations (e.g., "SMUD", "WEBS", "207")
     - Abbreviation expansion (e.g., "AI" -> "artificial intelligence")
     - Phrase detection for multi-word queries
     - Longer queries (>5 chars) use cosine similarity
+
+    Examples
+    --------
+    >>> filter("computer science SMUD", courses)
+    # Returns computer science courses with sections in SMUD building, boosted to top
+
+    >>> filter("intro physics KEEF", courses)
+    # Returns intro physics courses with sections in KEEF building, boosted to top
     """
     if not search_query:
         return [(course, 1.0) for course in courses]
@@ -807,7 +866,7 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
     filtered_courses = Course.objects.filter(
         id__in=[course.id for course in courses]
     ).prefetch_related(
-        "courseCodes", "departments", "divisions", "keywords", "professors"
+        "courseCodes", "departments", "divisions", "keywords", "professors", "sections"
     )
 
     # Initialize scores dictionary
@@ -853,6 +912,9 @@ def filter(search_query: str, courses: List[Course]) -> List[Course]:
 
     # Score similarity for longer queries
     score_similarity(search_query, expanded_query, filtered_courses, scores)
+
+    # Score location matches for all search terms
+    score_location_matches(search_terms, filtered_courses, scores)
 
     # Apply penalties for generic courses
     apply_score_penalties(filtered_courses, scores, search_query)

@@ -96,8 +96,12 @@
         "url": "https://www.amherst.edu/academiclife/departments/ljst/courses"
     },
     {
-        "name": "Mathematics and Statistics",
-        "url": "https://www.amherst.edu/academiclife/departments/mathematics-statistics/courses"
+        "name": "Mathematics",
+        "url": "https://www.amherst.edu/academiclife/departments/mathematics/courses"
+    },
+    {
+        "name": "Statistics",
+        "url": "https://www.amherst.edu/academiclife/departments/statistics/courses"
     },
     {
         "name": "Music",

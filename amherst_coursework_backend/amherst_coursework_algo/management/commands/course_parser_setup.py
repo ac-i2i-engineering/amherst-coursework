@@ -31,7 +31,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Global semester variable - can be modified as needed
-SEMESTER = "2526S"  # Example: 2324F for Fall 2023 semester, 2324S for Spring 2024
+SEMESTER = "2526F"  # Example: 2324F for Fall 2023 semester, 2324S for Spring 2024
 
 BASE_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))),

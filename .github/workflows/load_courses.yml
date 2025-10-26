@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GEMINI_API_KEY: ${{ secrets.COURSE_SUMMARY_GENERATION_GEMINI_API_KEY }}
+      GEMINI_MODEL: gemini-2.5-flash-lite
     
     steps:
     - uses: actions/checkout@v4
@@ -37,6 +40,11 @@ jobs:
       working-directory: ./amherst_coursework_backend
       run: |
         python manage.py collectstatic --noinput
+    
+    - name: Apply Migrations
+      working-directory: ./amherst_coursework_backend
+      run: |
+        python manage.py migrate --noinput
         
     - name: Update Database
       working-directory: ./amherst_coursework_backend

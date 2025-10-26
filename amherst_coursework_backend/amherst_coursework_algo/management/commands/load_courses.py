@@ -75,8 +75,11 @@ Functions
 """
 
 from django.core.management.base import BaseCommand
-from django.utils.dateparse import parse_time
 from django.db import transaction
+import os
+import re
+import time
+from collections import deque
 from amherst_coursework_algo.models import (
     Course,
     Department,
@@ -102,6 +105,87 @@ INSTITUTIONAL_DOMAIN = settings.INSTITUTIONAL_DOMAIN
 
 
 class Command(BaseCommand):
+    # Rate limiting configuration (can be overridden by env)
+    RATE_LIMIT_WINDOW_SEC = int(os.getenv("GEMINI_RATE_LIMIT_WINDOW_SEC", "60"))
+    RATE_LIMIT_MAX_CALLS = int(
+        os.getenv("GEMINI_RATE_LIMIT_MAX", "14")
+    )  # strictly < 15/min
+    PAUSE_AFTER_CALLS = int(os.getenv("GEMINI_PAUSE_AFTER", "8"))
+    PAUSE_SECONDS = int(os.getenv("GEMINI_PAUSE_SECONDS", "30"))
+
+    # Internal counters per command run
+    _gemini_call_times = deque()  # timestamps of recent calls
+    _gemini_total_calls = 0
+
+    def _rate_limit_sleep():
+        now = time.time()
+        # Drop timestamps outside the window
+        while Command._gemini_call_times and (
+            now - Command._gemini_call_times[0] >= Command.RATE_LIMIT_WINDOW_SEC
+        ):
+            Command._gemini_call_times.popleft()
+
+        # If at limit, sleep until safe
+        if len(Command._gemini_call_times) >= Command.RATE_LIMIT_MAX_CALLS:
+            earliest = Command._gemini_call_times[0]
+            sleep_for = Command.RATE_LIMIT_WINDOW_SEC - (now - earliest)
+            if sleep_for > 0:
+                print(
+                    f"Gemini rate limit reached: sleeping {int(sleep_for)}s to stay under 15 calls/min"
+                )
+                time.sleep(sleep_for)
+
+        # One-time monitoring pause after N calls
+        if Command._gemini_total_calls == Command.PAUSE_AFTER_CALLS:
+            print(
+                f"Pausing for {Command.PAUSE_SECONDS}s after {Command.PAUSE_AFTER_CALLS} Gemini calls for monitoring..."
+            )
+            time.sleep(Command.PAUSE_SECONDS)
+
+    def generate_course_summary(title: str, description: str) -> str:
+        """
+        Generate a single-sentence summary (<=20 words) for a course using Gemini.
+
+        Returns empty string on failure or if API key is missing.
+        """
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            return ""
+        try:
+            import google.generativeai as genai
+        except Exception:
+            return ""
+
+        try:
+            genai.configure(api_key=api_key)
+        except Exception:
+            return ""
+
+        model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+        prompt = (
+            "Write one concise sentence (<=20 words) summarizing this college course for students. "
+            "No quotes, no markdown. Only return the summary, no other text.\n"
+            f"Title: {title}\nDescription: {description}"
+        )
+        # Rate limit and monitoring pause before making the API call
+        Command._rate_limit_sleep()
+        call_started_at = time.time()
+        try:
+            resp = genai.GenerativeModel(model_name).generate_content(prompt)
+            text = (getattr(resp, "text", "") or "").strip().strip('"').strip("'")
+            text = re.sub(r"\s+", " ", text)
+            words = text.split()
+            if len(words) > 30:
+                text = " ".join(words[:30]).rstrip(",;:") + "."
+            if text and text[-1] not in ".!?":
+                text += "."
+            return text
+        except Exception:
+            return ""
+        finally:
+            # Record the attempt regardless of outcome
+            Command._gemini_call_times.append(call_started_at)
+            Command._gemini_total_calls += 1
     def parse_ampm_time(time_str):
         """
         Parse a time string in AM/PM format into a Django time object.
@@ -131,7 +215,7 @@ class Command(BaseCommand):
             # Parse time like "9:00 AM" into Django time object
             parsed_time = datetime.strptime(time_str, "%I:%M %p")
             return parsed_time.time()
-        except ValueError as e:
+        except ValueError:
             print(f"Error parsing time: {time_str}")
             return None
 
@@ -232,7 +316,7 @@ class Command(BaseCommand):
                                     "link": link,
                                 },
                             )
-                        except:
+                        except Exception:
                             self.stdout.write(
                                 self.style.ERROR(
                                     f"Failed to create course: {department} is not a valid department"
@@ -344,6 +428,16 @@ class Command(BaseCommand):
                             ),
                         },
                     )
+
+                    # Generate AI summary once per course if missing
+                    if not getattr(course, "summary", ""):
+                        summary_text = Command.generate_course_summary(
+                            course.courseName,
+                            course.courseDescription,
+                        )
+                        if summary_text:
+                            course.summary = summary_text
+                            course.save(update_fields=["summary"])
 
                     course.courseCodes.set(codes)
                     course.departments.set(departments)

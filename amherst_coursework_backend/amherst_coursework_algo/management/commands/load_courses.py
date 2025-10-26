@@ -140,6 +140,26 @@ class Command(BaseCommand):
             print(
                 f"Pausing for {Command.PAUSE_SECONDS}s after {Command.PAUSE_AFTER_CALLS} Gemini calls for monitoring..."
             )
+            # Print a brief database snapshot for monitoring
+            try:
+                course_count = Course.objects.count()
+                summarized_count = Course.objects.exclude(summary="").count()
+                no_summary_count = Course.objects.filter(summary="").count()
+                section_count = Section.objects.count()
+                dept_count = Department.objects.count()
+                print(
+                    "DB snapshot: "
+                    f"Courses={course_count}, Summarized={summarized_count}, "
+                    f"NoSummary={no_summary_count}, Sections={section_count}, Departments={dept_count}"
+                )
+                sample = list(Course.objects.all()[:5])
+                if sample:
+                    print("Sample courses:")
+                    for c in sample:
+                        has_sum = "yes" if getattr(c, "summary", "") else "no"
+                        print(f"- {c.id} | {c.courseName} | summary={has_sum}")
+            except Exception as e:
+                print(f"DB snapshot failed: {e}")
             time.sleep(Command.PAUSE_SECONDS)
 
     def generate_course_summary(title: str, description: str) -> str:

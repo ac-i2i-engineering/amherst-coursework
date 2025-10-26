@@ -126,7 +126,7 @@
                                 </button>
                             </div>
                             <h2 class="course-name">{{ course.courseName }}</h2>
-                            <p class="course-description">{{ course.courseDescription }}</p>
+                            <p class="course-description">{{ course.summary|default:course.courseDescription }}</p>
                         </div>
                     </div>
                 </div>

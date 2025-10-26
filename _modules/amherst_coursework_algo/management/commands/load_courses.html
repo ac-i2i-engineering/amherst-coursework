@@ -179,8 +179,11 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.core.management.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseCommand</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.dateparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">transaction</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">amherst_coursework_algo.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Course</span><span class="p">,</span>
     <span class="n">Department</span><span class="p">,</span>
@@ -208,6 +211,90 @@
 <div class="viewcode-block" id="Command">
 <a class="viewcode-back" href="../../../../load_courses.html#amherst_coursework_algo.management.commands.load_courses.Command">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+    <span class="c1"># Rate limiting configuration (can be overridden by env)</span>
+    <span class="n">RATE_LIMIT_WINDOW_SEC</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_RATE_LIMIT_WINDOW_SEC&quot;</span><span class="p">,</span> <span class="s2">&quot;60&quot;</span><span class="p">))</span>
+    <span class="n">RATE_LIMIT_MAX_CALLS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_RATE_LIMIT_MAX&quot;</span><span class="p">,</span> <span class="s2">&quot;14&quot;</span><span class="p">)</span>
+    <span class="p">)</span>  <span class="c1"># strictly &lt; 15/min</span>
+    <span class="n">PAUSE_AFTER_CALLS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_PAUSE_AFTER&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">))</span>
+    <span class="n">PAUSE_SECONDS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_PAUSE_SECONDS&quot;</span><span class="p">,</span> <span class="s2">&quot;30&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Internal counters per command run</span>
+    <span class="n">_gemini_call_times</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>  <span class="c1"># timestamps of recent calls</span>
+    <span class="n">_gemini_total_calls</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rate_limit_sleep</span><span class="p">():</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># Drop timestamps outside the window</span>
+        <span class="k">while</span> <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">now</span> <span class="o">-</span> <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">Command</span><span class="o">.</span><span class="n">RATE_LIMIT_WINDOW_SEC</span>
+        <span class="p">):</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="c1"># If at limit, sleep until safe</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Command</span><span class="o">.</span><span class="n">RATE_LIMIT_MAX_CALLS</span><span class="p">:</span>
+            <span class="n">earliest</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sleep_for</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">RATE_LIMIT_WINDOW_SEC</span> <span class="o">-</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">earliest</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sleep_for</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Gemini rate limit reached: sleeping </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">sleep_for</span><span class="p">)</span><span class="si">}</span><span class="s2">s to stay under 15 calls/min&quot;</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_for</span><span class="p">)</span>
+
+        <span class="c1"># One-time monitoring pause after N calls</span>
+        <span class="k">if</span> <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_total_calls</span> <span class="o">==</span> <span class="n">Command</span><span class="o">.</span><span class="n">PAUSE_AFTER_CALLS</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Pausing for </span><span class="si">{</span><span class="n">Command</span><span class="o">.</span><span class="n">PAUSE_SECONDS</span><span class="si">}</span><span class="s2">s after </span><span class="si">{</span><span class="n">Command</span><span class="o">.</span><span class="n">PAUSE_AFTER_CALLS</span><span class="si">}</span><span class="s2"> Gemini calls for monitoring...&quot;</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">PAUSE_SECONDS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Command.generate_course_summary">
+<a class="viewcode-back" href="../../../../load_courses.html#amherst_coursework_algo.management.commands.load_courses.Command.generate_course_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_course_summary</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a single-sentence summary (&lt;=20 words) for a course using Gemini.</span>
+
+<span class="sd">        Returns empty string on failure or if API key is missing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_API_KEY&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">api_key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">google.generativeai</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">genai</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">model_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GEMINI_MODEL&quot;</span><span class="p">,</span> <span class="s2">&quot;gemini-2.5-flash-lite&quot;</span><span class="p">)</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Write one concise sentence (&lt;=20 words) summarizing this college course for students. &quot;</span>
+            <span class="s2">&quot;No quotes, no markdown. Only return the summary, no other text.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n</span><span class="s2">Description: </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># Rate limit and monitoring pause before making the API call</span>
+        <span class="n">Command</span><span class="o">.</span><span class="n">_rate_limit_sleep</span><span class="p">()</span>
+        <span class="n">call_started_at</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">GenerativeModel</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;,;:&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
+            <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s2">&quot;.!?&quot;</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;.&quot;</span>
+            <span class="k">return</span> <span class="n">text</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Record the attempt regardless of outcome</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_call_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">call_started_at</span><span class="p">)</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">_gemini_total_calls</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
 <div class="viewcode-block" id="Command.parse_ampm_time">
 <a class="viewcode-back" href="../../../../load_courses.html#amherst_coursework_algo.management.commands.load_courses.Command.parse_ampm_time">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_ampm_time</span><span class="p">(</span><span class="n">time_str</span><span class="p">):</span>
@@ -239,7 +326,7 @@
             <span class="c1"># Parse time like &quot;9:00 AM&quot; into Django time object</span>
             <span class="n">parsed_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="s2">&quot;%I:%M %p&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">parsed_time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error parsing time: </span><span class="si">{</span><span class="n">time_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -346,7 +433,7 @@
                                     <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
                                 <span class="p">},</span>
                             <span class="p">)</span>
-                        <span class="k">except</span><span class="p">:</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">ERROR</span><span class="p">(</span>
                                     <span class="sa">f</span><span class="s2">&quot;Failed to create course: </span><span class="si">{</span><span class="n">department</span><span class="si">}</span><span class="s2"> is not a valid department&quot;</span>
@@ -458,6 +545,16 @@
                             <span class="p">),</span>
                         <span class="p">},</span>
                     <span class="p">)</span>
+
+                    <span class="c1"># Generate AI summary once per course if missing</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">course</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                        <span class="n">summary_text</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">generate_course_summary</span><span class="p">(</span>
+                            <span class="n">course</span><span class="o">.</span><span class="n">courseName</span><span class="p">,</span>
+                            <span class="n">course</span><span class="o">.</span><span class="n">courseDescription</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">summary_text</span><span class="p">:</span>
+                            <span class="n">course</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">summary_text</span>
+                            <span class="n">course</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">update_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">])</span>
 
                     <span class="n">course</span><span class="o">.</span><span class="n">courseCodes</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">codes</span><span class="p">)</span>
                     <span class="n">course</span><span class="o">.</span><span class="n">departments</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">departments</span><span class="p">)</span>

@@ -192,6 +192,13 @@ database records for courses and their related entities.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">generate_course_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command.generate_course_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Generate a single-sentence summary (&lt;=20 words) for a course using Gemini.</p>
+<p>Returns empty string on failure or if API key is missing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/amherst_coursework_algo/management/commands/load_courses.html#Command.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Process JSON course data and load into database.</p>
 <dl class="field-list simple">

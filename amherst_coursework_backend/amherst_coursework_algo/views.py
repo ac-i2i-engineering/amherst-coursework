@@ -35,7 +35,8 @@ def home(request):
     if search_query:
         courses = filter(search_query, all_courses)
     else:
-        courses = all_courses
+        # Sort by course name for default view (alphabetically)
+        courses = sorted(all_courses, key=lambda c: c.courseName.lower())
 
     # Process courses with professor and meeting time info
     for course in courses:

@@ -192,7 +192,7 @@ function applyConflictStyling(card, cartCourseName) {
     badge.style.fontSize = '12px';
     badge.style.fontWeight = 'bold';
     badge.style.zIndex = '100';
-    badge.title = `Conflicts with ${cartCourseName}`;
+    badge.title = `All sections conflict with ${cartCourseName}`;
 
     // Ensure proper badge positioning
     if (getComputedStyle(card).position === 'static') {
@@ -202,27 +202,27 @@ function applyConflictStyling(card, cartCourseName) {
 }
 
 // Applies visual styling to indicate a partial time conflict
-function applyWarningStyling(card, cartCourseName) {
-    // Add visual indicators for warnings
+function applyPartialConflictStyling(card, cartCourseName) {
+    // Add visual indicators for partial conflicts
     card.classList.add('time-warning');
     card.style.border = '2px solid rgb(255, 176, 91)';
     card.style.backgroundColor = 'rgba(255, 176, 91, 0.1)';
 
-    // Create and style the warning badge
+    // Create and style the partial conflict badge
     const badge = document.createElement('div');
     badge.className = 'warning-badge';
-    badge.textContent = '⚠️ WARNING';
+    badge.textContent = '🔶 PARTIAL CONFLICT';
     badge.style.position = 'absolute';
     badge.style.top = '8px';
     badge.style.right = '50px';
     badge.style.backgroundColor = 'rgb(252, 130, 0)';
-    badge.style.color = 'white';
+    badge.style.color = 'black';
     badge.style.padding = '3px 6px';
     badge.style.borderRadius = '3px';
     badge.style.fontSize = '12px';
     badge.style.fontWeight = 'bold';
     badge.style.zIndex = '100';
-    badge.title = `Conflicts with ${cartCourseName}`;
+    badge.title = `Some sections conflict with ${cartCourseName}, but others are available`;
 
     // Ensure proper badge positioning
     if (getComputedStyle(card).position === 'static') {
@@ -386,7 +386,7 @@ async function findAndMarkAllCartConflicts() {
                     applyConflictStyling(card, conflictingCourseName);
                 } else {
                     // Only some sections have conflicts
-                    applyWarningStyling(card, conflictingCourseName);
+                    applyPartialConflictStyling(card, conflictingCourseName);
                 }
             }
         });
@@ -912,7 +912,7 @@ function showSectionModal(event, courseId, courseName) {
                     <div class="section-header">
                         <span>Section ${section.section_number}</span>
                         ${isInCart ? '<span class="cart-badge">✓ In Cart</span>' : ''}
-                        ${hasConflict ? '<span class="conflict-badge">⚠ Conflict</span>' : ''}
+                        ${hasConflict ? '<span class="conflict-badge">⛔️ Conflict</span>' : ''}
                     </div>
                     <div class="section-details">
                         <p><strong>Professor:</strong> ${section.professor_name || 'TBA'}</p>

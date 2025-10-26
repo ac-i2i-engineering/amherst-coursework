@@ -79,7 +79,7 @@
                     <input type="text" 
                         id="searchInput"
                         name="search"
-                        placeholder="Search courses..."
+                        placeholder="What are you curious about?"
                         class="search-input"
                         value="{{ search_query }}"
                         aria-label="Search for courses"
@@ -156,8 +156,57 @@
     </div>
 
     <script>
+    // Rotating placeholder text for search input
+    const placeholders = [
+        "What are you curious about?",
+        "Search by course, professor, or topic...",
+        "Try 'learn to code' or 'climate change'...",
+        "Find courses by building location...",
+        "Search 'COSC-111' or 'Computer Science'...",
+        "Explore courses by keyword or description...",
+        "What do you want to learn this semester?",
+        "Find your next favorite course..."
+    ];
+    
+    let placeholderIndex = 0;
+    let placeholderInterval = null;
+    
+    function rotatePlaceholder() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput && !searchInput.value && document.activeElement !== searchInput) {
+            placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+            searchInput.placeholder = placeholders[placeholderIndex];
+        }
+    }
+    
+    function startPlaceholderRotation() {
+        if (!placeholderInterval) {
+            placeholderInterval = setInterval(rotatePlaceholder, 2000);
+        }
+    }
+    
+    function stopPlaceholderRotation() {
+        if (placeholderInterval) {
+            clearInterval(placeholderInterval);
+            placeholderInterval = null;
+        }
+    }
+
     // Initialize cart display and set up event handlers when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', async function() {
+        // Start rotating placeholders
+        startPlaceholderRotation();
+        
+        // Stop rotation when user focuses on search input
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('focus', stopPlaceholderRotation);
+        
+        // Resume rotation when user leaves search input (if empty)
+        searchInput.addEventListener('blur', function() {
+            if (!this.value) {
+                startPlaceholderRotation();
+            }
+        });
         // Update the cart display with current items
         updateCartDisplay();
 

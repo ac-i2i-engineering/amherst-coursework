@@ -143,9 +143,11 @@ class Command(BaseCommand):
             # Print a brief database snapshot for monitoring
             try:
                 course_count = Course.objects.count()
-                summarized_qs = Course.objects.exclude(summary="").values(
-                    "id", "courseName", "summary"
-                ).order_by("id")
+                summarized_qs = (
+                    Course.objects.exclude(summary="")
+                    .values("id", "courseName", "summary")
+                    .order_by("id")
+                )
                 summarized_count = summarized_qs.count()
                 no_summary_count = Course.objects.filter(summary="").count()
                 section_count = Section.objects.count()

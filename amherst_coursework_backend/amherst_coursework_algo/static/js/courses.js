@@ -2,6 +2,33 @@ const CODE_TO_NAME = JSON.parse(document.getElementById('dept-dict').textContent
 
 let globalCourseList = [];
 const TIMEOUT_MS = 3000;
+let tooltipElement = null;
+
+// Initialize tooltip element
+function initTooltip() {
+    if (!tooltipElement) {
+        tooltipElement = document.createElement('div');
+        tooltipElement.className = 'custom-tooltip';
+        document.body.appendChild(tooltipElement);
+    }
+}
+
+// Show tooltip
+function showTooltip(button, text) {
+    initTooltip();
+    const rect = button.getBoundingClientRect();
+    tooltipElement.textContent = text;
+    tooltipElement.style.left = rect.left + (rect.width / 2) - (tooltipElement.offsetWidth / 2) + 'px';
+    tooltipElement.style.top = rect.top - tooltipElement.offsetHeight - 10 + 'px';
+    tooltipElement.classList.add('show');
+}
+
+// Hide tooltip
+function hideTooltip() {
+    if (tooltipElement) {
+        tooltipElement.classList.remove('show');
+    }
+}
 
 // Prevents rapid-fire execution of a function by waiting for a pause in calls
 function debounce(func, wait) {
@@ -125,7 +152,7 @@ function getCartCourseTimes(cartData) {
             courseName: cartCourse.name,
             meetingTimes
         };
-    });
+    }).filter(course => course.meetingTimes.length > 0); // Only include courses with actual meeting times
 }
 
 // Filters and returns course cards that aren't in the cart
@@ -156,8 +183,8 @@ function applyConflictStyling(card, cartCourseName) {
     badge.className = 'conflict-badge';
     badge.textContent = '⛔️ CONFLICT';
     badge.style.position = 'absolute';
-    badge.style.top = '18px';
-    badge.style.right = '60px';
+    badge.style.top = '8px';
+    badge.style.right = '50px';
     badge.style.backgroundColor = '#ff0000';
     badge.style.color = 'white';
     badge.style.padding = '3px 6px';
@@ -186,8 +213,8 @@ function applyWarningStyling(card, cartCourseName) {
     badge.className = 'warning-badge';
     badge.textContent = '⚠️ WARNING';
     badge.style.position = 'absolute';
-    badge.style.top = '18px';
-    badge.style.right = '60px';
+    badge.style.top = '8px';
+    badge.style.right = '50px';
     badge.style.backgroundColor = 'rgb(252, 130, 0)';
     badge.style.color = 'white';
     badge.style.padding = '3px 6px';
@@ -228,6 +255,12 @@ async function findAndMarkAllCartConflicts() {
         const data = await response.json();
         const cartCourseTimes = getCartCourseTimes(data);
         const cards = getNonCartCourseCards(cart);
+        
+        // If no cart courses have meeting times, no conflicts are possible
+        if (cartCourseTimes.length === 0) {
+            localStorage.removeItem('courseTimeConflicts');
+            return;
+        }
         
         cards.forEach(card => {
             const courseId = card.dataset.courseId;
@@ -745,10 +778,18 @@ async function exportCart() {
             return;
         }
         
-        // Generate CSV content
-        let csvContent = 'Course Code,Department,Course Name\n';
+        // Generate RSS feed content
+        const now = new Date().toUTCString();
+        let rssContent = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        rssContent += '<rss version="2.0" xmlns:workday="http://www.workday.com/namespace">\n';
+        rssContent += '  <channel>\n';
+        rssContent += '    <title>Amherst College Course Schedule</title>\n';
+        rssContent += '    <link>https://www.amherst.edu</link>\n';
+        rssContent += '    <description>Student course schedule export from Amherst College Course Catalog</description>\n';
+        rssContent += `    <pubDate>${now}</pubDate>\n`;
+        rssContent += '    <generator>Amherst Course Catalog</generator>\n\n';
         
-        // Add each course to CSV
+        // Add each course as an RSS item
         data.courses.forEach(course => {
             // Get course code (first one if multiple)
             const courseCode = course.course_acronyms && course.course_acronyms.length > 0 
@@ -758,24 +799,46 @@ async function exportCart() {
             // Extract department from course code (e.g., "COSC-111" -> "COSC")
             const department = courseCode.split('-')[0] || 'N/A';
             
-            // Get course name
-            const courseName = course.name || 'N/A';
+            // Get course name and escape XML special characters
+            const courseName = escapeXml(course.name || 'N/A');
             
-            // Escape commas and quotes in course name
-            const escapedCourseName = courseName.includes(',') || courseName.includes('"')
-                ? `"${courseName.replace(/"/g, '""')}"` 
-                : courseName;
+            // Get section information
+            const sectionInfo = course.section_information || {};
+            const sectionNumber = Object.keys(sectionInfo)[0] || 'N/A';
+            const credits = course.credits || 4;
             
-            // Add row to CSV
-            csvContent += `${courseCode},${department},${escapedCourseName}\n`;
+            // Create RSS item for course
+            rssContent += '    <item>\n';
+            rssContent += `      <title>${courseCode}: ${courseName}</title>\n`;
+            rssContent += `      <description><![CDATA[\n`;
+            rssContent += `        <strong>Course:</strong> ${courseName}<br/>\n`;
+            rssContent += `        <strong>Course Code:</strong> ${courseCode}<br/>\n`;
+            rssContent += `        <strong>Department:</strong> ${department}<br/>\n`;
+            rssContent += `        <strong>Section:</strong> ${sectionNumber}<br/>\n`;
+            rssContent += `        <strong>Credits:</strong> ${credits}\n`;
+            rssContent += `      ]]></description>\n`;
+            rssContent += `      <guid isPermaLink="false">amherst-course-${course.id}-section-${sectionNumber}</guid>\n`;
+            rssContent += `      <pubDate>${now}</pubDate>\n`;
+            
+            // Add Workday-specific custom elements
+            rssContent += `      <workday:courseCode>${escapeXml(courseCode)}</workday:courseCode>\n`;
+            rssContent += `      <workday:courseName>${courseName}</workday:courseName>\n`;
+            rssContent += `      <workday:department>${escapeXml(department)}</workday:department>\n`;
+            rssContent += `      <workday:section>${escapeXml(sectionNumber)}</workday:section>\n`;
+            rssContent += `      <workday:credits>${credits}</workday:credits>\n`;
+            
+            rssContent += '    </item>\n\n';
         });
         
+        rssContent += '  </channel>\n';
+        rssContent += '</rss>';
+        
         // Create and download file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        const blob = new Blob([rssContent], { type: 'application/rss+xml;charset=utf-8' });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'amherst-schedule.csv';
+        link.download = 'amherst-schedule.rss';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -785,6 +848,17 @@ async function exportCart() {
         console.error('Error exporting schedule:', error);
         alert('Failed to export schedule. Please try again.');
     }
+}
+
+// Helper function to escape XML special characters
+function escapeXml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
 // Displays modal with section options for a course
@@ -836,14 +910,14 @@ function showSectionModal(event, courseId, courseName) {
                 
                 sectionElement.innerHTML = `
                     <div class="section-header">
-                        Section ${section.section_number}
-                        ${isInCart ? '<span class="cart-badge"> IN CART</span>' : ''}
-                        ${hasConflict ? '<span class="conflict-badge">⛔️ CONFLICT</span>' : ''}
+                        <span>Section ${section.section_number}</span>
+                        ${isInCart ? '<span class="cart-badge">✓ In Cart</span>' : ''}
+                        ${hasConflict ? '<span class="conflict-badge">⚠ Conflict</span>' : ''}
                     </div>
                     <div class="section-details">
-                        <p>Professor: ${section.professor_name || 'TBA'}</p>
-                        <p>Location: ${section.location || 'TBA'}</p>
-                        <p>Time: ${formatMeetingTimes(section)}</p>
+                        <p><strong>Professor:</strong> ${section.professor_name || 'TBA'}</p>
+                        <p><strong>Location:</strong> ${section.location || 'TBA'}</p>
+                        <p><strong>Time:</strong> ${formatMeetingTimes(section) || 'TBD'}</p>
                     </div>
                 `;
                 
@@ -970,6 +1044,20 @@ function bindCourseEvents() {
                 const courseId = this.dataset.courseId;
                 togglePanel(courseId);
             }
+        });
+    });
+    
+    // Add tooltip handlers to cart buttons
+    document.querySelectorAll('.cart-button').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            const title = this.getAttribute('title');
+            if (title) {
+                showTooltip(this, title);
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            hideTooltip();
         });
     });
 }

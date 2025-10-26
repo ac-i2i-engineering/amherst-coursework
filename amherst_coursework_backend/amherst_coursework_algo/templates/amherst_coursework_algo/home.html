@@ -22,7 +22,7 @@
             </div>
             <div style="display: flex; gap: 10px;">
                 <button class="export-cart" title="Export your schedule to a file" aria-label="Export schedule">
-                    <i class="fa-solid fa-download"></i> Export
+                    <i class="fa-solid fa-download"></i> Workday Export
                 </button>
                 <button class="reset-cart" title="Clear all courses from your schedule" aria-label="Reset schedule">
                     <i class="fa-solid fa-rotate-left"></i> Reset
@@ -116,7 +116,7 @@
                         </div>
                         <div class="course-card-right">
                             <div class="course-header">
-                                <span class="info-text">Professor {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
+                                <span class="info-text">Prof. {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
                                 <button class="cart-button" 
                                     onclick="showSectionModal(event, '{{ course.id }}', '{{ course.courseName }}')" 
                                     data-course-id="{{course.id}}"

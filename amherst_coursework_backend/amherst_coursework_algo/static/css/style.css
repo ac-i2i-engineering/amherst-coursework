@@ -13,6 +13,14 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+    box-sizing: border-box;
+}
+
+.main-content.shifted .container {
+    max-width: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* Main Content Styles */
@@ -24,7 +32,10 @@
 }
 
 .main-content.shifted {
-    margin-right: calc(45% + 120px);
+    margin-right: 0;
+    width: 45%;
+    max-width: 45%;
+    overflow: hidden;
 }
 
 h1, h2 {
@@ -219,7 +230,10 @@ p {
     grid-template-columns: 1fr;  /* Force single column */
     opacity: 1;
     width: 100%;
-    margin-right: 45%;
+    max-width: 100%;
+    margin-right: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .course-card {
@@ -229,15 +243,29 @@ p {
     transition: all 0.3s ease;
     display: block;
     opacity: 1;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
     cursor: pointer;
     position: relative;
     z-index: 1;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.course-container.shifted .course-card {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 .course-card:hover {
     transform: translateY(-2px);
     box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.course-card:has(.cart-button:hover) {
+    z-index: 99999;
 }
 
 .course-card:focus-within {
@@ -261,9 +289,17 @@ p {
     width: 100%;
     height: 100%;
     min-height: 100%;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
     border-radius: 15px;
+    box-sizing: border-box;
 }
+
+.course-container.shifted .course-card-columns {
+    gap: 12px;
+}
+
+
 
 .course-card-left {
     display: flex;
@@ -277,6 +313,13 @@ p {
     border-right: 1px solid #eee;
 }
 
+.course-container.shifted .course-card-left {
+    flex: 0 0 20%;
+    min-width: 80px;
+}
+
+
+
 .course-card .course-code {
     margin: 0;
     color: #3e3636;
@@ -285,19 +328,48 @@ p {
     font-style: italic;
     line-height: 1.5;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.course-card .course-code span {
+    display: block;
+}
+
+.course-container.shifted .course-card .course-code {
+    font-size: 12px;
 }
 
 .course-card-right {
     flex: 1;
-    padding: 18px 20px 20px 12px;
+    padding: 12px 20px 20px 12px;
     min-width: 0;
+    overflow: visible;
+    box-sizing: border-box;
 }
+
+.course-container.shifted .course-card-right {
+    padding: 10px 12px 14px 10px;
+}
+
+
 
 .course-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    min-width: 0;
+    gap: 10px;
+    position: relative;
+    overflow: visible;
+}
+
+
+
+.course-header .info-text {
+    flex: 1;
     min-width: 0;
 }
 
@@ -321,11 +393,13 @@ p {
     border-radius: 50%;
     transition: all 0.2s ease;
     position: relative;
+    z-index: 100;
 }
 
 .course-header .cart-button:hover {
     transform: scale(1.1);
     box-shadow: 0 2px 8px rgba(74, 0, 153, 0.3);
+    z-index: 100000;
 }
 
 .course-header .cart-button:focus {
@@ -333,47 +407,37 @@ p {
     outline-offset: 2px;
 }
 
-.course-header .cart-button::after {
-    content: attr(title);
-    position: absolute;
-    top: -35px;
-    right: -10px;
+/* Tooltip styles - now handled by JavaScript */
+.custom-tooltip {
+    position: fixed;
     background-color: #333;
     color: white;
     padding: 6px 10px;
     border-radius: 4px;
     font-size: 11px;
     white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 100;
+    z-index: 999999;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
-.course-header .cart-button:hover::after {
+.custom-tooltip.show {
     opacity: 1;
 }
 
-/* Arrow for tooltip */
-.course-header .cart-button::before {
+.custom-tooltip::before {
     content: '';
     position: absolute;
-    top: -8px;
-    right: 5px;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid #333;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 100;
-}
-
-.course-header .cart-button:hover::before {
-    opacity: 1;
 }
 
 .cart-button i {
@@ -391,6 +455,11 @@ p {
     font-size: 18px;
 }
 
+.course-container.shifted .course-card .course-name {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+}
+
 .course-card p {
     margin: 0;
     font-size: 14px;
@@ -403,6 +472,10 @@ p {
     -webkit-box-orient: vertical;
     overflow: hidden;
     max-width: 60ch;
+}
+
+.course-container.shifted .course-card .course-description {
+    font-size: 13px;
 }
 
 .division-tag {
@@ -438,10 +511,10 @@ p {
 .side-panel {
     position: fixed;
     top: 0;
-    right: -45%;
+    right: -52%;
     height: 100vh;
     max-height: 100vh;
-    width: 45%;
+    width: 52%;
     padding: 30px 40px 100px 40px;
     background: #fff;
     border-left: 1px solid #ddd;
@@ -547,19 +620,23 @@ p {
 }
 
 .export-cart {
-    padding: 8px 16px;
+    padding: 8px 12px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     flex: 1;
     position: relative;
+    white-space: nowrap;
+    min-height: 36px;
+    max-height: 36px;
 }
 
 .export-cart:hover {
@@ -589,19 +666,23 @@ p {
 }
 
 .reset-cart {
-    padding: 8px 16px;
+    padding: 8px 12px;
     background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     flex: 1;
     position: relative;
+    white-space: nowrap;
+    min-height: 36px;
+    max-height: 36px;
 }
 
 .reset-cart:hover {
@@ -1035,62 +1116,117 @@ p {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(74, 0, 153, 0.15);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 8% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 5px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f5fa 100%);
+    margin: 5% auto;
+    padding: 0;
+    border: none;
+    width: 85%;
+    max-width: 600px;
+    border-radius: 16px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(74, 0, 153, 0.3), 
+                0 0 0 1px rgba(149, 86, 176, 0.1);
+    animation: slideUp 0.3s ease;
+    position: relative;
+}
 
-    max-height: 70vh;
-    overflow-y: auto;
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .close-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    color: #ffffff;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 26px;
+    font-weight: 300;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
+    line-height: 0;
+    background-color: #dc3545;
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 .close-modal:hover {
-    color: #333;
-    background-color: rgba(0, 0, 0, 0.05);
-    transform: rotate(90deg);
+    color: #ffffff;
+    background-color: #c82333;
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.5);
 }
 
 .close-modal:focus {
-    outline: 2px solid #9556b0;
+    outline: 2px solid #dc3545;
     outline-offset: 2px;
 }
 
 .section-item {
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 12px 0;
+    border: 2px solid rgba(149, 86, 176, 0.15);
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    box-shadow: 0 2px 8px rgba(74, 0, 153, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.section-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(180deg, #4a0099 0%, #874ec4 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
 }
 
 .section-item:hover {
-    background-color: #f5f5f5;
+    background: linear-gradient(135deg, rgba(149, 86, 176, 0.05) 0%, rgba(74, 0, 153, 0.02) 100%);
     border-color: #9556b0;
-    transform: translateX(4px);
+    transform: translateX(6px);
+    box-shadow: 0 6px 20px rgba(74, 0, 153, 0.15);
+}
+
+.section-item:hover::before {
+    transform: scaleY(1);
 }
 
 .section-item:focus {
@@ -1100,48 +1236,122 @@ p {
 
 .section-item.section-conflict {
     border: 2px solid #ff817a !important;
-    background-color: rgba(255,0,0,0.07) !important;
+    background: linear-gradient(135deg, rgba(255, 129, 122, 0.08) 0%, rgba(255, 0, 0, 0.03) 100%) !important;
+    box-shadow: 0 2px 12px rgba(255, 0, 0, 0.15) !important;
+}
+
+.section-item.section-conflict::before {
+    background: linear-gradient(180deg, #ff817a 0%, #ff0000 100%);
 }
 
 .section-item.section-in-cart {
     border: 2px solid #874ec4;
-    background-color: rgba(135, 78, 196, 0.1);
+    background: linear-gradient(135deg, rgba(135, 78, 196, 0.12) 0%, rgba(74, 0, 153, 0.05) 100%);
+    box-shadow: 0 4px 16px rgba(135, 78, 196, 0.2);
 }
 
-.section-item:hover {
-    transform: scale(1.02);
-    transition: transform 0.2s ease;
+.section-item.section-in-cart::before {
+    transform: scaleY(1);
 }
 
 .cart-badge {
     color: white;
-    background-color: #874ec4;
-    font-weight:bold;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
+    background: linear-gradient(135deg, #874ec4 0%, #9556b0 100%);
+    font-weight: 600;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(135, 78, 196, 0.3);
 }
 
 .conflict-badge {
     color: white;
-    background-color: #ff0000;
-    font-weight:bold;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
+    background: linear-gradient(135deg, #ff817a 0%, #ff0000 100%);
+    font-weight: 600;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
 }
 
 .warning-badge {
+    color: #7e4a00;
+    background: linear-gradient(135deg, rgb(255, 243, 73) 0%, rgb(255, 220, 50) 100%);
+    font-weight: 600;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(255, 243, 73, 0.3);
+}
+
+#modal-title {
+    background: linear-gradient(135deg, #4a0099 0%, #874ec4 100%);
     color: white;
-    background-color: rgb(255, 243, 73);
-    font-weight:bold;
-    padding: 2px 5px;
-    font-size: 12px;
-    border-radius: 3px;
+    margin: 0;
+    padding: 24px 28px;
+    font-size: 22px;
+    font-weight: 600;
+    border-radius: 16px 16px 0 0;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 8px rgba(74, 0, 153, 0.15);
+}
+
+#section-list {
+    padding: 20px;
+    max-height: calc(80vh - 100px);
+    overflow-y: auto;
+}
+
+#section-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#section-list::-webkit-scrollbar-track {
+    background: rgba(149, 86, 176, 0.05);
+    border-radius: 4px;
+}
+
+#section-list::-webkit-scrollbar-thumb {
+    background: rgba(149, 86, 176, 0.3);
+    border-radius: 4px;
+}
+
+#section-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(149, 86, 176, 0.5);
 }
 
 .section-header {
-    font-weight: bold
+    font-weight: 600;
+    font-size: 16px;
+    color: #4a0099;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-details {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.section-details p {
+    margin: 6px 0;
+    display: flex;
+    align-items: flex-start;
+}
+
+.section-details strong {
+    color: #4a0099;
+    min-width: 90px;
+    font-weight: 600;
 }
 
 .conflict-loading {

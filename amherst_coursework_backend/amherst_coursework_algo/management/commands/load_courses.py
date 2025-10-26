@@ -186,6 +186,7 @@ class Command(BaseCommand):
             # Record the attempt regardless of outcome
             Command._gemini_call_times.append(call_started_at)
             Command._gemini_total_calls += 1
+
     def parse_ampm_time(time_str):
         """
         Parse a time string in AM/PM format into a Django time object.

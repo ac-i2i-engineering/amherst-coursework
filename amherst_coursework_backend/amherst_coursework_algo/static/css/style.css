@@ -357,20 +357,13 @@ p {
 
 .course-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
     min-width: 0;
     gap: 10px;
     position: relative;
     overflow: visible;
-}
-
-
-
-.course-header .info-text {
-    flex: 1;
-    min-width: 0;
 }
 
 .course-divisions {
@@ -450,14 +443,14 @@ p {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin: 0 0 10px 0;
+    margin: 0 0 6px 0;
     max-width: 45ch;
     font-size: 18px;
 }
 
 .course-container.shifted .course-card .course-name {
     font-size: 16px;
-    margin: 0 0 8px 0;
+    margin: 0 0 5px 0;
 }
 
 .course-card p {
@@ -1026,15 +1019,14 @@ p {
 
 .info-text {
     display: block;
-    align-items: center;
-    gap: 5px;
     min-width: 0;
-    max-width: 90%;
+    max-width: 100%;
     font-size: 12px;
     color: #894ead;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 8px;
 }
 
 /* Even more cart styling */

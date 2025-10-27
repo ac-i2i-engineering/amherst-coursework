@@ -158,7 +158,6 @@
                         </div>
                         <div class="course-card-right">
                             <div class="course-header">
-                                <span class="info-text">Prof. {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
                                 <button class="cart-button" 
                                     onclick="showSectionModal(event, '{{ course.id }}', '{{ course.courseName }}')" 
                                     data-course-id="{{course.id}}"
@@ -168,6 +167,7 @@
                                 </button>
                             </div>
                             <h2 class="course-name">{{ course.courseName }}</h2>
+                            <span class="info-text">Prof. {{ course.professor_name|default:"TBA" }} | {{ course.meeting_times|default:"TBD" }}</span>
                             <p class="course-description">{{ course.summary|default:course.courseDescription }}</p>
                         </div>
                     </div>

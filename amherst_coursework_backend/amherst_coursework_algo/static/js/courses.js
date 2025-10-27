@@ -75,8 +75,39 @@ function handleCartClick(event, courseId, sectionId) {
 
 function toggleCartPanel() {
     const panel = document.getElementById('cart-side-panel');
-    panel.classList.toggle('open');
-    updateCartDisplay();
+    const mainContent = document.querySelector('.main-content');
+    const courseContainer = document.querySelector('.course-container');
+    
+    if (panel.classList.contains('open')) {
+        // Closing panel with animation sequence
+        courseContainer.style.opacity = '0';
+        courseContainer.classList.add('hidden');
+        panel.classList.add('closing');
+        
+        // Handle panel closing animation
+        setTimeout(() => {
+            panel.classList.remove('open', 'closing');
+            mainContent.classList.remove('shifted');
+            courseContainer.classList.remove('shifted');
+            
+            // Fade content back in
+            setTimeout(() => {
+                courseContainer.classList.add('fade-in');
+                courseContainer.classList.remove('hidden');
+                courseContainer.style.opacity = '1';
+                
+                setTimeout(() => {
+                    courseContainer.classList.remove('fade-in');
+                }, 300);
+            }, 100);
+        }, 300);
+    } else {
+        // Opening panel
+        panel.classList.add('open');
+        mainContent.classList.add('shifted');
+        courseContainer.classList.add('shifted');
+        updateCartDisplay();
+    }
 }
 
 // Removes all conflict and warning styling from course cards

@@ -504,10 +504,10 @@ p {
 .side-panel {
     position: fixed;
     top: 0;
-    right: -52%;
+    right: -48%;
     height: 100vh;
     max-height: 100vh;
-    width: 52%;
+    width: 48%;
     padding: 30px 40px 100px 40px;
     background: #fff;
     border-left: 1px solid #ddd;

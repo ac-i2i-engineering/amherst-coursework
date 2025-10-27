@@ -462,6 +462,10 @@ function togglePanel(courseId = null) {
         const clickedCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
         panelContent.innerHTML = '<div class="loading">Loading...</div>';
         panel.classList.add('open');
+        
+        // Shift content immediately when opening
+        mainContent.classList.add('shifted');
+        courseContainer.classList.add('shifted');
 
         // Fetch and display course details
         fetch(`/details/${courseId}/`)  
@@ -474,8 +478,6 @@ function togglePanel(courseId = null) {
                 panel.scrollTop = 0;
                 panelContent.scrollTop = 0;
                 panelContent.innerHTML = html;
-                mainContent.classList.add('shifted');
-                courseContainer.classList.add('shifted');
 
                 // Scroll to show the clicked card
                 if (clickedCard) {

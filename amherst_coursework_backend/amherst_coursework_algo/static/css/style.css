@@ -1518,3 +1518,437 @@ button, a, input, select, textarea {
         margin-right: 50px;
     }
 }
+/* ============================================================================
+   AI ADVISOR STYLES
+   ============================================================================ */
+
+/* AI Advisor Floating Button */
+.ai-advisor-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4a0099 0%, #311a4d 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(74, 0, 153, 0.4);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-advisor-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 0, 153, 0.6);
+    background: linear-gradient(135deg, #3b1f5c 0%, #2a1438 100%);
+}
+
+.ai-advisor-button:active {
+    transform: translateY(0);
+}
+
+.ai-advisor-button i {
+    font-size: 18px;
+}
+
+/* AI Advisor Panel */
+.advisor-panel {
+    width: 500px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+}
+
+.advisor-panel h3 {
+    background: linear-gradient(135deg, #4a0099 0%, #311a4d 100%);
+    color: white;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.advisor-panel h3 i {
+    font-size: 20px;
+}
+
+/* Chat Container */
+#advisor-chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 30px 20px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+#advisor-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 0;
+    padding-right: 5px;
+}
+
+/* Custom scrollbar for messages */
+#advisor-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#advisor-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#advisor-messages::-webkit-scrollbar-thumb {
+    background: #4a0099;
+    border-radius: 3px;
+}
+
+#advisor-messages::-webkit-scrollbar-thumb:hover {
+    background: #311a4d;
+}
+
+/* Chat Messages */
+.advisor-message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    max-width: 85%;
+    animation: fadeIn 0.3s ease;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.advisor-message.user {
+    background: #4a0099;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.advisor-message.assistant {
+    background: #f0f0f0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.advisor-message.loading {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Formatted content within assistant messages */
+.advisor-message.assistant p {
+    margin: 0 0 10px 0;
+}
+
+.advisor-message.assistant p:last-child {
+    margin-bottom: 0;
+}
+
+.advisor-message.assistant br {
+    display: block;
+    content: "";
+    margin: 5px 0;
+}
+
+.advisor-message.assistant strong {
+    font-weight: 700;
+    color: #222;
+}
+
+.advisor-message.assistant em {
+    font-style: italic;
+}
+
+.advisor-message.assistant h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #4a0099 0%, #311a4d 100%);
+    margin: 15px -16px 10px -16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.advisor-message.assistant h3:first-child {
+    margin-top: -12px;
+}
+
+.advisor-message.assistant h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #311a4d;
+    margin: 12px 0 8px 0;
+    padding-bottom: 3px;
+    border-bottom: 2px solid #311a4d;
+}
+
+.advisor-message.assistant ul,
+.advisor-message.assistant ol {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.advisor-message.assistant ul {
+    list-style-type: disc;
+}
+
+.advisor-message.assistant ol {
+    list-style-type: decimal;
+}
+
+.advisor-message.assistant li {
+    margin: 6px 0;
+    line-height: 1.5;
+}
+
+.advisor-message.assistant li strong {
+    color: #4a0099;
+}
+
+/* Input Container */
+.advisor-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#advisor-question {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: border-color 0.3s;
+}
+
+#advisor-question:focus {
+    outline: none;
+    border-color: #4a0099;
+}
+
+.advisor-send-btn {
+    background: #4a0099;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.advisor-send-btn:hover {
+    background: #311a4d;
+}
+
+.advisor-send-btn:active {
+    transform: scale(0.95);
+}
+
+.advisor-send-btn i {
+    font-size: 16px;
+}
+
+/* Quick Action Buttons */
+.advisor-quick-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.advisor-quick-actions button {
+    padding: 8px 12px;
+    background: white;
+    border: 2px solid #4a0099;
+    color: #4a0099;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+.advisor-quick-actions button:hover {
+    background: #4a0099;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.advisor-quick-actions button:active {
+    transform: translateY(0);
+}
+
+.advisor-quick-actions button i {
+    font-size: 11px;
+}
+
+/* Recommendation Cards */
+.advisor-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.recommendation-card {
+    background: white;
+    border: 2px solid #4a0099;
+    border-radius: 12px;
+    padding: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.recommendation-card:hover {
+    box-shadow: 0 4px 12px rgba(74, 0, 153, 0.2);
+    transform: translateY(-2px);
+    border-color: #311a4d;
+}
+
+.rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.rec-header strong {
+    color: #4a0099;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.rec-credits {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+}
+
+.rec-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 15px;
+}
+
+.rec-departments {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.dept-badge {
+    background: #f5f0fa;
+    color: #4a0099;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.rec-reason {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.rec-view-btn {
+    width: 100%;
+    padding: 8px;
+    background: #4a0099;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.rec-view-btn:hover {
+    background: #311a4d;
+}
+
+.rec-view-btn:active {
+    transform: scale(0.98);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments for AI Advisor */
+@media (max-width: 768px) {
+    .advisor-panel {
+        width: 90%;
+    }
+    
+    .ai-advisor-button {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .advisor-message {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .advisor-panel {
+        width: 95%;
+    }
+    
+    .ai-advisor-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .advisor-quick-actions button {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}

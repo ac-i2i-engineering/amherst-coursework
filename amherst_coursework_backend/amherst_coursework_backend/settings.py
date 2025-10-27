@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "amherst-coursework.onrender.com",
     ".onrender.com",
+    ".gitpod.dev",
 ]
 
 # Application definition

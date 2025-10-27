@@ -17,4 +17,5 @@ urlpatterns = [
         views.get_course_sections,
         name="course_sections",
     ),
+    path("api/advisor/", views.ai_course_advisor, name="ai_advisor"),
 ]

@@ -11,6 +11,7 @@ Amherst Coursework is a sophisticated web application that provides Amherst Coll
 - **Smart Synonym Expansion:** Automatically expands terms like "coding" → "programming", "movies" → "film" for better matching
 - **Interactive Schedule Builder:** Visual course cart with real-time conflict detection, calendar visualization, and total credit tracking
 - **Comprehensive Course Details:** Detailed information including prerequisites, corequisites, enrollment caps, class year limits, course tags, semester offerings, and clickable professor links
+- **AI-Powered Course Advisor:** Intelligent course recommendations powered by Google's Gemini, providing personalized guidance based on your academic interests, goals, and schedule
 - **Automated Data Pipeline:** Fully automated web scraping and database updates twice yearly
 - **Responsive Design:** Clean, modern interface optimized for desktop and mobile devices
 - **Flexible Search:** Works with course codes, department names, professor names, topics, building locations, or natural language
@@ -747,6 +748,232 @@ python manage.py parse_deg_1 && \
 python manage.py parse_deg_2 && \
 python manage.py load_courses parsed_courses_second_deg.json
 ```
+
+
+## AI Course Advisor
+
+The AI Course Advisor is an intelligent assistant that helps students discover courses aligned with their academic interests and goals. Powered by Google's Gemini AI, it provides personalized course recommendations with detailed explanations.
+
+### Features
+
+- **Personalized Recommendations:** Get course suggestions tailored to your interests, major, and academic goals
+- **Intelligent Context Understanding:** The advisor considers your current schedule, completed courses, and academic level
+- **Detailed Explanations:** Each recommendation includes reasoning about why the course matches your interests
+- **Natural Conversation:** Ask follow-up questions and refine recommendations through natural dialogue
+- **Course Integration:** Recommended courses link directly to full course details and can be added to your schedule
+
+### Setup
+
+To enable the AI Advisor feature, you need a Google Gemini API key:
+
+1. **Get a Google Gemini API Key:**
+   - Visit [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+   - Sign up or log in to your Google account
+   - Create a new API key
+
+2. **Configure the Application:**
+   
+   Create a `.env` file in the `amherst_coursework_backend` directory:
+   
+   ```bash
+   cd amherst_coursework_backend
+   touch .env
+   ```
+   
+   Add your API key to the `.env` file:
+   
+   ```
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+3. **Install Required Dependencies:**
+   
+   The Google GenAI Python library is required. Install all dependencies:
+   
+   ```bash
+   pip install -r requirements.txt
+   pip install google-genai
+   ```
+
+4. **Verify Setup:**
+   
+   The application will automatically detect the API key. If the key is missing or invalid, the AI Advisor button will be disabled with a helpful error message.
+
+### Usage
+
+1. **Access the Advisor:**
+   - Click the "AI Course Advisor" button in the navigation bar
+   - A modal dialog will open with the advisor interface
+
+2. **Start a Conversation:**
+   - Describe your interests, goals, or what you're looking for in a course
+   - Examples:
+     - "I'm interested in machine learning and data science"
+     - "I want to take a creative writing course"
+     - "What courses would help me prepare for medical school?"
+     - "I'm looking for courses about climate change and sustainability"
+
+3. **Review Recommendations:**
+   - The advisor will suggest relevant courses with explanations
+   - Each course includes:
+     - Course code and title
+     - Department and credits
+     - Why it matches your interests
+     - Link to full course details
+
+4. **Refine Your Search:**
+   - Ask follow-up questions to narrow down recommendations
+   - Provide additional context about your schedule or preferences
+   - Request alternatives or more specific suggestions
+
+5. **Add to Schedule:**
+   - Click on any recommended course to view full details
+   - Add courses directly to your cart from the course detail page
+
+### How It Works
+
+The AI Advisor uses a sophisticated multi-step process:
+
+1. **Context Building:**
+   - Retrieves all available courses from the database
+   - Formats course information including titles, descriptions, departments, and prerequisites
+   - Builds a comprehensive context about the course catalog
+
+2. **Intelligent Processing:**
+   - Sends your query along with course data to Google Gemini
+   - Uses structured prompts to ensure relevant, accurate recommendations
+   - Maintains conversation history for contextual follow-ups
+
+3. **Response Formatting:**
+   - Parses AI responses into structured course recommendations
+   - Extracts course codes, titles, and reasoning
+   - Links recommendations to actual course database entries
+
+4. **Interactive Refinement:**
+   - Maintains conversation state across multiple queries
+   - Allows natural back-and-forth dialogue
+   - Adapts recommendations based on your feedback
+
+### Technical Architecture
+
+```mermaid
+graph LR
+    A[User Query] --> B[Frontend Modal]
+    B --> C[API Endpoint<br/>/api/ai-advisor/]
+    C --> D[Course Database]
+    C --> E[Google Gemini API]
+    D --> F[Context Builder]
+    F --> E
+    E --> G[Response Parser]
+    G --> H[Structured Recommendations]
+    H --> B
+    B --> I[User Interface]
+```
+
+**Key Components:**
+
+- **Frontend (`advisor.js`):**
+  - Modal interface with chat-like experience
+  - Real-time message display with typing indicators
+  - Course card rendering with links to details
+  - Conversation history management
+
+- **Backend (`ai_advisor.py` and `views.py`):**
+  - `ai_advisor` endpoint handles all advisor requests
+  - Retrieves course data from database
+  - Manages Google Gemini API communication
+  - Parses and structures AI responses
+
+- **API Integration:**
+  - Uses Google's GenAI SDK
+  - Gemini Flash model for fast, high-quality recommendations
+  - Structured system prompts for consistent output
+  - Error handling and fallback responses
+
+### API Endpoint
+
+**Endpoint:** `POST /api/ai-advisor/`
+
+**Request Body:**
+```json
+{
+  "message": "I'm interested in computer science and artificial intelligence",
+  "conversation_history": [
+    {
+      "role": "user",
+      "content": "Previous user message"
+    },
+    {
+      "role": "assistant",
+      "content": "Previous assistant response"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "response": "Based on your interest in AI, I recommend...",
+  "courses": [
+    {
+      "code": "COSC-311",
+      "title": "Theory of Computation",
+      "department": "Computer Science",
+      "credits": 4.0,
+      "reasoning": "This course provides foundational knowledge..."
+    }
+  ]
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "GEMINI_API_KEY not configured in settings"
+}
+```
+
+### Troubleshooting
+
+**Issue: "AI Advisor is not available" message**
+- **Cause:** Gemini API key is not configured
+- **Solution:** Follow the setup instructions above to add your API key to `.env`
+
+**Issue: Slow response times**
+- **Cause:** Gemini API calls can take 3-8 seconds depending on query complexity
+- **Solution:** This is normal; the loading indicator shows progress
+
+**Issue: Generic or irrelevant recommendations**
+- **Cause:** Query may be too vague or broad
+- **Solution:** Provide more specific details about your interests, major, or goals
+
+**Issue: "Error communicating with AI service"**
+- **Cause:** API key invalid, rate limit exceeded, or network issues
+- **Solution:** 
+  - Verify your API key is correct
+  - Check your Google AI Studio account for rate limits or quota issues
+  - Ensure you have internet connectivity
+
+**Issue: Recommended courses don't exist**
+- **Cause:** AI may occasionally suggest courses not in the current catalog
+- **Solution:** The system filters recommendations to only show existing courses
+
+### Best Practices
+
+1. **Be Specific:** Provide detailed information about your interests and goals
+2. **Iterate:** Use follow-up questions to refine recommendations
+3. **Provide Context:** Mention your major, year, or completed courses for better suggestions
+4. **Explore:** Don't hesitate to ask about different topics or interdisciplinary interests
+5. **Verify:** Always check full course details before adding to your schedule
+
+### Privacy & Data
+
+- Conversations are not stored permanently
+- Only course catalog data and your queries are sent to Google Gemini
+- No personal information or academic records are transmitted
+- API usage follows Google's Generative AI data usage policies
+
 
 ## License
 

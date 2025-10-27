@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "amherst-coursework.onrender.com",
     ".onrender.com",
+    ".gitpod.dev",
 ]
 
 # Application definition
@@ -184,3 +185,5 @@ LOGGING = {
 }
 
 INSTITUTIONAL_DOMAIN = "https://www.amherst.edu/"
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")

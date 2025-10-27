@@ -67,6 +67,48 @@
         View Saved Schedule (<span id="cart-count-header">0</span>)
     </button>
 
+    <!-- AI Advisor Panel -->
+    <div id="ai-advisor-panel" class="side-panel advisor-panel">
+        <h3><i class="fa-solid fa-robot"></i> AI Course Advisor</h3>
+        
+        <div id="advisor-chat-container">
+            <div id="advisor-messages"></div>
+            
+            <div class="advisor-input-container">
+                <input type="text" 
+                       id="advisor-question" 
+                       placeholder="Ask me anything about your schedule..."
+                       aria-label="Ask advisor a question"
+                       onkeypress="if(event.key === 'Enter') askAdvisor()">
+                <button onclick="askAdvisor()" class="advisor-send-btn" title="Send message">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div class="advisor-quick-actions">
+                <button onclick="askAdvisor('Analyze my schedule')">
+                    <i class="fa-solid fa-chart-line"></i> Analyze Schedule
+                </button>
+                <button onclick="askAdvisor('Suggest courses for me')">
+                    <i class="fa-solid fa-lightbulb"></i> Suggest Courses
+                </button>
+                <button onclick="askAdvisor('Check my prerequisites')">
+                    <i class="fa-solid fa-list-check"></i> Check Prerequisites
+                </button>
+            </div>
+        </div>
+        
+        <button class="close-panel" onclick="toggleAdvisorPanel()" title="Close AI advisor panel" aria-label="Close AI advisor panel">×</button>
+    </div>
+
+    <!-- AI Advisor Toggle Button -->
+    <button id="ai-advisor-toggle" class="ai-advisor-button" 
+            onclick="toggleAdvisorPanel()" 
+            title="Get AI-powered course recommendations (Beta)"
+            aria-label="Open AI advisor (Beta)">
+        <i class="fa-solid fa-robot"></i> AI Advisor <span style="font-size: 0.75em; opacity: 0.8;">(Beta)</span>
+    </button>
+
     <div class = "main-content">
         <div class="container">
             <div style="display: flex; align-items: flex-end; margin: 20px;">

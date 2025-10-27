@@ -1062,3 +1062,304 @@ function bindCourseEvents() {
     });
 }
 
+// ============================================================================
+// AI ADVISOR FUNCTIONS
+// ============================================================================
+
+/**
+ * Format markdown-style text to HTML
+ * @param {string} text - Text with markdown formatting
+ * @returns {string} HTML string
+ */
+function formatMarkdownToHTML(text) {
+    // Split into lines for processing
+    const lines = text.split('\n');
+    const formatted = [];
+    let inList = false;
+    let listType = 'ul'; // Track if we're in ul or ol
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        
+        // Skip empty lines but add spacing
+        if (line === '') {
+            if (inList) {
+                formatted.push(`</${listType}>`);
+                inList = false;
+            }
+            formatted.push('<br>');
+            continue;
+        }
+        
+        // Handle headers (##, ###) - must come before bold conversion
+        if (line.startsWith('###')) {
+            if (inList) {
+                formatted.push(`</${listType}>`);
+                inList = false;
+            }
+            line = line.replace(/^###\s+/, '');
+            // Convert any **text** to <strong>
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            formatted.push(`<h4>${line}</h4>`);
+            continue;
+        }
+        else if (line.startsWith('##')) {
+            if (inList) {
+                formatted.push(`</${listType}>`);
+                inList = false;
+            }
+            line = line.replace(/^##\s+/, '');
+            // Convert any **text** to <strong>
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            formatted.push(`<h3>${line}</h3>`);
+            continue;
+        }
+        
+        // Check if line is a standalone bold header (e.g., "**Prerequisites:**")
+        const boldHeaderMatch = line.match(/^\*\*([^*]+):\*\*\s*$/);
+        if (boldHeaderMatch) {
+            if (inList) {
+                formatted.push(`</${listType}>`);
+                inList = false;
+            }
+            formatted.push(`<h3>${boldHeaderMatch[1]}:</h3>`);
+            continue;
+        }
+        
+        // Handle bullet points (*, -, •)
+        if (line.match(/^[\*\-•]\s+/)) {
+            if (!inList || listType !== 'ul') {
+                if (inList) formatted.push(`</${listType}>`);
+                formatted.push('<ul>');
+                inList = true;
+                listType = 'ul';
+            }
+            line = line.replace(/^[\*\-•]\s+/, '');
+            // Convert **bold** and *italic*
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            line = line.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+            formatted.push(`<li>${line}</li>`);
+            continue;
+        }
+        
+        // Handle numbered lists
+        if (line.match(/^\d+\.\s+/)) {
+            if (!inList || listType !== 'ol') {
+                if (inList) formatted.push(`</${listType}>`);
+                formatted.push('<ol>');
+                inList = true;
+                listType = 'ol';
+            }
+            line = line.replace(/^\d+\.\s+/, '');
+            // Convert **bold** and *italic*
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            line = line.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+            formatted.push(`<li>${line}</li>`);
+            continue;
+        }
+        
+        // Regular paragraph
+        if (inList) {
+            formatted.push(`</${listType}>`);
+            inList = false;
+        }
+        
+        // Convert **bold** and *italic* in paragraphs
+        line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        line = line.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+        formatted.push(`<p>${line}</p>`);
+    }
+    
+    // Close any open list
+    if (inList) {
+        formatted.push(`</${listType}>`);
+    }
+    
+    return formatted.join('');
+}
+
+/**
+ * Toggle the AI advisor panel open/closed
+ */
+function toggleAdvisorPanel() {
+    const panel = document.getElementById('ai-advisor-panel');
+    const isOpening = !panel.classList.contains('open');
+    
+    panel.classList.toggle('open');
+    
+    // Auto-analyze on first open if cart has courses
+    if (isOpening) {
+        const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+        const messagesContainer = document.getElementById('advisor-messages');
+        
+        // Only auto-analyze if cart has courses and no messages yet
+        if (cart.length > 0 && messagesContainer.children.length === 0) {
+            setTimeout(() => {
+                askAdvisor('Analyze my current schedule and suggest improvements');
+            }, 300);
+        } else if (cart.length === 0 && messagesContainer.children.length === 0) {
+            // Show welcome message if cart is empty
+            addAdvisorMessage(
+                "👋 Welcome! Add some courses to your schedule and I'll help you analyze it and suggest complementary courses.",
+                'assistant'
+            );
+        }
+    }
+}
+
+/**
+ * Ask the AI advisor a question
+ * @param {string} question - Optional predefined question
+ */
+async function askAdvisor(question = null) {
+    const input = document.getElementById('advisor-question');
+    const query = question || input.value.trim();
+    
+    if (!query) return;
+    
+    // Clear input if user typed it
+    if (!question) input.value = '';
+    
+    // Add user message to chat
+    addAdvisorMessage(query, 'user');
+    
+    // Show loading message
+    const loadingId = addAdvisorMessage('🤔 Thinking...', 'assistant', true);
+    
+    try {
+        // Get cart data
+        const cart = JSON.parse(localStorage.getItem('courseCart') || '[]');
+        
+        if (cart.length === 0 && !query.toLowerCase().includes('suggest')) {
+            removeLoadingMessage(loadingId);
+            addAdvisorMessage(
+                "Your schedule is empty! Add some courses first, or ask me to suggest courses to get started.",
+                'assistant'
+            );
+            return;
+        }
+        
+        // Call backend API
+        const params = new URLSearchParams({
+            cart: JSON.stringify(cart),
+            question: query
+        });
+        
+        const response = await fetch(`/api/advisor/?${params}`);
+        const data = await response.json();
+        
+        // Remove loading message
+        removeLoadingMessage(loadingId);
+        
+        if (data.success) {
+            // Display AI response
+            displayAdvisorResponse(data);
+        } else {
+            addAdvisorMessage(
+                `❌ Error: ${data.error || 'Failed to get advice'}`,
+                'assistant'
+            );
+        }
+        
+    } catch (error) {
+        removeLoadingMessage(loadingId);
+        addAdvisorMessage(
+            '❌ Sorry, I encountered an error. Please try again or check your internet connection.',
+            'assistant'
+        );
+        console.error('Advisor error:', error);
+    }
+}
+
+/**
+ * Add a message to the advisor chat
+ * @param {string} text - Message text
+ * @param {string} sender - 'user' or 'assistant'
+ * @param {boolean} isLoading - Whether this is a loading message
+ * @returns {string} Message ID
+ */
+function addAdvisorMessage(text, sender, isLoading = false) {
+    const container = document.getElementById('advisor-messages');
+    const messageDiv = document.createElement('div');
+    const messageId = `msg-${Date.now()}-${Math.random()}`;
+    
+    messageDiv.id = messageId;
+    messageDiv.className = `advisor-message ${sender} ${isLoading ? 'loading' : ''}`;
+    
+    // Format assistant messages with markdown, keep user messages as plain text
+    if (sender === 'assistant' && !isLoading) {
+        messageDiv.innerHTML = formatMarkdownToHTML(text);
+    } else {
+        messageDiv.textContent = text;
+    }
+    
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+    
+    return messageId;
+}
+
+/**
+ * Display the full advisor response with recommendations
+ * @param {object} data - Response data from API
+ */
+function displayAdvisorResponse(data) {
+    // Display main advice
+    addAdvisorMessage(data.advice, 'assistant');
+    
+    // Display recommendations as interactive cards
+    if (data.recommendations && data.recommendations.length > 0) {
+        const container = document.getElementById('advisor-messages');
+        const recsDiv = document.createElement('div');
+        recsDiv.className = 'advisor-recommendations';
+        
+        data.recommendations.forEach(rec => {
+            const card = createRecommendationCard(rec);
+            recsDiv.appendChild(card);
+        });
+        
+        container.appendChild(recsDiv);
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
+/**
+ * Create a recommendation card element
+ * @param {object} course - Course recommendation data
+ * @returns {HTMLElement} Card element
+ */
+function createRecommendationCard(course) {
+    const card = document.createElement('div');
+    card.className = 'recommendation-card';
+    
+    const deptBadges = course.departments
+        .map(dept => `<span class="dept-badge">${dept}</span>`)
+        .join(' ');
+    
+    card.innerHTML = `
+        <div class="rec-header">
+            <strong>${course.code}</strong>
+            <span class="rec-credits">${course.credits} credits</span>
+        </div>
+        <div class="rec-title">${course.name}</div>
+        <div class="rec-departments">${deptBadges}</div>
+        <div class="rec-reason">${course.reason}</div>
+        <button onclick="togglePanel(${course.id})" class="rec-view-btn">
+            <i class="fa-solid fa-eye"></i> View Details
+        </button>
+    `;
+    
+    return card;
+}
+
+/**
+ * Remove a loading message by ID
+ * @param {string} messageId - ID of message to remove
+ */
+function removeLoadingMessage(messageId) {
+    const message = document.getElementById(messageId);
+    if (message) {
+        message.remove();
+    }
+}
+

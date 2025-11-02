@@ -27,7 +27,7 @@ DEPARTMENT_NAME_TO_NUMBER = {
     "History": 25,
     "Latinx and Latin American Studies": 26,
     "Law, Jurisprudence, and Social Thought": 27,
-    "Mathematics and Statistics": 28,
+    "Mathematics": 28,
     "Mellon Seminar": 29,
     "Music": 30,
     "Neuroscience": 31,
@@ -40,6 +40,7 @@ DEPARTMENT_NAME_TO_NUMBER = {
     "Sexuality, Women's and Gender Studies": 38,
     "Spanish": 39,
     "Theater and Dance": 40,
+    "Statistics": 41,
 }
 
 DEPARTMENT_NAME_TO_CODE = {
@@ -71,7 +72,8 @@ DEPARTMENT_NAME_TO_CODE = {
     "History": "HIST",
     "Latinx and Latin American Studies": "LLAS",
     "Law, Jurisprudence, and Social Thought": "LJST",
-    "Mathematics and Statistics": "MATH",
+    "Mathematics": "MATH",
+    "Statistics": "STAT",
     "Mellon Seminar": "MLLN",
     "Music": "MUSI",
     "Neuroscience": "NEUR",
@@ -115,8 +117,8 @@ DEPARTMENT_CODE_TO_NAME = {
     "HIST": "History",
     "LLAS": "Latinx and Latin American Studies",
     "LJST": "Law, Jurisprudence, and Social Thought",
-    "MATH": "Mathematics and Statistics",
-    "STAT": "Mathematics and Statistics",
+    "MATH": "Mathematics",
+    "STAT": "Statistics",
     "MLLN": "Mellon Seminar",
     "MUSI": "Music",
     "NEUR": "Neuroscience",

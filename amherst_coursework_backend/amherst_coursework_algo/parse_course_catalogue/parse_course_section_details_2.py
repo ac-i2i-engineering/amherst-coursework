@@ -16,11 +16,15 @@ DAY_MAP = {
     "Thursday": "thu",
     "Friday": "fri",
     "Saturday": "sat",
-    "Sunday": "sun"
+    "Sunday": "sun",
 }
 
+
 def empty_time_block():
-    return {f"{d}_{t}": None for d in DAY_MAP.values() for t in ["start_time", "end_time"]}
+    return {
+        f"{d}_{t}": None for d in DAY_MAP.values() for t in ["start_time", "end_time"]
+    }
+
 
 def parse_days_and_times(days_str, time_str):
     data = empty_time_block()
@@ -33,6 +37,7 @@ def parse_days_and_times(days_str, time_str):
             data[f"{key}_start_time"] = start
             data[f"{key}_end_time"] = end
     return data
+
 
 with open(HTML_FILE, "r", encoding="utf-8") as f:
     soup = BeautifulSoup(f, "html.parser")
@@ -54,22 +59,28 @@ for item_index, item in enumerate(course_items):
         # Example: AAPI 208-01 - A/P/A Sports
         # Handle cases where there might be missing space after dash: "AAPI 208-01 -A/P/A"
         if " -" not in header_text:
-            print(f"Warning: Item {item_index} has malformed header: '{header_text}'. Skipping.")
+            print(
+                f"Warning: Item {item_index} has malformed header: '{header_text}'. Skipping."
+            )
             continue
-        
+
         # Split on " -" and handle both " - " and " -" patterns
         parts = header_text.split(" -", 1)
         left = parts[0]
         title = parts[1].lstrip() if len(parts) > 1 else ""
-        
+
         if not title:
-            print(f"Warning: Item {item_index} has empty title: '{header_text}'. Skipping.")
+            print(
+                f"Warning: Item {item_index} has empty title: '{header_text}'. Skipping."
+            )
             continue
-        
+
         if "-" not in left:
-            print(f"Warning: Item {item_index} has malformed course code: '{left}'. Skipping.")
+            print(
+                f"Warning: Item {item_index} has malformed course code: '{left}'. Skipping."
+            )
             continue
-        
+
         course_code, section_id = left.rsplit("-", 1)
 
         course_code = course_code.strip()
@@ -135,7 +146,7 @@ for item_index, item in enumerate(course_items):
             courses[course_code] = {
                 "course_title": title,
                 "course_tags": tags,
-                "section_information": {}
+                "section_information": {},
             }
 
         # -------------------------------
@@ -147,9 +158,9 @@ for item_index, item in enumerate(course_items):
             "professor_link": None,
             "course_location": location,
             "course_materials_links": None,
-            **time_data
+            **time_data,
         }
-    
+
     except Exception as e:
         print(f"Error processing item {item_index}: {e}")
         continue

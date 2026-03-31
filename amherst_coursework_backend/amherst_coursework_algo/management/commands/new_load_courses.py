@@ -207,6 +207,11 @@ class Command(BaseCommand):
                     id=id,
                     defaults={
                         "courseName": course_data["course_title"],
+                        "courseDescription": (
+                            course_data.get("course_description")
+                            or course_data.get("description")
+                            or ""
+                        ),
                     },
                 )
 

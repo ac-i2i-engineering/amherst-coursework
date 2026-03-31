@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 SCRIPT_DIR = Path(__file__).parent
 
-HTML_FILE = SCRIPT_DIR / "workday_course_catalogue.html"
+HTML_FILE = SCRIPT_DIR / "26fall_catalogue.html"
 OUTPUT_FILE = SCRIPT_DIR / "new_course_parsed.json"
 
 DAY_MAP = {
@@ -113,13 +113,11 @@ DEPARTMENT_CODE_TO_DIVISION = {
 SEMESTER_CODE = "2526S"
 
 COURSE_CODE_RE = re.compile(r'\b([A-Z]{2,5})\s+(\d{3}[A-Z]?)\b')
-OFFERED_AS_RE = re.compile(
-    r'Offered as\s+([A-Z]{2,5}\s+\d{3}[A-Z]?(?:\s+and\s+[A-Z]{2,5}\s+\d{3}[A-Z]?)+)',
-    re.IGNORECASE
-)
+OFFERED_AS_BLOCK_RE = re.compile(r'\(?\s*Offered as\s+([^\).;]+)', re.IGNORECASE)
 SLASH_LISTING_RE = re.compile(
     r'\b([A-Z]{2,5}\s+\d{3}[A-Z]?(?:/[A-Z]{2,5}\s+\d{3}[A-Z]?)+)\b'
 )
+TIME_RANGE_RE = re.compile(r'^\d{1,2}:\d{2}\s*[AP]M\s*-\s*\d{1,2}:\d{2}\s*[AP]M$')
 
 
 def dept_name_to_url_slug(dept_name):
@@ -134,9 +132,11 @@ def get_department_url(dept_name):
 def extract_cross_listings(primary_code, description):
     primary_fmt = primary_code.replace(" ", "-")
     acronyms = {primary_fmt}
+    description = description or ""
 
-    for m in OFFERED_AS_RE.finditer(description):
-        for code_m in COURSE_CODE_RE.finditer(m.group(0)):
+    for m in OFFERED_AS_BLOCK_RE.finditer(description):
+        offered_block = m.group(1)
+        for code_m in COURSE_CODE_RE.finditer(offered_block):
             acronyms.add(f"{code_m.group(1)}-{code_m.group(2)}")
 
     for m in SLASH_LISTING_RE.finditer(description):
@@ -147,6 +147,27 @@ def extract_cross_listings(primary_code, description):
                 acronyms.add(f"{cm.group(1)}-{cm.group(2)}")
 
     return sorted(acronyms)
+
+
+def strip_offered_as_prefix(description):
+    if not description:
+        return None
+
+    cleaned = re.sub(
+        r'^\s*\(\s*Offered as\s+[^\)]*\)\s*',
+        '',
+        description,
+        flags=re.IGNORECASE,
+    )
+    cleaned = re.sub(
+        r'^\s*Offered as\s+[^.;]*[.;]?\s*',
+        '',
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+
+    cleaned = cleaned.strip()
+    return cleaned or None
 
 
 def build_dept_metadata(acronyms):
@@ -170,7 +191,7 @@ def empty_time_block():
 
 def parse_days_and_times(days_str, time_str):
     data = empty_time_block()
-    start, end = [t.strip() for t in time_str.split("-")]
+    start, end = [t.strip() for t in re.split(r"\s*-\s*", time_str, maxsplit=1)]
 
     for day in days_str.split("/"):
         day = day.strip()
@@ -179,6 +200,29 @@ def parse_days_and_times(days_str, time_str):
             data[f"{key}_start_time"] = start
             data[f"{key}_end_time"] = end
     return data
+
+
+def parse_meeting_aria_label(label_text):
+    if not label_text:
+        return None
+
+    parts = [p.strip() for p in label_text.split("|")]
+    if len(parts) == 2:
+        location = None
+        days, times = parts
+    elif len(parts) == 3:
+        location, days, times = parts
+    else:
+        return None
+
+    day_tokens = [d.strip() for d in days.split("/") if d.strip()]
+    if not day_tokens or any(d not in DAY_MAP for d in day_tokens):
+        return None
+
+    if not TIME_RANGE_RE.fullmatch(times):
+        return None
+
+    return location, days, times
 
 
 with open(HTML_FILE, "r", encoding="utf-8") as f:
@@ -221,14 +265,24 @@ for item_index, item in enumerate(course_items):
         location = None
         time_data = empty_time_block()
 
-        meeting_divs = item.find_all("div", attrs={"aria-label": re.compile(r"\|")})
+        meeting_divs = item.find_all(
+            "div",
+            attrs={
+                "data-automation-id": "menuItem",
+                "aria-label": re.compile(r"\|"),
+            },
+        )
         for div in meeting_divs:
-            text = div.get("aria-label", "")
-            parts = [p.strip() for p in text.split("|")]
-            if len(parts) == 3:
-                location, days, times = parts
-                parsed_times = parse_days_and_times(days, times)
-                time_data.update(parsed_times)
+            parsed_meeting = parse_meeting_aria_label(div.get("aria-label", ""))
+            if not parsed_meeting:
+                continue
+
+            location_candidate, days, times = parsed_meeting
+            if location is None and location_candidate:
+                location = location_candidate
+
+            parsed_times = parse_days_and_times(days, times)
+            time_data.update(parsed_times)
 
         section_type = "Lecture"
         format_label = item.find("label", string="Instructional Format")
@@ -252,14 +306,17 @@ for item_index, item in enumerate(course_items):
                 tag_divs = tag_ul.find_all("div", class_="gwt-Label")
                 tags = [t.get_text(strip=True) for t in tag_divs]
 
+        raw_description = None
         desc_label = item.find("label", string="Course Section Description")
-        description = None
         if desc_label:
-            desc_div = desc_label.find_next("div")
-        if desc_div:
-            description = desc_div.get_text(strip=True)
+            desc_div = desc_label.find_next(
+                "div", attrs={"data-automation-id": "compositeDetailMoniker"}
+            )
+            if desc_div:
+                raw_description = desc_div.get_text(" ", strip=True)
 
-        course_acronyms = extract_cross_listings(course_code, description)
+        course_acronyms = extract_cross_listings(course_code, raw_description)
+        description = strip_offered_as_prefix(raw_description)
         departments = build_dept_metadata(course_acronyms)
 
         if course_code not in courses:
@@ -271,6 +328,8 @@ for item_index, item in enumerate(course_items):
                 "departments": departments,
                 "section_information": {},
             }
+        elif description and not courses[course_code].get("course_description"):
+            courses[course_code]["course_description"] = description
 
         courses[course_code]["section_information"][section_key] = {
             "section_type": section_type,

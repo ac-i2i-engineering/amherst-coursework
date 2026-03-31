@@ -100,7 +100,6 @@ import json
 from datetime import datetime
 from django.conf import settings
 
-
 INSTITUTIONAL_DOMAIN = settings.INSTITUTIONAL_DOMAIN
 
 

@@ -196,9 +196,7 @@ def generate_advisor_response(context, user_question=None):
                 if course["description"]:
                     available_courses_text += f"  {course['description'][:150]}...\n"
 
-        prompt_parts = [
-            types.Part.from_text(
-                text=f"""
+        prompt_parts = [types.Part.from_text(text=f"""
 Student's Current Schedule:
 {json.dumps(context['current_schedule'], indent=2)}
 
@@ -214,9 +212,7 @@ Student Question: {user_question}
 Please provide helpful advice and specific course recommendations from the available courses listed above.
 
 Please provide helpful advice and specific course recommendations.
-"""
-            )
-        ]
+""")]
 
         # Create chat and send message
         chat = client.chats.create(

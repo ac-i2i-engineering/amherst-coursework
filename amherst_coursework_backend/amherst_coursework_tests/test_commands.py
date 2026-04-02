@@ -1,6 +1,7 @@
 import pytest
 from django.core.management import call_command
 from django.test import TestCase
+from unittest.mock import patch
 from amherst_coursework_algo.models import (
     Course,
     CourseCode,
@@ -283,3 +284,158 @@ class TestLoadCourses(TestCase):
         self.assertIsNone(section.monday_end_time)
         self.assertEqual(section.tuesday_start_time.strftime("%I:%M %p"), "11:00 AM")
         self.assertEqual(section.thursday_end_time.strftime("%I:%M %p"), "12:15 PM")
+
+
+class TestResolveDuplicatesCommand(TestCase):
+
+    def _build_course(self, course_id, name, codes, departments):
+        course = Course.objects.create(id=course_id, courseName=name)
+
+        for code_value in codes:
+            code, _ = CourseCode.objects.get_or_create(value=code_value)
+            course.courseCodes.add(code)
+
+        for dept_name, dept_code in departments:
+            department, _ = Department.objects.get_or_create(
+                name=dept_name,
+                defaults={
+                    "code": dept_code,
+                    "link": f"https://test.edu/{dept_code.lower()}",
+                },
+            )
+            course.departments.add(department)
+
+        return course
+
+    def test_merge_accepted_unions_codes_and_departments(self):
+        self._build_course(
+            4000101,
+            "Duplicate Name",
+            ["COSC-101"],
+            [("Computer Science", "COSC")],
+        )
+        self._build_course(
+            4000102,
+            "Duplicate Name",
+            ["MATH-101"],
+            [("Mathematics", "MATH")],
+        )
+
+        with patch("builtins.input", return_value="y"):
+            call_command("resolve_duplicates")
+
+        self.assertEqual(Course.objects.filter(courseName="Duplicate Name").count(), 1)
+        kept = Course.objects.get(courseName="Duplicate Name")
+        self.assertEqual(kept.id, 4000101)
+        self.assertSetEqual(
+            {code.value for code in kept.courseCodes.all()}, {"COSC-101", "MATH-101"}
+        )
+        self.assertSetEqual(
+            {dept.code for dept in kept.departments.all()}, {"COSC", "MATH"}
+        )
+
+    def test_merge_declined_keeps_both_courses(self):
+        self._build_course(
+            4000201,
+            "Duplicate Name",
+            ["COSC-201"],
+            [("Computer Science", "COSC")],
+        )
+        self._build_course(
+            4000202,
+            "Duplicate Name",
+            ["ENGL-201"],
+            [("English", "ENGL")],
+        )
+
+        with patch("builtins.input", return_value="n"):
+            call_command("resolve_duplicates")
+
+        self.assertEqual(Course.objects.filter(courseName="Duplicate Name").count(), 2)
+
+    def test_dry_run_makes_no_data_changes(self):
+        self._build_course(
+            4000301,
+            "Duplicate Name",
+            ["COSC-301"],
+            [("Computer Science", "COSC")],
+        )
+        self._build_course(
+            4000302,
+            "Duplicate Name",
+            ["STAT-301"],
+            [("Statistics", "STAT")],
+        )
+
+        call_command("resolve_duplicates", "--yes", "--dry-run")
+
+        self.assertEqual(Course.objects.filter(courseName="Duplicate Name").count(), 2)
+        primary = Course.objects.get(id=4000301)
+        self.assertSetEqual({code.value for code in primary.courseCodes.all()}, {"COSC-301"})
+        self.assertSetEqual({dept.code for dept in primary.departments.all()}, {"COSC"})
+
+    def test_group_larger_than_two_merges_all_into_first(self):
+        self._build_course(
+            4000401,
+            "Duplicate Name",
+            ["COSC-401"],
+            [("Computer Science", "COSC")],
+        )
+        self._build_course(
+            4000402,
+            "Duplicate Name",
+            ["MATH-401"],
+            [("Mathematics", "MATH")],
+        )
+        self._build_course(
+            4000403,
+            "Duplicate Name",
+            ["PHIL-401"],
+            [("Philosophy", "PHIL")],
+        )
+
+        call_command("resolve_duplicates", "--yes")
+
+        self.assertEqual(Course.objects.filter(courseName="Duplicate Name").count(), 1)
+        kept = Course.objects.get(courseName="Duplicate Name")
+        self.assertEqual(kept.id, 4000401)
+        self.assertSetEqual(
+            {code.value for code in kept.courseCodes.all()},
+            {"COSC-401", "MATH-401", "PHIL-401"},
+        )
+        self.assertSetEqual(
+            {dept.code for dept in kept.departments.all()},
+            {"COSC", "MATH", "PHIL"},
+        )
+
+    def test_name_filter_only_processes_target_duplicate_name(self):
+        self._build_course(
+            4000501,
+            "Target Name",
+            ["COSC-501"],
+            [("Computer Science", "COSC")],
+        )
+        self._build_course(
+            4000502,
+            "Target Name",
+            ["MATH-501"],
+            [("Mathematics", "MATH")],
+        )
+
+        self._build_course(
+            4000503,
+            "Other Name",
+            ["ENGL-501"],
+            [("English", "ENGL")],
+        )
+        self._build_course(
+            4000504,
+            "Other Name",
+            ["PHYS-501"],
+            [("Physics", "PHYS")],
+        )
+
+        call_command("resolve_duplicates", "--yes", "--name", "Target Name")
+
+        self.assertEqual(Course.objects.filter(courseName="Target Name").count(), 1)
+        self.assertEqual(Course.objects.filter(courseName="Other Name").count(), 2)

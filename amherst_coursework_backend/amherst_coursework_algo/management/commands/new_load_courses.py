@@ -345,9 +345,11 @@ class Command(BaseCommand):
                 i = 0
                 courseMaterialsLink = INSTITUTIONAL_DOMAIN
 
-                for section_number, section_data in course_data.get(
-                    "section_information", {}
-                ).items():
+                section_information = course_data.get("section_information", {})
+                if not isinstance(section_information, dict):
+                    section_information = {}
+
+                for section_number, section_data in section_information.items():
                     if i == 0:
                         courseMaterialsLink = section_data.get(
                             "course_materials_links", INSTITUTIONAL_DOMAIN
@@ -425,7 +427,7 @@ class Command(BaseCommand):
                 # -------------------------------
                 # Dummy section fallback
                 # -------------------------------
-                if course.sections.all().count() == 0:
+                if not section_information and course.sections.all().count() == 0:
                     dummy_professor, _ = Professor.objects.get_or_create(
                         name="TBA", link=INSTITUTIONAL_DOMAIN
                     )

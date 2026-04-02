@@ -4,6 +4,19 @@ on:
   schedule:
     - cron: "0 5 1 4,11 *"  # Runs at 05:00 (5 AM) on April 1 and November 1
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode: load (full refresh) or backfill (summaries only)"
+        required: false
+        default: "load"
+        type: choice
+        options:
+          - load
+          - backfill
+      limit:
+        description: "Optional course limit for backfill mode"
+        required: false
+        type: string
 
 jobs:
   update-database:
@@ -50,8 +63,21 @@ jobs:
     - name: Update Database
       working-directory: ./amherst_coursework_backend
       run: |
-        python -u manage.py flush --noinput --verbosity 2
-        python -u manage.py new_load_courses ./amherst_coursework_algo/parse_course_catalogue/new_course_parsed.json --verbosity 2
+        MODE="${{ github.event.inputs.mode }}"
+        if [ -z "$MODE" ]; then
+          MODE="load"
+        fi
+
+        if [ "$MODE" = "backfill" ]; then
+          if [ -n "${{ github.event.inputs.limit }}" ]; then
+            python -u manage.py backfill_course_summaries --limit "${{ github.event.inputs.limit }}"
+          else
+            python -u manage.py backfill_course_summaries
+          fi
+        else
+          python -u manage.py flush --noinput --verbosity 2
+          python -u manage.py new_load_courses ./amherst_coursework_algo/parse_course_catalogue/new_course_parsed.json --verbosity 2
+        fi
         
     - name: Commit Database Changes
       run: |

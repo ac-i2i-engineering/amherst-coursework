@@ -34,7 +34,7 @@ class Command(BaseCommand):
         skipped = 0
 
         for course in missing_qs.iterator():
-            if limit is not None and processed >= limit:
+            if limit is not None and generated >= limit:
                 break
 
             summary_text = NewLoadCoursesCommand.generate_course_summary(

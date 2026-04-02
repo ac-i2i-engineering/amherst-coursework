@@ -330,6 +330,7 @@ class Command(BaseCommand):
                     if summary_text:
                         course.summary = summary_text
                         course.save(update_fields=["summary"])
+                        print(f"Generated summary for {course.courseName}")
 
                 course.courseCodes.set(codes)
                 course.departments.set(departments)

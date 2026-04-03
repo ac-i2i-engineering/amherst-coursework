@@ -4,6 +4,7 @@
 {% block content %}
 {% csrf_token %}
 {{ DEPARTMENT_CODE_TO_NAME|json_script:"dept-dict" }}
+{{ AI_ADVISOR_ENABLED|yesno:"true,false"|json_script:"ai-advisor-enabled" }}
 <script src="{% static 'js/courses.js' %}"></script>
 
 <div class = "page-container">
@@ -14,16 +15,14 @@
     </div>
 
     <div id="cart-side-panel" class="side-panel cart-panel">
-        <h3>Saved Schedule</h3>
+        <h3 style="margin-top: 45px">Saved Schedule</h3>
         <div id="cart-courses-list"></div>
         <div id="cart-total">
             <div style="margin-bottom: 10px;">
                 <strong>Total Credits:</strong> <span id="cart-credits">0</span>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="export-cart" title="Export your schedule to a file" aria-label="Export schedule">
-                    <i class="fa-solid fa-download"></i> Workday Export
-                </button>
+                
                 <button class="reset-cart" title="Clear all courses from your schedule" aria-label="Reset schedule">
                     <i class="fa-solid fa-rotate-left"></i> Reset
                 </button>
@@ -67,6 +66,7 @@
         View Saved Schedule (<span id="cart-count-header">0</span>)
     </button>
 
+    {% if AI_ADVISOR_ENABLED %}
     <!-- AI Advisor Panel -->
     <div id="ai-advisor-panel" class="side-panel advisor-panel">
         <h3><i class="fa-solid fa-robot"></i> AI Course Advisor</h3>
@@ -108,6 +108,7 @@
             aria-label="Open AI advisor (Beta)">
         <i class="fa-solid fa-robot"></i> AI Advisor <span style="font-size: 0.75em; opacity: 0.8;">(Beta)</span>
     </button>
+    {% endif %}
 
     <div class = "main-content">
         <div class="container">

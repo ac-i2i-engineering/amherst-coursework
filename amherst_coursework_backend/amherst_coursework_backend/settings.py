@@ -189,3 +189,11 @@ INSTITUTIONAL_DOMAIN = "https://www.amherst.edu/"
 # Gemini settings
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+
+# AI advisor feature flag (disabled by default)
+AI_ADVISOR_ENABLED = os.getenv("AI_ADVISOR_ENABLED", "false").lower() in (
+    "1",
+    "true",
+    "yes",
+    "on",
+)

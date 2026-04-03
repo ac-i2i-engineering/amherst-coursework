@@ -563,6 +563,33 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function formatCourseCodeForCopy(courseCode) {
+    return (courseCode || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function handleCopyCourseCode(event, rawCourseCode) {
+    event.stopPropagation();
+
+    const button = event.currentTarget;
+    const formattedCourseCode = formatCourseCodeForCopy(rawCourseCode);
+
+    if (!formattedCourseCode) {
+        showTooltip(button, 'No course code available');
+        setTimeout(hideTooltip, 1200);
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(formattedCourseCode);
+        showTooltip(button, `Copied: ${formattedCourseCode}`);
+    } catch (error) {
+        console.error('Failed to copy course code:', error);
+        showTooltip(button, 'Copy failed');
+    }
+
+    setTimeout(hideTooltip, 1200);
+}
+
 // Updates the cart display with current courses and their calendar view
 function updateCartDisplay() {
     // Get cart data and initialize display elements
@@ -602,6 +629,9 @@ function updateCartDisplay() {
                     data.courses.forEach(course => {
                         // Get the first section for professor info
                         const firstSection = Object.values(course.section_information)[0] || {};
+                        const primaryCourseCode = Array.isArray(course.course_acronyms)
+                            ? course.course_acronyms[0]
+                            : course.course_acronyms;
                         
                         // Format meeting days for display
                         const meetingDays = [];
@@ -633,7 +663,10 @@ function updateCartDisplay() {
                                         <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
                                         <h4 class="course-name">${course.name}</h4>
                                     </div>
-                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
+                                    <div class="cart-course-controls">
+                                        <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
+                                        <button onclick="handleCopyCourseCode(event, '${primaryCourseCode || ''}')" class="remove-btn copy-code-btn" title="Copy course code" aria-label="Copy course code">Copy</button>
+                                    </div>
                                 </div>
                             </div>
                         `;

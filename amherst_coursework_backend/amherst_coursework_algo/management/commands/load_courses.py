@@ -245,6 +245,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("json_file", type=str, help="Path to JSON file")
+        parser.add_argument(
+            "--skip-bad-records",
+            action="store_true",
+            help="Skip malformed course records and continue loading remaining courses",
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -286,6 +291,8 @@ class Command(BaseCommand):
 
         with open(options["json_file"]) as f:
             departments_courses_data = json.load(f)
+
+        skipped_records = 0
 
         for department_list in departments_courses_data:
             courses_data = departments_courses_data[department_list]
@@ -589,9 +596,25 @@ class Command(BaseCommand):
                     )
 
                 except Exception as e:
+                    if options.get("skip_bad_records", False):
+                        skipped_records += 1
+                        self.stdout.write(
+                            self.style.WARNING(
+                                f"Skipping malformed course record due to error: {str(e)} for {course_data}"
+                            )
+                        )
+                        continue
+
                     self.stdout.write(
                         self.style.ERROR(
                             f"Failed to create course: {str(e)} for {course_data}"
                         )
                     )
                     raise
+
+        if skipped_records:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Completed with {skipped_records} skipped malformed course record(s)."
+                )
+            )

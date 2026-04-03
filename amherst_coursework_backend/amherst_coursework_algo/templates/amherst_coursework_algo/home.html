@@ -314,15 +314,18 @@
             }
         });
 
-        // Handle cart export functionality
-        document.querySelector('.export-cart').addEventListener('click', async () => {
-            try {
-                await exportCart();
-            } catch (error) {
-                console.error('Error exporting cart:', error);
-                alert('Failed to export schedule. Please try again.');
-            }
-        });
+        // Handle cart export functionality (if export button is present)
+        const exportButton = document.querySelector('.export-cart');
+        if (exportButton) {
+            exportButton.addEventListener('click', async () => {
+                try {
+                    await exportCart();
+                } catch (error) {
+                    console.error('Error exporting cart:', error);
+                    alert('Failed to export schedule. Please try again.');
+                }
+            });
+        }
 
         // Handle cart reset functionality
         document.querySelector('.reset-cart').addEventListener('click', async () => {

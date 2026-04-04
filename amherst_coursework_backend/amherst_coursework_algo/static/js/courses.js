@@ -640,7 +640,7 @@ function updateCartDisplay() {
                                     </div>
                                     <div class="cart-course-controls">
                                         <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
-                                        <button onclick="handleCopyCourseCode(event, '${primaryCourseCode || ''}')" class="remove-btn copy-code-btn" title="Copy course code" aria-label="Copy course code">Copy</button>
+                                        <button onclick="handleCopyCourseCode(event, '${primaryCourseCode || ''}')" class="remove-btn copy-code-btn" title="Copy course code to add this course in workday" aria-label="Copy course code">Copy</button>
                                     </div>
                                 </div>
                             </div>

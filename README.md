@@ -784,6 +784,9 @@ To enable the AI Advisor feature, you need a Google Gemini API key:
    
    ```
    GEMINI_API_KEY=your_api_key_here
+  # Optional GA4 setup
+  GA_MEASUREMENT_ID=G-XXXXXXXXXX
+  GA_ENABLED=true
    ```
 
 3. **Install Required Dependencies:**
@@ -798,6 +801,32 @@ To enable the AI Advisor feature, you need a Google Gemini API key:
 4. **Verify Setup:**
    
    The application will automatically detect the API key. If the key is missing or invalid, the AI Advisor button will be disabled with a helpful error message.
+
+### Google Analytics (GA4) Setup
+
+To track site usage with Google Analytics 4, configure your GA Measurement ID in the same `.env` file used by Django settings.
+
+1. **Create a GA4 Web Data Stream:**
+  - In Google Analytics Admin, create/select a GA4 property.
+  - Add a Web stream for `https://amherstcourses.com`.
+  - Copy the Measurement ID (format: `G-XXXXXXXXXX`).
+
+2. **Set Environment Variables:**
+  Add these values to `amherst_coursework_backend/.env`:
+
+  ```
+  GA_MEASUREMENT_ID=G-XXXXXXXXXX
+  GA_ENABLED=true
+  ```
+
+  Notes:
+  - If `GA_ENABLED` is omitted, analytics auto-enables when `GA_MEASUREMENT_ID` is present.
+  - Keep `GA_ENABLED=false` in local/test environments if you do not want local traffic reported.
+
+3. **Verify Tracking:**
+  - Start the app and open a page.
+  - In GA, check Realtime to confirm an active user/event appears.
+  - View page source and confirm `googletagmanager.com/gtag/js` appears once.
 
 ### Usage
 

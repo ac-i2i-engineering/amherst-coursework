@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v={% now 'U' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        {% if ga_enabled and ga_measurement_id %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ ga_measurement_id }}');
+        </script>
+        {% endif %}
     <script>
     function togglePanel(courseId = null) {
         const panel = document.getElementById('side-panel');

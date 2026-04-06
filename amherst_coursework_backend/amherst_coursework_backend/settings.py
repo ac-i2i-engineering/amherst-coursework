@@ -19,6 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
+
+def env_bool(name: str, default: bool = False) -> bool:
+    """Read a boolean environment variable with common truthy values."""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -94,6 +102,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "amherst_coursework_algo.context_processors.google_analytics",
             ],
         },
     },
@@ -186,14 +195,13 @@ LOGGING = {
 
 INSTITUTIONAL_DOMAIN = "https://www.amherst.edu/"
 
+# Google Analytics (GA4) settings
+GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
+GA_ENABLED = env_bool("GA_ENABLED", default=bool(GA_MEASUREMENT_ID))
+
 # Gemini settings
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
 
 # AI advisor feature flag (disabled by default)
-AI_ADVISOR_ENABLED = os.getenv("AI_ADVISOR_ENABLED", "false").lower() in (
-    "1",
-    "true",
-    "yes",
-    "on",
-)
+AI_ADVISOR_ENABLED = env_bool("AI_ADVISOR_ENABLED", default=False)

@@ -9,6 +9,7 @@
         <title>Filters &mdash; Amherst Coursework 0.0.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/dist/fontawesome.css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8e8a900e" />
       <link rel="stylesheet" type="text/css" href="_static/dist/theme.css?v=310cf088" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=901ed8ac" />
@@ -112,73 +113,73 @@ search queries, using a weighted scoring system for different match types.</p>
 <h2>Constants<a class="headerlink" href="#constants" title="Link to this heading">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="MIN_CHAR_FOR_COS_SIM">
-<span class="sig-name descname"><span class="pre">MIN_CHAR_FOR_COS_SIM</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#MIN_CHAR_FOR_COS_SIM" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">MIN_CHAR_FOR_COS_SIM</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#MIN_CHAR_FOR_COS_SIM" title="Link to this definition">¶</a></dt>
 <dd><p>Minimum characters required in search query before applying cosine similarity matching</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="DEPARTMENT_NAME_WEIGHT">
-<span class="sig-name descname"><span class="pre">DEPARTMENT_NAME_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#DEPARTMENT_NAME_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEPARTMENT_NAME_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#DEPARTMENT_NAME_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches found in department names (e.g., 'Computer Science')</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="COURSE_NAME_WEIGHT">
-<span class="sig-name descname"><span class="pre">COURSE_NAME_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#COURSE_NAME_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">COURSE_NAME_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#COURSE_NAME_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches found in course titles</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="COURSE_CODE_WEIGHT">
-<span class="sig-name descname"><span class="pre">COURSE_CODE_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#COURSE_CODE_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">COURSE_CODE_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#COURSE_CODE_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches in course codes (e.g., 'COSC-111')</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="DEPARTMENT_CODE_WEIGHT">
-<span class="sig-name descname"><span class="pre">DEPARTMENT_CODE_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#DEPARTMENT_CODE_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEPARTMENT_CODE_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#DEPARTMENT_CODE_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches in department codes (e.g., 'COSC')</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="DIVISION_WEIGHT">
-<span class="sig-name descname"><span class="pre">DIVISION_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#DIVISION_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DIVISION_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#DIVISION_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches in academic division names (e.g., 'Science')</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="KEYWORD_WEIGHT">
-<span class="sig-name descname"><span class="pre">KEYWORD_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#KEYWORD_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">KEYWORD_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#KEYWORD_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches in course keywords/tags</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="DESCRIPTION_WEIGHT">
-<span class="sig-name descname"><span class="pre">DESCRIPTION_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#DESCRIPTION_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DESCRIPTION_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#DESCRIPTION_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches found in course descriptions</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="PROFESSOR_WEIGHT">
-<span class="sig-name descname"><span class="pre">PROFESSOR_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#PROFESSOR_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PROFESSOR_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#PROFESSOR_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Weight applied to matches in professor names</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="HALF_COURSE_WEIGHT">
-<span class="sig-name descname"><span class="pre">HALF_COURSE_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#HALF_COURSE_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">HALF_COURSE_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#HALF_COURSE_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Additional weight applied when 'half' appears in query and course is half-credit</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="SIMILARITY_WEIGHT">
-<span class="sig-name descname"><span class="pre">SIMILARITY_WEIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#SIMILARITY_WEIGHT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">SIMILARITY_WEIGHT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#SIMILARITY_WEIGHT" title="Link to this definition">¶</a></dt>
 <dd><p>Multiplier applied to cosine similarity scores for text matching</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="SCORE_CUTOFF">
-<span class="sig-name descname"><span class="pre">SCORE_CUTOFF</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#SCORE_CUTOFF" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">SCORE_CUTOFF</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#SCORE_CUTOFF" title="Link to this definition">¶</a></dt>
 <dd><p>Minimum score threshold as fraction of highest score (0.0 to 1.0) for including a course in results</p>
 </dd></dl>
 
@@ -277,7 +278,7 @@ search queries, using a weighted scoring system for different match types.</p>
                     </a>
                     and
                     <a class="text-white" href="https://www.sphinx-doc.org/" rel="nofollow" target="_blank">
-                        Sphinx 8.2.3
+                        Sphinx 9.1.0
                     </a>
                 </small>
             </div>
@@ -286,8 +287,8 @@ search queries, using a weighted scoring system for different match types.</p>
         </div>
     </footer>
         <script src="_static/documentation_options.js?v=3dc53093"></script>
-        <script src="_static/doctools.js?v=9bcbadda"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
         <script type="text/javascript" src="_static/dist/theme.js"></script>

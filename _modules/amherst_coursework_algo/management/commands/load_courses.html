@@ -7,6 +7,7 @@
         <title>amherst_coursework_algo.management.commands.load_courses &mdash; Amherst Coursework 0.0.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../../../_static/dist/fontawesome.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8e8a900e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/dist/theme.css?v=310cf088" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=901ed8ac" />
@@ -204,7 +205,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
-
 <span class="n">INSTITUTIONAL_DOMAIN</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">INSTITUTIONAL_DOMAIN</span>
 
 
@@ -359,7 +359,12 @@
 <div class="viewcode-block" id="Command.add_arguments">
 <a class="viewcode-back" href="../../../../load_courses.html#amherst_coursework_algo.management.commands.load_courses.Command.add_arguments">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;json_file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to JSON file&quot;</span><span class="p">)</span></div>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;json_file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to JSON file&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--skip-bad-records&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Skip malformed course records and continue loading remaining courses&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Command.handle">
@@ -404,6 +409,8 @@
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;json_file&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">departments_courses_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">skipped_records</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">department_list</span> <span class="ow">in</span> <span class="n">departments_courses_data</span><span class="p">:</span>
             <span class="n">courses_data</span> <span class="o">=</span> <span class="n">departments_courses_data</span><span class="p">[</span><span class="n">department_list</span><span class="p">]</span>
@@ -707,12 +714,28 @@
                     <span class="p">)</span>
 
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skip_bad_records&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                        <span class="n">skipped_records</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">WARNING</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Skipping malformed course record due to error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">course_data</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+
                     <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">ERROR</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Failed to create course: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">course_data</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="k">raise</span></div>
+                    <span class="k">raise</span>
+
+        <span class="k">if</span> <span class="n">skipped_records</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">WARNING</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Completed with </span><span class="si">{</span><span class="n">skipped_records</span><span class="si">}</span><span class="s2"> skipped malformed course record(s).&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -770,7 +793,7 @@
                     </a>
                     and
                     <a class="text-white" href="https://www.sphinx-doc.org/" rel="nofollow" target="_blank">
-                        Sphinx 8.2.3
+                        Sphinx 9.1.0
                     </a>
                 </small>
             </div>
@@ -779,8 +802,8 @@
         </div>
     </footer>
         <script src="../../../../_static/documentation_options.js?v=3dc53093"></script>
-        <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
         <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../../_static/copybutton.js?v=f281be69"></script>
         <script type="text/javascript" src="../../../../_static/dist/theme.js"></script>

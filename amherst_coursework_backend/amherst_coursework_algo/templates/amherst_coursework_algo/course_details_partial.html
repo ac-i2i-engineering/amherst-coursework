@@ -3,6 +3,47 @@
 {% block content %}
 
 <style>
+    .panel-details {
+        padding-top: 12px;
+    }
+
+    .panel-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .panel-top-row h2 {
+        margin: 0;
+    }
+
+    .panel-add-cart-btn {
+        background-color: #4a0099;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .panel-add-cart-btn:hover {
+        background-color: #5e1ab0;
+        transform: translateY(-1px);
+    }
+
+    .panel-add-cart-btn:focus {
+        outline: 2px solid #9556b0;
+        outline-offset: 2px;
+    }
+
     .calendar-container {
         display: grid;
         grid-template-columns: 45px repeat(5, 1fr);
@@ -60,7 +101,15 @@
 
 <!-- course_details_partial.html -->
 <div class="panel-details">
-    <h2>{{ course.courseName }}</h2>
+    <div class="panel-top-row" style="margin-top: 20px;">
+        <h2>{{ course.courseName }}</h2>
+        <button class="panel-add-cart-btn"
+                onclick="showSectionModal(event, '{{ course.id }}', '{{ course.courseName|escapejs }}')"
+                title="Add this course to your schedule"
+                aria-label="Add {{ course.courseName }} to your schedule">
+            <i class="fa-solid fa-plus"></i> Add to Schedule
+        </button>
+    </div>
     
     <!-- Course Codes and Basic Info -->
     <div style="margin-bottom: 15px;">

@@ -51,7 +51,7 @@ jobs:
       working-directory: ./amherst_coursework_backend
       run: |
         python -u manage.py flush --noinput --verbosity 2
-        python -u manage.py load_courses ./amherst_coursework_algo/data/course_catalogue/parsed_courses_second_deg.json --verbosity 2
+        python -u manage.py load_courses ./amherst_coursework_algo/data/course_catalogue/parsed_courses_second_deg.json --verbosity 2 --skip-bad-records
         
     - name: Commit Database Changes
       run: |

@@ -79,28 +79,11 @@ function toggleCartPanel() {
     const courseContainer = document.querySelector('.course-container');
     
     if (panel.classList.contains('open')) {
-        // Closing panel with animation sequence
-        courseContainer.style.opacity = '0';
-        courseContainer.classList.add('hidden');
-        panel.classList.add('closing');
-        
-        // Handle panel closing animation
-        setTimeout(() => {
-            panel.classList.remove('open', 'closing');
-            mainContent.classList.remove('shifted');
-            courseContainer.classList.remove('shifted');
-            
-            // Fade content back in
-            setTimeout(() => {
-                courseContainer.classList.add('fade-in');
-                courseContainer.classList.remove('hidden');
-                courseContainer.style.opacity = '1';
-                
-                setTimeout(() => {
-                    courseContainer.classList.remove('fade-in');
-                }, 300);
-            }, 100);
-        }, 300);
+        // Closing panel immediately (no fade-out)
+        panel.classList.remove('open', 'closing');
+        mainContent.classList.remove('shifted');
+        courseContainer.classList.remove('shifted', 'hidden', 'fade-in');
+        courseContainer.style.opacity = '1';
     } else {
         // Opening panel
         panel.classList.add('open');
@@ -456,6 +439,7 @@ function togglePanel(courseId = null) {
     const panelContent = document.getElementById('panel-content');
     const mainContent = document.querySelector('.main-content');
     const courseContainer = document.querySelector('.course-container');
+    const cartPanel = document.getElementById('cart-side-panel');
 
     if (courseId) {
         // Opening panel with course details
@@ -489,33 +473,20 @@ function togglePanel(courseId = null) {
                 panelContent.innerHTML = '<div class="error">Failed to load course details</div>';
             });
     } else {
-        // Closing panel with animation sequence
-        courseContainer.style.opacity = '0';
-        courseContainer.classList.add('hidden');
-        panel.classList.add('closing');
-
-        // Remove active states from all cards
+        // Closing panel immediately (no fade-out)
         document.querySelectorAll('.course-card').forEach(card => {
             card.classList.remove('active');
         });
-        
-        // Handle panel closing animation
-        setTimeout(() => {
-            panel.classList.remove('open', 'closing');
+
+        panel.classList.remove('open', 'closing');
+        // Keep content shifted if the cart panel is still open.
+        if (!cartPanel || !cartPanel.classList.contains('open')) {
             mainContent.classList.remove('shifted');
             courseContainer.classList.remove('shifted');
-            
-            // Fade content back in
-            setTimeout(() => {
-                courseContainer.classList.add('fade-in');
-                courseContainer.classList.remove('hidden');
-                courseContainer.style.opacity = '1';
-                
-                setTimeout(() => {
-                    courseContainer.classList.remove('fade-in');
-                }, 300);
-            }, 200);
-        }, 600);
+        }
+
+        courseContainer.classList.remove('hidden', 'fade-in');
+        courseContainer.style.opacity = '1';
     }
 }
 
@@ -563,6 +534,33 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function formatCourseCodeForCopy(courseCode) {
+    return (courseCode || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function handleCopyCourseCode(event, rawCourseCode) {
+    event.stopPropagation();
+
+    const button = event.currentTarget;
+    const formattedCourseCode = formatCourseCodeForCopy(rawCourseCode);
+
+    if (!formattedCourseCode) {
+        showTooltip(button, 'No course code available');
+        setTimeout(hideTooltip, 1200);
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(formattedCourseCode);
+        showTooltip(button, `Copied: ${formattedCourseCode}`);
+    } catch (error) {
+        console.error('Failed to copy course code:', error);
+        showTooltip(button, 'Copy failed');
+    }
+
+    setTimeout(hideTooltip, 1200);
+}
+
 // Updates the cart display with current courses and their calendar view
 function updateCartDisplay() {
     // Get cart data and initialize display elements
@@ -602,6 +600,9 @@ function updateCartDisplay() {
                     data.courses.forEach(course => {
                         // Get the first section for professor info
                         const firstSection = Object.values(course.section_information)[0] || {};
+                        const primaryCourseCode = Array.isArray(course.course_acronyms)
+                            ? course.course_acronyms[0]
+                            : course.course_acronyms;
                         
                         // Format meeting days for display
                         const meetingDays = [];
@@ -620,7 +621,11 @@ function updateCartDisplay() {
                         
                         const courseItem = document.createElement('div');
                         courseItem.innerHTML = `
-                            <div class="course-card cart-course-card">
+                            <div class="course-card cart-course-card"
+                                 data-course-id="${course.id}"
+                                 onclick="togglePanel('${course.id}')"
+                                 title="Open course details"
+                                 aria-label="Open details for ${course.name}">
                                 <div class="course-card-columns">
                                     <div class="course-card-left">
                                         <div class="course-code">
@@ -633,7 +638,10 @@ function updateCartDisplay() {
                                         <span class="info-text">Professor ${firstSection.professor_name || "TBA"} | ${meetingDays.join(', ')} ${sampleTime}</span>
                                         <h4 class="course-name">${course.name}</h4>
                                     </div>
-                                    <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
+                                    <div class="cart-course-controls">
+                                        <button onclick="handleCartClick(event, '${course.id}', '${Object.keys(course.section_information)[0]}')" class="remove-btn" title="Remove ${course.name} from schedule" aria-label="Remove ${course.name} from schedule">×</button>
+                                        <button onclick="handleCopyCourseCode(event, '${primaryCourseCode || ''}')" class="remove-btn copy-code-btn" title="Copy course code to add this course in workday" aria-label="Copy course code">Copy</button>
+                                    </div>
                                 </div>
                             </div>
                         `;

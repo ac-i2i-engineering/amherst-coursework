@@ -15,6 +15,7 @@ from typing import List
 from .masked_filters import filter
 import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 from . import ai_advisor
 
 # Get logger
@@ -91,6 +92,7 @@ def home(request):
         "search_query": search,
         "total_pages": paginator.num_pages,
         "current_page": int(page),
+        "AI_ADVISOR_ENABLED": settings.AI_ADVISOR_ENABLED,
     }
 
     return render(request, "amherst_coursework_algo/home.html", context)
@@ -315,6 +317,12 @@ def ai_course_advisor(request):
     Analyzes student's schedule and provides personalized recommendations
     """
     try:
+        if not settings.AI_ADVISOR_ENABLED:
+            return JsonResponse(
+                {"success": False, "error": "AI advisor is currently disabled"},
+                status=503,
+            )
+
         # Get cart items from request
         cart_json = request.GET.get("cart", "[]")
         cart_items = json.loads(cart_json)
